@@ -1,0 +1,55 @@
+﻿@model OnlineOrderCart.Web.Models.EditUserViewModel
+
+
+<div class="row">
+    <div class="col-sm-6">
+        <div class="form-group">
+            <label asp-for="Email" class="control-label"></label>
+            <input asp-for="Email" class="form-control" type="email" multiple style="float: left;text-align: center;border-radius: 60px;" placeholder="Email"/>
+            <span asp-validation-for="Email" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="col-sm-6">
+        <div class="form-group">
+            <label asp-for="FirstName" class="control-label"></label>
+            <input asp-for="FirstName" class="form-control" style="float: left;text-align: center;border-radius: 60px;" placeholder="First Name"/>
+            <span asp-validation-for="FirstName" class="text-danger"></span>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-sm-6">
+        <div class="form-group">
+            <label asp-for="LastName1" class="control-label"></label>
+            <input asp-for="LastName1" class="form-control" style="float: left;text-align: center;border-radius: 60px;" placeholder="Last Name1"/>
+            <span asp-validation-for="LastName1" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="col-sm-6">
+        <div class="form-group">
+            <label asp-for="LastName2" class="control-label"></label>
+            <input asp-for="LastName2" class="form-control" style="float: left;text-align: center;border-radius: 60px;" placeholder="Last Name2"/>
+            <span asp-validation-for="LastName2" class="text-danger"></span>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-sm-6">
+        <div class="form-group">
+            <label asp-for="EmployeeNumber" class="control-label"></label>
+            <input asp-for="EmployeeNumber" class="form-control" style="float: left;text-align: center;border-radius: 60px;" placeholder="Employee Number"/>
+            <span asp-validation-for="EmployeeNumber" class="text-danger"></span>
+        </div>
+
+    </div>
+    <div class="col-sm-6">
+        <div class="form-group">
+            <label asp-for="ImageFile" class="control-label"></label>
+            <input asp-for="ImageFile" class="form-control" type="file" accept="image/jpeg, image/png" style="float: left;text-align: center;border-radius: 60px;"  onchange="ShowImagePreview(this,document.getElementById('imagePreview'))" />
+            <span asp-validation-for="ImageFile" class="text-danger"></span>
+        </div>
+    </div>
+</div>
+
+

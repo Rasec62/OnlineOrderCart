@@ -1,0 +1,123 @@
+﻿@model IndexWarehouseDistViewModel
+<div class="row">
+    <div class="col-sm-6">
+        <div class="form-group">
+            @*<label asp-for="ProductId" class="control-label"></label>*@
+            <select asp-for="PurposeId" asp-items="Model.ComboPurposes" class="form-control btn btn-outline-secondary dropdown-toggle" data-toggle="dropdown" style="float: left;text-align: center;border-radius: 60px;"></select>
+            <span asp-validation-for="PurposeId" class="text-danger"></span>
+
+        </div>
+    </div>
+    <div class="col-sm-6">
+        <div class="form-group">
+            @*<label asp-for="DistributorId" class="control-label"></label>*@
+            <select asp-for="DistributorId" asp-items="Model.ComboDistributors" class="form-control btn btn-outline-secondary dropdown-toggle" data-toggle="dropdown" style="float: left;text-align: center;border-radius: 60px;"></select>
+            <span asp-validation-for="DistributorId" class="text-danger"></span>
+        </div>
+    </div>
+</div>
+<hr />
+<div class="row">
+    <div class="col-sm-6">
+        <div class="form-group">
+            @*<label asp-for="PurposeId" class="control-label"></label>*@
+            <select asp-for="SimTypeId" asp-items="Model.ComboSimTypes" class="form-control  btn btn-outline-secondary dropdown-toggle" data-toggle="dropdown" style="float: left;text-align: center;border-radius: 60px;"></select>
+            <span asp-validation-for="SimTypeId" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="col-sm-6">
+        <div class="form-group">
+            <select asp-for="ProductId" asp-items="Model.ComboProducts" class="form-control btn btn-outline-danger dropdown-toggle" data-toggle="dropdown"  style="float: left;text-align: center;border-radius: 60px;"></select>
+            <span asp-validation-for="ProductId" class="text-danger"></span>
+        </div>
+    </div>
+</div>
+<hr />
+<div class="row">
+    <div class="col-sm-12">
+        <div class="form-group">
+            @*<label asp-for="ShippingBranchNo" class="control-label"></label>*@
+            <input asp-for="ShippingBranchNo" class="form-control" style="float: left;text-align: center;border-radius: 60px;" placeholder="Shipping Branch No" />
+            <span asp-validation-for="ShippingBranchNo" class="text-danger"></span>
+        </div>
+    </div>
+</div>
+
+<hr />
+<div class="row">
+    <div class="col-sm-6">
+        <div class="form-group">
+            @*<label asp-for="ShippingBranchName" class="control-label"></label>*@
+            <input asp-for="ShippingBranchName" class="form-control" style="float: left;text-align: center;border-radius: 60px;" placeholder="Shipping Branch Name" />
+            <span asp-validation-for="ShippingBranchName" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="col-sm-6">
+        <div class="form-group">
+            @*<label asp-for="Warehousepvs" class="control-label"></label>*@
+            <input asp-for="Warehousepvs" class="form-control" style="float: left;text-align: center;border-radius: 60px;" placeholder="Warehouse pvs" />
+            <span asp-validation-for="Warehousepvs" class="text-danger"></span>
+        </div>
+    </div>
+</div>
+<hr />
+<div class="row">
+    <div class="col-sm-6">
+        <div class="form-group">
+            @*<label asp-for="SapClient" class="control-label"></label>*@
+            <input asp-for="SapClient" class="form-control" style="float: left;text-align: center;border-radius: 60px;" placeholder="Sap Client" />
+            <span asp-validation-for="SapClient" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="col-sm-6">
+        <div class="form-group">
+            @*<label asp-for="SapDescription" class="control-label"></label>*@
+            <input asp-for="SapDescription" class="form-control" style="float: left;text-align: center;border-radius: 60px;" placeholder="Sap Description" />
+            <span asp-validation-for="SapDescription" class="text-danger"></span>
+        </div>
+    </div>
+</div>
+<hr />
+<div class="row">
+    <div class="col-sm-12">
+        <div class="form-group">
+            @*<label asp-for="StreetNumber" class="control-label"></label>*@
+            <input asp-for="StreetNumber" class="form-control" style="float: left;text-align: center;border-radius: 60px;" placeholder="Street Number" />
+            <span asp-validation-for="StreetNumber" class="text-danger"></span>
+        </div>
+    </div>
+</div>
+<hr />
+<div class="row">
+    <div class="col-sm-6">
+        <div class="form-group">
+            @*<label asp-for="Suburd" class="control-label"></label>*@
+            <input asp-for="Suburd" class="form-control" style="float: left;text-align: center;border-radius: 60px;" placeholder="Suburd" />
+            <span asp-validation-for="Suburd" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="col-sm-6">
+        <div class="form-group">
+            @*<label asp-for="PostalCode" class="control-label"></label>*@
+            <input asp-for="PostalCode" class="form-control" style="float: left;text-align: center;border-radius: 60px;" placeholder="Postal Code" />
+            <span asp-validation-for="PostalCode" class="text-danger"></span>
+        </div>
+    </div>
+</div>
+<hr />
+<div class="row">
+    <div class="col-sm-6">
+        <div class="form-group">
+            @*<label asp-for="DelegationMunicipality" class="control-label"></label>*@
+            <input asp-for="DelegationMunicipality" class="form-control" style="float: left;text-align: center;border-radius: 60px;" placeholder="Delegation / Municipality" />
+            <span asp-validation-for="DelegationMunicipality" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="col-sm-6">
+        <div class="form-group">
+            @*<label asp-for="State" class="control-label"></label>*@
+            <input asp-for="State" class="form-control" style="float: left;text-align: center;border-radius: 60px;" placeholder="State" />
+            <span asp-validation-for="State" class="text-danger"></span>
+        </div>
+    </div>
+</div>

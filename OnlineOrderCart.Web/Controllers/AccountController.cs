@@ -12,5 +12,14 @@ namespace OnlineOrderCart.Web.Controllers
         {
             return View();
         }
+
+        public IActionResult ResourceNotFound()
+        {
+            return this.View();
+        }
+        public IActionResult AccessDenied(string returnUrl)
+        {
+            return View();
+        }
     }
 }

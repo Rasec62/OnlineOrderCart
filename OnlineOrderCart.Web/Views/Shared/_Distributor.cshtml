@@ -1,0 +1,43 @@
+﻿@model OnlineOrderCart.Web.Models.AddDistributorViewModel
+
+<input type="hidden" asp-for="Password" />
+<input type="hidden" asp-for="PasswordConfirm" />
+<div class="row">
+    <div class="col-sm-6">
+        <div class="form-group">
+            <label asp-for="Email" class="control-label"></label>
+            <input asp-for="Email" class="form-control" type="email" multiple style="float: left;text-align: center;border-radius: 60px;" placeholder="Email" />
+            <span asp-validation-for="Email" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="col-sm-6">
+        <div class="form-group">
+            <label asp-for="MD" class="control-label"></label>
+            <input asp-for="MD" class="form-control" style="float: left;text-align: center;border-radius: 60px;" placeholder="MD" />
+            <span asp-validation-for="MD" class="text-danger"></span>
+        </div>
+    </div>
+</div>
+@*<div class="row">
+    <div class="col-sm-4">
+        <div class="form-group">
+            <label asp-for="FirstName" class="control-label"></label>
+            <input asp-for="FirstName" class="form-control" style="float: left;text-align: center;border-radius: 60px;" placeholder="First Name" />
+            <span asp-validation-for="FirstName" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="col-sm-4">
+        <div class="form-group">
+            <label asp-for="LastName1" class="control-label"></label>
+            <input asp-for="LastName1" class="form-control" style="float: left;text-align: center;border-radius: 60px;" placeholder="Last Name1" />
+            <span asp-validation-for="LastName1" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="col-sm-4">
+        <div class="form-group">
+            <label asp-for="LastName2" class="control-label"></label>
+            <input asp-for="LastName2" class="form-control" style="float: left;text-align: center;border-radius: 60px;" placeholder="Last Name2" />
+            <span asp-validation-for="LastName2" class="text-danger"></span>
+        </div>
+    </div>
+</div>*@

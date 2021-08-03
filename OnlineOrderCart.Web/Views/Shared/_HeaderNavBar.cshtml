@@ -1,6 +1,6 @@
 ﻿<header>
     <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-        <div class="container">
+        <div class="container-fluid">
             <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Online Order Cart</a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                     aria-expanded="false" aria-label="Toggle navigation">
@@ -14,6 +14,28 @@
                     <li class="nav-item">
                         <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                     </li>
+                </ul>
+                <ul class="nav navbar-nav nav-flex-icons ml-auto">
+                    <li class="nav-link float-right">
+                        @await Html.PartialAsync("_Culture")
+                        @*<partial name="_Culture" />*@
+                    </li>
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        if (User.IsInRole("PowerfulUser") || User.IsInRole("KamAdmin") || User.IsInRole("KamAdCoordinator") || User.IsInRole("Kam") || User.IsInRole("KamCoordinator"))
+                        {
+                            <li class="nav-item"><a asp-area="" class="nav-link text-dark" asp-controller="Account" asp-action="ChangeUser"><i class="fas fa-user-circle"></i> @User.Identity.Name</a></li>
+                        }
+                        else
+                        {
+                            <li class="nav-item"><a asp-area="" class="nav-link text-dark" asp-controller="Distributors" asp-action="DistChangeUser"><i class="fas fa-user-circle"></i> @User.Identity.Name</a></li>
+                        }
+                        <li class="nav-item"><a asp-area="" class="nav-link text-dark" asp-controller="Account" asp-action="Logout"><i class="fas fa-power-off"></i> @*@localizer["Signoff"]*@</a></li>
+                    }
+                    else
+                    {
+                        <li class="nav-item"><a asp-area="" class="nav-link text-dark" asp-controller="Account" asp-action="Login"><i class="fa fa-cog fa-spin fa-1x fa-fw"></i> @*@localizer["LogIn"]*@</a></li>
+                    }
                 </ul>
             </div>
         </div>
