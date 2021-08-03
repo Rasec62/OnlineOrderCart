@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Localization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using OnlineOrderCart.Web.Models;
 using System;
@@ -43,6 +45,15 @@ namespace OnlineOrderCart.Web.Controllers
         public IActionResult Error404()
         {
             return View();
+        }
+        [HttpPost]
+        public IActionResult CultureManagement(string culture, string returnUrl)
+        {
+            Response.Cookies.Append(CookieRequestCultureProvider.DefaultCookieName,
+                CookieRequestCultureProvider.MakeCookieValue(new RequestCulture(culture)),
+                new CookieOptions { Expires = DateTimeOffset.Now.AddDays(30) });
+            return LocalRedirect(returnUrl);
+            //return RedirectToAction(nameof(Index));
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿@*@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer localizer
+﻿@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer localizer
 @inject Microsoft.Extensions.Options.IOptions<Microsoft.AspNetCore.Builder.RequestLocalizationOptions> LocOptions
 
 @{
@@ -15,4 +15,4 @@
                 asp-for="@culture.RequestCulture.UICulture.Name"
                 asp-items="cultureList" class="form-control btn btn-outline-secondary dropdown-toggle" data-toggle="dropdown" style="float: left;text-align: center;border-radius: 60px;"></select>
     </form>
-</div>*@
+</div>
