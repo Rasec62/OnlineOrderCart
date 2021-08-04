@@ -1,0 +1,14 @@
+﻿@model Roles
+
+<div class="form-group">
+    <label asp-for="RolName" class="control-label"></label>
+    <input asp-for="RolName" class="form-control" placeholder="Role" style="float: left;text-align: center;" required/>
+    <span asp-validation-for="RolName" class="text-danger"></span>
+</div>
+<br />
+<div class="form-group">
+    <label asp-for="CodeKey" class="control-label"></label>
+    <input asp-for="CodeKey" class="form-control" placeholder="Code Key" style="float: left;text-align: center;" required/>
+    <span asp-validation-for="CodeKey" class="text-danger"></span>
+</div>
+<br />

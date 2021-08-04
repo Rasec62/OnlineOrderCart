@@ -1,0 +1,157 @@
+﻿@model IEnumerable<Products>
+@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer localizer
+@{
+    ViewData["Title"] = "Products";
+}
+<link rel="stylesheet" href="https://cdn.datatables.net/1.10.25/css/jquery.dataTables.min.css" />
+<link rel="stylesheet" href="https://cdn.datatables.net/buttons/1.7.1/css/buttons.dataTables.min.css" />
+<br />
+<p>
+    <a asp-action="Create" class="btn btn-outline-primary" style="border-radius: 60px;"><i class="fas fa-feather"></i> @localizer["AddNew"]</a>
+</p>
+<flash dismissable="true" />
+<div class="row">
+    <div class="col-md-12">
+        <div class="panel panel-heading">
+            <div class="panel-heading">
+                <h3 class="panel-title"> @localizer["Products"]</h3>
+            </div>
+            <div class="panel-body">
+                <table class="display" id="example" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th>
+                                @localizer["Description"]
+                            </th>
+                            <th>
+                                @localizer["ProductsType"]
+                            </th>
+                            <th>
+                                @localizer["Trademarks"]
+                            </th>
+                            <th>
+                                @localizer["ActivationsForm"]
+                            </th>
+                            <th>
+                                @localizer["ActivationsType"]
+                            </th>
+                            <th>
+                                @localizer["SimTypes"]
+                            </th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Description)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.ProductsType.Description)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Trademarks.Description)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.ActivationsForm.Description)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.ActivationsType.Description)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.SimTypes.Description)
+                                </td>
+                                <td>
+                                    <a asp-action="Edit" asp-route-id="@item.ProductId" class="btn btn-outline-warning" style="border-radius: 60px;"><i class="fas fa-snowplow"></i></a>
+                                    <a asp-action="Details" asp-route-id="@item.ProductId" class="btn btn-outline-info" style="border-radius: 60px;"><i class="fas fa-space-shuttle"></i></a>
+                                    <button data-id="@item.ProductId" class="btn btn-outline-danger deleteItem" data-toggle="modal" data-target="#deleteDialog" style="border-radius: 60px;"><i class="fas fa-skull-crossbones"></i></button>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<partial name="_DeleteDialog" />
+@*<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">Insert</button>
+    @using (Html.BeginForm("Index", "Home", FormMethod.Post))
+    {
+        <div id="exampleModal" class="modal" tabindex="-1" role="dialog">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Customer Details Form</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label>Name:</label>
+                            @Html.TextBoxFor(m => m., new { @class = "form-control" })
+                        </div>
+                        <div class="form-group">
+                            <label>Country:</label>
+                            @Html.DropDownListFor(m => m.Country, new List<SelectListItem>
+                                   { new SelectListItem{Text="India", Value="India"},
+                                     new SelectListItem{Text="China", Value="China"},
+                                     new SelectListItem{Text="Australia", Value="Australia"},
+                                     new SelectListItem{Text="France", Value="France"},
+                                     new SelectListItem{Text="Unites States", Value="Unites States"},
+                                     new SelectListItem{Text="Russia", Value="Russia"},
+                                     new SelectListItem{Text="Canada", Value="Canada"}},
+                                     "Please select", new { @class = "form-control" })
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Save changes</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+    @if (Model != null)
+    {
+        <script type="text/javascript">
+                $(function () {
+                   alert("Inserted Customer ID: " + @Model.CustomerId);
+                });
+        </script>
+    }*@
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @*<script src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.min.js"></script>*@
+
+    <script src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/1.7.1/js/dataTables.buttons.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
+    <script src="https://cdn.datatables.net/buttons/1.7.1/js/buttons.html5.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/1.7.1/js/buttons.print.min.js"></script>
+    
+    <script src="/js/deleteDialog.js"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#example').DataTable({
+                "scrollX": true,
+                dom: 'Bfrtip',
+                buttons: [
+                    'copy', 'csv', 'excel', 'pdf'
+                ],
+                "order": [[2, "desc"]],
+                "lengthMenu": [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]]
+            });
+
+            // Delete item
+            sc_deleteDialog.openModal('deleteItem', true, 'btnYesDelete', '/Products/Delete/', false);
+        });</script>
+}

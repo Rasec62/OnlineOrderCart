@@ -1,0 +1,130 @@
+﻿@model Warehouses
+@{
+    ViewData["Title"] = "EditofDetailWarehouses";
+
+    long id = Model.DistributorId;
+}
+
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <form asp-action="EditofDetailWarehouses" method="post">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <flash dismissable="true" />
+                <input type="hidden" asp-for="StoreId" />
+                <input type="hidden" asp-for="DistributorId" />
+                <div class="card text-center border-secondary mb-3" style="max-width: 70rem;">
+                    <div class="card-header">
+                        <h1>Edit of DetailWarehouses</h1>
+                    </div>
+                    <div class="card-body text-dark">
+                        <h5 class="card-title">Special title treatment</h5>
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    @*<label asp-for="ShippingBranchNo" class="control-label"></label>*@
+                                    <input asp-for="ShippingBranchNo" class="form-control" style="float: left;text-align: center;border-radius: 60px;" placeholder="Shipping Branch No" />
+                                    <span asp-validation-for="ShippingBranchNo" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    @*<label asp-for="ShippingBranchName" class="control-label"></label>*@
+                                    <input asp-for="ShippingBranchName" class="form-control" style="float: left;text-align: center;border-radius: 60px;" placeholder="Shipping Branch Name" />
+                                    <span asp-validation-for="ShippingBranchName" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <hr />
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    @*<label asp-for="SapClient" class="control-label"></label>*@
+                                    <input asp-for="SapClient" class="form-control" style="float: left;text-align: center;border-radius: 60px;" placeholder="Sap Client" />
+                                    <span asp-validation-for="SapClient" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    @*<label asp-for="SapDescription" class="control-label"></label>*@
+                                    <input asp-for="SapDescription" class="form-control" style="float: left;text-align: center;border-radius: 60px;" placeholder="Sap Description" />
+                                    <span asp-validation-for="SapDescription" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <hr />
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    @*<label asp-for="Warehousepvs" class="control-label"></label>*@
+                                    <input asp-for="Warehousepvs" class="form-control" style="float: left;text-align: center;border-radius: 60px;" placeholder="Warehouse pvs" />
+                                    <span asp-validation-for="Warehousepvs" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    @*<label asp-for="StreetNumber" class="control-label"></label>*@
+                                    <input asp-for="StreetNumber" class="form-control" style="float: left;text-align: center;border-radius: 60px;" placeholder="Street Number" />
+                                    <span asp-validation-for="StreetNumber" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <hr />
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    @*<label asp-for="Suburd" class="control-label"></label>*@
+                                    <input asp-for="Suburd" class="form-control" style="float: left;text-align: center;border-radius: 60px;" placeholder="Suburd" />
+                                    <span asp-validation-for="Suburd" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    @*<label asp-for="PostalCode" class="control-label"></label>*@
+                                    <input asp-for="PostalCode" class="form-control" style="float: left;text-align: center;border-radius: 60px;" placeholder="Postal Code" />
+                                    <span asp-validation-for="PostalCode" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <hr />
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    @*<label asp-for="DelegationMunicipality" class="control-label"></label>*@
+                                    <input asp-for="DelegationMunicipality" class="form-control" style="float: left;text-align: center;border-radius: 60px;" placeholder="Delegation / Municipality" />
+                                    <span asp-validation-for="DelegationMunicipality" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    @*<label asp-for="State" class="control-label"></label>*@
+                                    <input asp-for="State" class="form-control" style="float: left;text-align: center;border-radius: 60px;" placeholder="State" />
+                                    <span asp-validation-for="State" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <hr />
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="form-group">
+                                    @*<label asp-for="DelegationMunicipality" class="control-label"></label>*@
+                                    <textarea asp-for="Observations"
+                                              rows="5" cols="40"
+                                              class="form-control" style="float: left;text-align: center;border-radius: 60px;" placeholder="Observations"></textarea>
+                                    <span asp-validation-for="Observations" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer bg-transparent border-warning">
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-outline-primary"  style="border-radius: 60px;"><i class="far fa-save"></i> Save Record</button>
+                            <a asp-action="IndexWarehouseDist" asp-route-id="@Model.DistributorId" class="btn btn-outline-secondary"  style="border-radius: 60px;"><i class="fas fa-paper-plane"></i> Back to List</a>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+        
+    </div>
+</div>

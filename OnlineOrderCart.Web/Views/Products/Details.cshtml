@@ -1,0 +1,100 @@
+﻿@model Products
+@{
+    ViewData["Title"] = "Details";
+}
+
+<div class="card text-center border-danger mb-3" style="max-width: 78rem;">
+    <div class="card-header bg-transparent border-secondary">Detail Products</div>
+    <div class="card-body text-dark">
+        <h5 class="card-title"></h5>
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <dl class="dl-horizontal">
+                        <dt>
+                            Product
+                            @Html.DisplayNameFor(model => model.Description)
+                        </dt>
+                        <dd>
+                            @Html.DisplayFor(model => model.Description)
+                        </dd>
+                        <dt>
+                            @Html.DisplayNameFor(model => model.CodeKey)
+                        </dt>
+                        <dd>
+                            @Html.DisplayFor(model => model.CodeKey)
+                        </dd>
+                        <dt>
+                            @Html.DisplayNameFor(model => model.ValueWithOutTax)
+                        </dt>
+                        <dd>
+                            @Html.DisplayFor(model => model.ValueWithOutTax)
+                        </dd>
+                        <dt>
+                            @Html.DisplayNameFor(model => model.Price)
+                        </dt>
+                        <dd>
+                            @Html.DisplayFor(model => model.Price)
+                        </dd>
+                        <dt>
+                            @Html.DisplayNameFor(model => model.UnitsInStock)
+                        </dt>
+                        <dd>
+                            @Html.DisplayFor(model => model.UnitsInStock)
+                        </dd>
+                    </dl>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <dl class="dl-horizontal">
+                    <dt>
+                        Products Type
+                        @Html.DisplayNameFor(model => model.ProductsType.Description)
+                    </dt>
+                    <dd>
+                        @Html.DisplayFor(model => model.ProductsType.Description)
+                    </dd>
+                    <dt>
+                        Trademarks
+                        @Html.DisplayNameFor(model => model.Trademarks.Description)
+                    </dt>
+                    <dd>
+                        @Html.DisplayFor(model => model.Trademarks.Description)
+                    </dd>
+                    <dt>
+                        Activations Type
+                        @Html.DisplayNameFor(model => model.ActivationsType.Description)
+                    </dt>
+                    <dd>
+                        @Html.DisplayFor(model => model.ActivationsType.Description)
+                    </dd>
+                    <dt>
+                        Activations Form
+                        @Html.DisplayNameFor(model => model.ActivationsForm.Description)
+                    </dt>
+                    <dd>
+                        @Html.DisplayFor(model => model.ActivationsForm.Description)
+                    </dd>
+                    <dt>
+                        SimTypes(*100)
+                        @Html.DisplayNameFor(model => model.SimTypes.Description)
+                    </dt>
+                    <dd>
+                        @Html.DisplayFor(model => model.SimTypes.Description)
+                    </dd>
+                </dl>
+            </div>
+            @*<div class="col-sm-4">
+                <dl class="dl-horizontal">
+                    
+                </dl>
+            </div>*@
+        </div>
+        @*<dl class="dl-horizontal">
+        </dl>*@
+    </div>
+    <div class="card-footer bg-transparent border-warning">
+        <a asp-action="Edit" asp-route-id="@Model.ProductId" class="btn btn-outline-warning" style="border-radius: 60px;"><i class="fas fa-snowplow"></i> Edit</a>
+        <a asp-action="Index" class="btn btn-outline-secondary"  style="border-radius: 60px;"><i class="fas fa-paper-plane"></i> Back to List</a>
+    </div>
+</div>

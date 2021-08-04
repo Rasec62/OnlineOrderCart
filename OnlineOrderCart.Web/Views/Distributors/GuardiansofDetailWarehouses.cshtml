@@ -1,0 +1,167 @@
+﻿@model DeatilWarehouseViewModel
+@{
+    ViewData["Title"] = "GuardiansofDetailWarehouses";
+}
+
+<h1>Detail Warehouses</h1>
+<link rel="stylesheet" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css" />
+
+<div class="row">
+    <div class="col-md-4">
+        <dl class="dl-horizontal">
+            <dt>
+                Shipping Branch Name
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.ShippingBranchName)
+            </dd>
+            <dt>
+                Shipping Branch No
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.ShippingBranchNo)
+            </dd>
+            <dt>
+                Sap Description
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.SapDescription)
+            </dd>
+            <dt>
+                Warehouse pvs
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.Warehousepvs)
+            </dd>
+            <dt>
+                Street Number
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.StreetNumber)
+            </dd>
+            <dt>
+                Suburd
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.Suburd)
+            </dd>
+            <dt>
+                State
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.State)
+            </dd>
+        </dl>
+    </div>
+    <div class="col-md-6">
+        <dl class="dl-horizontal">
+            <dt>
+                @Html.DisplayNameFor(model => model.Distributors.BusinessName)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.Distributors.BusinessName)
+            </dd>
+            <dt>
+                @Html.DisplayNameFor(model => model.Distributors.Debtor)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.Distributors.Debtor)
+            </dd>
+            <dt>
+                @Html.DisplayNameFor(model => model.Distributors.MD)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.Distributors.MD)
+            </dd>
+            <dt>
+                @Html.DisplayNameFor(model => model.Observations)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.Observations)
+            </dd>
+        </dl>
+    </div>
+</div>
+
+<div>
+    <a asp-action="EditofDetailWarehouses" asp-route-id="@Model.StoreId" class="btn btn-outline-warning" style="border-radius: 60px;">Change Warehouse</a>
+    <a asp-action="IndexWarehouseDist" class="btn btn-outline-secondary" asp-route-id="@Model.DistributorId" style="border-radius: 60px;"><i class="fas fa-paper-plane"></i> Back to List</a>
+</div>
+<br />
+<div class="row">
+    <div class="col-md-12">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">Details</h3>
+            </div>
+            <div class="panel-body">
+                <table class="table table-hover table-responsive-xl table-striped" id="MyTable" style="width:95%">
+                    <thead>
+                        <tr>
+                            <th>
+                                @Html.DisplayNameFor(model => model.DetailWarehouses.FirstOrDefault().Products.Description)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.DetailWarehouses.FirstOrDefault().Purposes.Description)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.DetailWarehouses.FirstOrDefault().Products.Price)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.DetailWarehouses.FirstOrDefault().Products.ValueWithOutTax)
+                            </th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.DetailWarehouses)
+                        {
+                        <tr>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Products.Description)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Purposes.Description)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Products.Price)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Products.ValueWithOutTax)
+                            </td>
+                            @if (item.IsDeleted == 0)
+                            {
+                                <td>
+                                    <button data-id="@item.DeatilStoreId" class="btn btn-outline-danger deleteItem" data-toggle="modal" data-target="#deleteDialog"><i class="fas fa-skull-crossbones"></i></button>
+                                </td>
+                            }
+                            else
+                            {
+                                <td>
+                                    <a asp-action="ProductActivation" asp-route-id="@item.DeatilStoreId" class="btn btn-outline-warning">Product activation</a>
+                                </td>
+                            }
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<partial name="_DeleteDialog" />
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script src="//cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+    <script src="/js/deleteDialog.js"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#MyTable').DataTable();
+        });
+        // Delete item
+        sc_deleteDialog.openModal('deleteItem', true, 'btnYesDelete', '/Distributors/DetailWarehouseDelete/', false);
+    </script>
+}

@@ -1,0 +1,40 @@
+﻿@model AddProductViewModel
+
+<div class="form-group">
+    <label asp-for="Description" class="control-label"></label>
+    <input asp-for="Description" class="form-control" placeholder="Description" style="float: left; text-align: center; border-radius: 60px;" required />
+    <span asp-validation-for="Description" class="text-danger"></span>
+</div>
+<br />
+<div class="form-group">
+    <label asp-for="CodeKey" class="control-label"></label>
+    <input asp-for="CodeKey" class="form-control" placeholder="Code Key" style="float: left; text-align: center; border-radius: 60px;" />
+    <span asp-validation-for="CodeKey" class="text-danger"></span>
+</div>
+<br />
+<div class="form-group">
+    <label asp-for="OraclepId" class="control-label"></label>
+    <input asp-for="OraclepId" class="form-control" placeholder="SKU" style="float: left; text-align: center; border-radius: 60px;" required />
+    <span asp-validation-for="OraclepId" class="text-danger"></span>
+</div>
+<br />
+<div class="form-group">
+    <label asp-for="ValueWithOutTax" class="control-label"></label>
+    <input asp-for="ValueWithOutTax" class="form-control" placeholder="Value With Out Tax" style="float: left; text-align: center; border-radius: 60px;" required />
+    <span asp-validation-for="ValueWithOutTax" class="text-danger"></span>
+</div>
+<br />
+<br />
+<div class="form-group">
+    <label asp-for="Price" class="control-label"></label>
+    <input asp-for="Price" class="form-control" placeholder="Price" style="float: left; text-align: center; border-radius: 60px;" required />
+    <span asp-validation-for="Price" class="text-danger"></span>
+</div>
+<br />
+<br />
+<div class="form-group">
+    <label asp-for="UnitsInStock" class="control-label"></label>
+    <input asp-for="UnitsInStock" class="form-control" placeholder="Units In Stock" style="float: left; text-align: center; border-radius: 60px;" required />
+    <span asp-validation-for="UnitsInStock" class="text-danger"></span>
+</div>
+<br />

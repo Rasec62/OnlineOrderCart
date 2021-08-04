@@ -1,0 +1,79 @@
+﻿@model AddProductViewModel
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<hr />
+<div class="card text-center border-primary mb-3" style="max-width: 78rem;">
+    <div class="card-header">
+        <h1>Products Edit</h1>
+        <flash dismissable="true" />
+    </div>
+    <form asp-action="Edit" enctype="multipart/form-data">
+        <div class="card-body text-primary">
+            <h5 class="card-title"></h5>
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="ProductId" />
+            <input type="hidden" asp-for="ImageId" />
+            <input type="hidden" asp-for="IsDeleted" />
+            <input type="hidden" asp-for="RegistrationDate" />
+            <div class="container">
+                <div class="row">
+                    <div class="col">
+                        <div class="form-group">
+                            <label asp-for="ProductTypeId" class="control-label"></label>
+                            <select asp-for="ProductTypeId" asp-items="Model.ComboProdTypes" class="form-control"></select>
+                            <span asp-validation-for="ProductTypeId" class="text-danger"></span>
+                        </div>
+                        <br />
+                        <div class="form-group">
+                            <label asp-for="TrademarkId" class="control-label"></label>
+                            <select asp-for="TrademarkId" asp-items="Model.ComboTrademarks" class="form-control"></select>
+                            <span asp-validation-for="TrademarkId" class="text-danger"></span>
+                        </div>
+                        <br />
+                        <div class="form-group">
+                            <label asp-for="ActivationTypeId" class="control-label"></label>
+                            <select asp-for="ActivationTypeId" asp-items="Model.ComboActivationTypes" class="form-control"></select>
+                            <span asp-validation-for="ActivationTypeId" class="text-danger"></span>
+                        </div>
+                        <br />
+                        <div class="form-group">
+                            <label asp-for="ActivationFormId" class="control-label"></label>
+                            <select asp-for="ActivationFormId" asp-items="Model.ComboActivationForms" class="form-control"></select>
+                            <span asp-validation-for="ActivationFormId" class="text-danger"></span>
+                        </div>
+                        <br />
+                        <div class="form-group">
+                            <label asp-for="SimTypeId" class="control-label"></label>
+                            <select asp-for="SimTypeId" asp-items="Model.ComboSimTypes" class="form-control"></select>
+                            <span asp-validation-for="SimTypeId" class="text-danger"></span>
+                        </div>
+
+                    </div>
+                    <div class="col">
+                        <partial name="_Product" />
+                        <br />
+                        <div class="form-group">
+                            <label asp-for="ImageFile" class="control-label"></label>
+                            <input asp-for="ImageFile" class="form-control" type="file" />
+                            <span asp-validation-for="ImageFile" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card-footer bg-transparent border-warning">
+            <div class="form-group">
+                <button type="submit" class="btn btn-outline-primary"><i class="far fa-save"></i> Save Record</button>
+                <a asp-action="Index" class="btn btn-outline-secondary"><i class="fas fa-paper-plane"></i> Back to List</a>
+            </div>
+        </div>
+    </form>
+</div>
+
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
+

@@ -1,0 +1,48 @@
+﻿@model OtherProductViewModel
+@{
+    ViewData["Title"] = "OtherProduct";
+}
+
+
+<div class="card border-danger text-center mb-3" style="max-width: 68rem;">
+    <div asp-validation-summary="All" class="text-danger"></div>
+    <div class="card-header bg-transparent border-secondary">
+        <h1>@Model.BusinessName</h1>
+        <flash dismissable="true" />
+    </div>
+    <form asp-action="OtherProduct">
+        <input type="hidden" asp-for="DistributorId" />
+        <input type="hidden" asp-for="DeatilStoreId" />
+        <input type="hidden" asp-for="StoreId" />
+        <input type="hidden" asp-for="Debtor" />
+        <input type="hidden" asp-for="ShippingBranchName" />
+        <input type="hidden" asp-for="BusinessName" />
+        <input type="hidden" asp-for="Debtor" />
+        <input type="hidden" asp-for="SimTypeId" />
+
+        <div class="card-body text-dark">
+            <h5 class="card-title">@Model.ShippingBranchName</h5>
+            <p class="card-text">Debtor: @Model.Debtor</p>
+            <hr />
+            <div class="form-group">
+                @*<label asp-for="DistributorId" class="control-label"></label>*@
+                <select asp-for="ProductId" asp-items="Model.ComboProducts" class="form-control" style="float: left;text-align: center;border-radius: 60px;"></select>
+                <span asp-validation-for="ProductId" class="text-danger"></span>
+            </div>
+            <br />
+            <hr />
+            <br />
+            <div class="form-group">
+                @*<label asp-for="DistributorId" class="control-label"></label>*@
+                <select asp-for="PurposeId" asp-items="Model.ComboPurposes" class="form-control" style="float: left;text-align: center;border-radius: 60px;"></select>
+                <span asp-validation-for="PurposeId" class="text-danger"></span>
+            </div>
+            <hr />
+        </div>
+        <div class="card-footer bg-transparent border-warning text-muted">
+            <button type="submit" class="btn btn-outline-primary" style="border-radius: 60px;">Submit</button>
+            <a asp-action="IndexWarehouseDist" class="btn btn-outline-secondary" asp-route-id="@Model.DistributorId" style="border-radius: 60px;"><i class="fas fa-paper-plane"></i> Back to List</a>
+        </div>
+    </form>
+</div>
+

@@ -1,0 +1,48 @@
+﻿@model AddDistributorViewModel
+@{
+    ViewData["Title"] = "DetailDistributor";
+}
+
+<div class="card text-center border-primary mb-3" style="max-width: 90rem;">
+    <div class="card-header bg-transparent border-success">
+        <h1 class="display-3">Detail Distributor</h1>
+    </div>
+    <div class="card-body text-primary">
+        <h5 class="card-title display-5">@Model.BusinessName</h5>
+        <div class="container">
+            <div class="row justify-content-md-center">
+                <div class="col-sm-4">
+                    <p class="card-text">Email        : @Model.Email</p>
+                    <p class="card-text">BusinessName : @Model.BusinessName</p>
+                    <p class="card-text">Debtor       : @Model.Debtor</p>
+                    <p class="card-text">MD           : @Model.MD</p>
+                    <p class="card-text">Username     : @Model.Username</p>
+                    @if (@Model.IsDeleted == 0)
+                    {
+                        <p class="card-text">Activo  : Si</p>
+                    }
+                    else
+                    {
+                        <p class="card-text">Activo  : No</p>
+                    }
+                </div>
+                <div class="col-sm-4">
+                    @if (Model.PicturePath != null)
+                    {
+                    <div style="float:left;margin-right:20px">
+                        @*<img src="@Model.PicturePath" class="img-responsive" style="width:250px;height:250px;border-radius:50%">*@
+                        <img class="lazyload" src="@Url.Content(Model.PictureFullPath)" alt="Image" style="width:250px;height:100px;max-width: 100%; height: auto; border-radius:50%" id="imagePreview" />
+                    </div>
+                    }
+                </div>
+                <div class="col-sm-4">
+                    <a asp-action="EditDistributor" asp-route-id="@Model.DistributorId" class="btn btn-outline-warning btn-sm"  style="border-radius: 60px;"><i class="fa fa-archway fa-fw" aria-hidden="true"></i> Edit Distributor</a><hr />
+                    <a asp-action="IndexWarehouseDist" class="btn btn-outline-info btn-sm" asp-route-id="@Model.DistributorId"  style="border-radius: 60px;"><i class="fa fa-road" aria-hidden="true"></i> Warehouses</a><hr />
+                    <a asp-action="IndexDistributor" class="btn btn-outline-secondary btn-sm"  style="border-radius: 60px;"><i class="fa fa-accusoft" aria-hidden="true"></i> Back to list</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card-footer bg-transparent border-success text-muted">
+    </div>
+</div>

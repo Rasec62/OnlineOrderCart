@@ -1,0 +1,71 @@
+﻿@model IEnumerable<Purposes>
+@{
+    ViewData["Title"] = "Index";
+}
+<link rel="stylesheet" href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.min.css" />
+<br />
+<p>
+    <a asp-action="Create" class="btn btn-outline-primary"><i class="fas fa-feather"></i> Add New</a>
+</p>
+<flash dismissable="true" />
+<div class="row">
+    <div class="col-md-12">
+        <div class="panel panel-heading">
+            <div class="panel-heading">
+                <h3 class="panel-title">Purposes</h3>
+            </div>
+            <div class="panel-body">
+                <table class="display" id="example" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Description)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.CodeKey)
+                            </th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Description)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.CodeKey)
+                                </td>
+                                <td>
+                                    <a asp-action="Edit" asp-route-id="@item.PurposeId" class="btn btn-outline-warning"><i class="fas fa-snowplow"></i></a>
+                                    <a asp-action="Details" asp-route-id="@item.PurposeId" class="btn btn-outline-info"><i class="fas fa-space-shuttle"></i></a>
+                                    <button data-id="@item.PurposeId" class="btn btn-outline-danger deleteItem" data-toggle="modal" data-target="#deleteDialog"><i class="fas fa-skull-crossbones"></i></button>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<partial name="_DeleteDialog" />
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.min.js"></script>
+    <script src="/js/deleteDialog.js"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#example').DataTable({
+                "order": [[2, "desc"]],
+                "lengthMenu": [[5,10, 25, 50, -1], [5,10, 25, 50, "All"]]
+            });
+
+            // Delete item
+            sc_deleteDialog.openModal('deleteItem', true, 'btnYesDelete', '/Roles/Delete/', false);
+        });</script>
+}

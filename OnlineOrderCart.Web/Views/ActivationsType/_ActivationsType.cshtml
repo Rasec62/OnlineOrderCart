@@ -1,0 +1,14 @@
+﻿@model ActivationsType
+
+<div class="form-group">
+    <label asp-for="Description" class="control-label"></label>
+    <input asp-for="Description" class="form-control" placeholder="Description" style="float: left;text-align: center;" required />
+    <span asp-validation-for="Description" class="text-danger"></span>
+</div>
+<br />
+<div class="form-group">
+    <label asp-for="CodeKey" class="control-label"></label>
+    <input asp-for="CodeKey" class="form-control" placeholder="Code Key" style="float: left;text-align: center;" required />
+    <span asp-validation-for="CodeKey" class="text-danger"></span>
+</div>
+<br />

@@ -1,0 +1,165 @@
+﻿@model IndexWarehouseDistViewModel
+@{
+    ViewData["Title"] = "IndexWarehouseDist";
+    string Deb = $"{Model.BusinessName}{" - "}{Model.Debtor}";
+}
+<link rel="stylesheet" href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.min.css" />
+<link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<link rel="stylesheet" href="/resources/demos/style.css">
+<div class="container">
+    <div class="row">
+        <div class="col-sm-6">
+            <form asp-action="IndexWarehouseDist" method="post">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <flash dismissable="true" />
+                <div class="card text-center border-secondary w-85" style="width: 34rem;">
+                    <div class="card-header bg-transparent border-dark">
+                        <h1>Warehouse Dist</h1>
+                    </div>
+                    <div class="card-body text-warning">
+                        <h5 class="card-title"> @Deb </h5>
+
+                        <partial name="_Warehouse" />
+                    </div>
+                    <div class="card-footer bg-transparent border-warning text-muted">
+                        <button type="submit" class="btn btn-outline-secondary btn-sm"  style="border-radius: 60px;">
+                            <img src="~/Image/Nuevo.png" class="rounded mx-auto d-block" />
+                        </button>
+                        <a asp-action="DetailDistributor" asp-route-id="@Model.DistributorId" class="btn btn-outline-warning"  style="border-radius: 60px;"> Warehouse</a>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="col-sm-6">
+            <div class="card text-center border-secondary w-90" style="width: 40rem;">
+                <div class="card-header bg-transparent border-dark">
+                    <h4 class="display-4">Detail Warehouse</h4>
+                </div>
+                <div class="card-body text-info">
+                    @if (Model.DetailWarehousess.Count == 0)
+                    {
+                        <h4 class="card-title"> Details of the Warehouse have not yet been record</h4>
+                    }
+                    else
+                    {
+                        <table class="table table-responsive-md table-striped table-bordered" id="example" style="width:100%">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        Shipping Branch No
+                                    </th>
+                                    <th>
+                                        Shipping Branch Name
+                                    </th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model.DetailWarehousess.OrderByDescending(o => o.StoreId).ToList())
+                                {
+                                    <tr>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.ShippingBranchNo)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.ShippingBranchName)
+                                        </td>
+                                        <td>
+                                            <a asp-action="EditofDetailWarehouses" class="btn btn-outline-warning" asp-route-id="@item.StoreId" title="Edit of Detail Warehouses"> <img src="~/Image/editar.png" /></a>
+                                            <a asp-action="GuardiansofDetailWarehouses" class="btn btn-outline-success" asp-route-id="@item.StoreId" title="Detail of Warehouse"> <img src="~/Image/Detalles.png" /></a>
+                                            <a asp-action="OtherProduct" class="btn btn-outline-secondary" asp-route-id="@item.StoreId" title="Other Product"> <i class="fa fa-book fa-fw" aria-hidden="true"></i></a>
+                                            @*<button data-id="@item.StoreId" class="btn btn-outline-secondary StoreItem"><i class="fa fa-book fa-fw" aria-hidden="true"></i>Other Product</button>*@
+                                            <button data-id="@item.StoreId" class="btn btn-outline-danger deleteItem" data-toggle="modal" data-target="#deleteDialog"> <img src="~/Image/Eliminar.png" /></button>
+                                        </td>
+                                    </tr>
+                                }
+                            <tbody>
+                        </table>
+                    }
+                </div>
+                <div class="card-footer bg-transparent border-danger text-muted">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<partial name="_DeleteDialog" />
+
+@*<div id="dialog" style="display: none">
+</div>*@
+
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.min.js"></script>
+   
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script src="~/js/deleteDialog.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#example').DataTable({
+                "order": [[2, "desc"]],
+                "lengthMenu": [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]]
+            });
+
+            var items = "<option value='0'>Seleccionar Productos</option>";
+            $("#ProductId").html(items);
+            $("#SimTypeId").on("change", function () {
+                $list = $("#ProductId");
+                $.ajax({
+                    type: "POST",//id of the state which is used to extract cities
+                    url: '/Distributors/OnChangeAutoComplete/',
+                    data: { "SimTypeId": $("#SimTypeId").val() },
+                    traditional: true,
+                    success: function (result) {
+                        $list.empty();
+                        var items = "<option value='0'>Seleccion un Productos</option>";
+                        $list.html(items);
+                        $.each(result, function (i, item) {
+                            $list.append('<option value="' + item["ProductId"] + '">' + item["Description"] + '</option>');
+                        });
+                    },
+                    error: function () {
+                        alert("Something went wrong call the police");
+                    }
+                });
+            });
+
+            // Delete item
+            sc_deleteDialog.openModal('deleteItem', true, 'btnYesDelete', '/Distributors/DistributorWareDelete/', false);
+        });
+        $(function () {
+            $("#dialog").dialog({
+                autoOpen: false,
+                modal: true,
+                title: "View Details"
+            });
+
+            // Delete item
+            var item_to_delete;
+            $('.StoreItem').click((e) => {
+                var StoreId = e.currentTarget.dataset.id;
+                item_to_delete = e.currentTarget.dataset.id;
+                alert(item_to_delete);
+                $.ajax({
+                    type: "GET",
+                    url: "/Distributors/OtherProducts/",
+                    data: '{storeId: "' + item_to_delete + '" }',
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "html",
+                    success: function (response) {
+                        $('#dialog').html(response);
+                        $('#dialog').dialog('open');
+                    },
+                    failure: function (response) {
+                        alert(response.responseText);
+                    },
+                    error: function (response) {
+                        alert(response.responseText);
+                    }
+                });
+            });
+        });
+
+    </script>
+}
