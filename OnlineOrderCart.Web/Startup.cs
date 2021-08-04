@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -12,6 +13,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using OnlineOrderCart.Web.DataBase;
+using OnlineOrderCart.Web.DataBase.Repositories;
+using OnlineOrderCart.Web.Helpers;
+using OnlineOrderCart.Web.Services;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -63,7 +67,6 @@ namespace OnlineOrderCart.Web
                 options.LoginPath = "/Account/NotAuthorized";
                 options.AccessDeniedPath = "/Account/NotAuthorized";
             });
-
             services.AddDbContext<DataContext>(cfg =>
             {
                 cfg.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
@@ -76,6 +79,29 @@ namespace OnlineOrderCart.Web
                 options.LoginPath = "/account/login";
                 options.ExpireTimeSpan = TimeSpan.FromMinutes(15);
             });
+
+            //Register dapper in scope    
+            services.AddScoped<IDapper, Dapperr>();
+            services.AddTransient<IClaimsTransformation, ClaimsTransformer>();
+            services.AddScoped<IBlobHelper, BlobHelper>();
+            services.AddScoped<IRolRepository, RolRepository>();
+            services.AddScoped<ITrademarkRolRepository, TrademarkRolRepository>();
+            services.AddScoped<IActivationsFormRepository, ActivationsFormRepository>();
+            services.AddScoped<IProductRepository, ProductRepository>();
+            services.AddScoped<IProductsTypeRespository, ProductsTypeRespository>();
+            services.AddScoped<IActivationsTypeRepository, ActivationsTypeRepository>();
+            services.AddScoped<ISimTypesRepository, SimTypesRepository>();
+            services.AddScoped<IConverterHelper, ConverterHelper>();
+            services.AddScoped<ICombosHelper, CombosHelper>();
+            services.AddScoped<IImageHelper, ImageHelper>();
+            services.AddScoped<IUserHelper, UserHelper>();
+            services.AddScoped<IDistributorHelper, DistributorHelper>();
+            services.AddScoped<IMailHelper, MailHelper>();
+            services.AddScoped<IMovementsHelper, MovementsHelper>();
+            services.AddScoped<IWarehouseRepository, WarehouseRepository>();
+            services.AddScoped<IOrderRepository, OrderRepository>();
+            services.AddScoped<IDevelopmentHelper, DevelopmentHelper>();
+
             services.AddLocalization(opt => { opt.ResourcesPath = "Resources"; });
             services.AddMvc()
                 .AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix)

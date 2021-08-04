@@ -124,7 +124,7 @@
     <value>Debe ingresar un correo electrónico.</value>
   </data>
   <data name="UsernamePlaceHolder" xml:space="preserve">
-    <value>Introduce tu correo electrónico...</value>
+    <value>Introduce tu correo electrónico</value>
   </data>
   <data name="Error" xml:space="preserve">
     <value>Error</value>

@@ -1,0 +1,123 @@
+﻿@model AddUserViewModel
+@{
+    ViewData["Title"] = "Edit Register";
+}
+<hr />
+<div class="row">
+    <div class="col-md-8">
+        <form asp-action="EditRegister" enctype="multipart/form-data">
+            <div asp-validation-summary="All" class="text-danger"></div>
+            <input type="hidden" asp-for="KamId" />
+            <input type="hidden" asp-for="ImageId" />
+            <input type="hidden" asp-for="UserId" />
+            <input type="hidden" asp-for="Username" />
+            <input type="hidden" asp-for="Password" />
+            <input type="hidden" asp-for="PasswordConfirm" />
+            <input type="hidden" asp-for="CodeKey" />
+            <flash dismissable="true" />
+            <div class="card border-secondary text-center mb-3" style="max-width: 70rem;">
+                <div class="card-header  bg-transparent border-dark">
+                    <h2> Edit Register</h2>
+                </div>
+                <div class="card-body text-dark">
+                    <div class="form-row">
+                        <div class="col-md-4 mb-6">
+                            <div class="form-group">
+                                <label asp-for="RoleId" class="control-label"></label>
+                                <select asp-for="RoleId" asp-items="Model.ComboRoles" class="form-control" style="float: left;text-align: center;"></select>
+                                <span asp-validation-for="RoleId" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-6">
+                            <div class="form-group">
+                                <label asp-for="GenderId" class="control-label"></label>
+                                <select asp-for="GenderId" asp-items="Model.ComboGender" class="form-control" style="float: left;text-align: center;"></select>
+                                <span asp-validation-for="GenderId" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-6">
+                            <div class="form-group">
+                                <label asp-for="KamManagerId" class="control-label"></label>
+                                <select asp-for="KamManagerId" asp-items="Model.ComboKams" class="form-control" style="float: left;text-align: center;"></select>
+                                <span asp-validation-for="KamManagerId" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                    </div>
+                    <partial name="_Users" />
+                    @*<div class="form-row">
+
+                    <div class="col-md-6 mb-3">
+                        <div class="form-group">
+                            <div class="form-group">
+                                <label asp-for="Password" class="control-label"></label>
+                                <div class="input-group">
+                                    <input asp-for="Password" class="form-control" type="password" placeholder="Contraseña" style="float: left;text-align: center;" />
+                                    <span class="input-group-btn">
+                                        <button id="verPassword" class="btn btn-outline-success" type="button">
+                                            <i class="glyphicon glyphicon-eye-open"></i>
+                                            <i class="fa fa-eye" aria-hidden="true"></i>
+                                        </button>
+                                    </span>
+                                </div>
+                                <span asp-validation-for="Password" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <div class="form-group">
+                            <label asp-for="PasswordConfirm" class="control-label"></label>
+                            <input asp-for="PasswordConfirm" class="form-control" placeholder="Confirmación de Contraseña" style="float: left;text-align: center;" />
+                            <span asp-validation-for="PasswordConfirm" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-3">
+
+                    </div>
+                </div>*@
+                    <hr />
+                </div>
+                <div class="card-footer  bg-transparent border-secondary text-muted">
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-outline-primary"  style="border-radius: 60px;"> Guardar Registro</button>
+                        <a asp-controller="Account" asp-action="IndexRegister" class="btn btn-outline-secondary" style="border-radius: 60px;"> Volver a la Lista</a>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    <hr />
+    <div class="col-md-4">
+        <div class="card border-secondary mb-3" style="max-width: 48rem;">
+            <div class="card-header bg-transparent border-secondary"></div>
+            <div class="card-body text-dark">
+                <h5 class="card-title">Avatar</h5>
+                <div class="form-group">
+                    @*<img class="lazyload" src="@Model.PicturePath" style="width:250px; height:100px; max-width: 100%; height: auto;" id="imagePreview" />*@
+                    <img class="lazyload" src="@Url.Content(Model.PictureFPath)" alt="Image" style="width:250px;height:100px;max-width: 100%; height: auto; border-radius:50%"  id="imagePreview" />
+                </div>
+            </div>
+            <div class="card-footer bg-transparent border-secondary"></div>
+        </div>
+    </div>
+</div>
+
+<div class="text-success">
+    <p>
+        @ViewBag.Message
+    </p>
+</div>
+
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        $('#verPassword').on('mousedown', function () {
+            $('#Password').attr("type", "text");
+        });
+
+        $('#verPassword').on('mouseup mouseleave', function () {
+            $('#Password').attr("type", "password");
+        });
+    </script>
+}

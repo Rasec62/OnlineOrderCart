@@ -1,0 +1,59 @@
+﻿@model UserManagerEntity
+@{
+    ViewData["Title"] = "DetailRegister";
+}
+
+<form>
+    <div class="card text-center">
+        <div class="card-header">
+            Detail Register
+        </div>
+        <div class="card-body">
+            <h4 class="card-title"></h4>
+            <div class="form-row">
+                <div class="col">
+                    <div class="form-group">
+                        @*<img src="@Model.ImageFullPath" style="width:250px; height:100px; max-width: 100%; height: auto;border-radius:50%" />*@
+                        <img src="@Url.Content(Model.PicturePath)" alt="Image" style="width:250px;height:100px;max-width: 100%; height: auto; border-radius:50%" />
+                    </div>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label asp-for="FullName" class="control-label"></label>
+                    <input asp-for="FullName" class="form-control" readonly />
+                </div>
+                <div class="form-group col-md-6">
+                    <label asp-for="EmployeeNumber" class="control-label"></label>
+                    <input asp-for="EmployeeNumber" class="form-control" readonly />
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label asp-for="Username" class="control-label"></label>
+                    <input asp-for="Username" class="form-control" readonly />
+                </div>
+                <div class="form-group col-md-6">
+                    <label asp-for="Email" class="control-label"></label>
+                    <input asp-for="Email" class="form-control" readonly />
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label asp-for="RolName" class="control-label"></label>
+                    <input asp-for="RolName" class="form-control" readonly />
+                </div>
+                <div class="form-group col-md-6">
+                    <label asp-for="IsAdmin" class="control-label"></label>
+                    <div class="form-check">
+                        <input  asp-for="IsAdmin" class="form-check-input position-static" type="checkbox" name="blankRadio" id="blankRadio1" value="option1" aria-label="...">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card-footer text-muted">
+            <a asp-action="EditRegister" asp-route-id="@Model.KamId" class="btn btn-outline-warning"  style="border-radius: 60px;"><i class="fas fa-snowplow"></i> Edit</a>
+            <a asp-action="IndexRegister" class="btn btn-outline-secondary"  style="border-radius: 60px;"><i class="fas fa-paper-plane"></i> Back to List</a>
+        </div>
+    </div>
+</form>
