@@ -1,6 +1,7 @@
 ﻿using Dapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using OnlineOrderCart.Common.Entities;
@@ -11,6 +12,7 @@ using OnlineOrderCart.Web.Helpers;
 using OnlineOrderCart.Web.Models;
 using OnlineOrderCart.Web.Services;
 using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
@@ -876,7 +878,22 @@ namespace OnlineOrderCart.Web.Controllers
                              Description = st.Description,
                          }).ToList();
 
-            return new JsonResult(_Prod);
+            return new JsonResult(new SelectList(_Prod, "ProductId", "Description"));
+        }
+        public JsonResult GetSubProduct(int SimTypeId)
+        {
+            List<Products> subProductslist = new List<Products>();
+
+            // ------- Getting Data from Database Using EntityFrameworkCore -------
+            subProductslist = (from subcategory in _dataContext.Products
+                               where subcategory.SimTypeId == SimTypeId
+                               select subcategory).ToList();
+
+            // ------- Inserting Select Item in List -------
+            subProductslist.Insert(0, new Products {  ProductId = 0, Description = "Select a product" });
+
+
+            return Json(new SelectList(subProductslist, "ProductId", "Description"));
         }
     }
 }

@@ -95,6 +95,7 @@
    
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <script src="~/js/deleteDialog.js"></script>
+   
     <script type="text/javascript">
         $(document).ready(function () {
             $('#example').DataTable({
@@ -104,7 +105,7 @@
 
             var items = "<option value='0'>Seleccionar Productos</option>";
             $("#ProductId").html(items);
-            $("#SimTypeId").on("change", function () {
+            $("#SimTypeID").on("change", function () {
                 $list = $("#ProductId");
                 $.ajax({
                     type: "POST",//id of the state which is used to extract cities
@@ -122,6 +123,19 @@
                     error: function () {
                         alert("Something went wrong call the police");
                     }
+                });
+            });
+
+            $('#SimTypeId').change(function () {
+                var url = '@Url.Content("~/")' + "Distributors/GetSubProduct";
+                var ddlsource = "#SimTypeId";
+                $.getJSON(url, { SimTypeId: $(ddlsource).val() }, function (data) {
+                    var items = '';
+                    $('#ProductId').empty();
+                    $.each(data, function (i, product) {
+                        items += "<option value='" + product.value + "'>" + product.text + "</option>";
+                    });
+                    $('#ProductId').html(items);
                 });
             });
 
