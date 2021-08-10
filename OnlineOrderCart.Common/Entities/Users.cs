@@ -46,6 +46,7 @@ namespace OnlineOrderCart.Common.Entities
         public ICollection<Distributors> GetDistributorsCollection { get; set; }
         public ICollection<RoleGroups> GetRoleGroupUsersCollection { get; set; }
         public ICollection<PrOrders> GetPrOrders { get; set; }
+        public ICollection<IncentiveOrders> GetsIncentiveOrders { get; set; }
 
         [Display(Name = "Image")]
         public string ImageFullPath

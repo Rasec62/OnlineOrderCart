@@ -33,7 +33,7 @@ namespace OnlineOrderCart.Common.Entities
         [JsonIgnore]
         public Kams Kams { get; set; }
         public ICollection<Warehouses> GetDistWarehouses { get; set; }
-
         public ICollection<PrOrders> GetOrders { get; set; }
+        public ICollection<IncentiveOrders> GetIncentiveOrders { get; set; }
     }
 }

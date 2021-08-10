@@ -32,6 +32,8 @@ namespace OnlineOrderCart.Common.Entities
         public long OrderId { get; set; }
         [Required(ErrorMessage = "The field {0} is required")]
         public long DeatilStoreId { get; set; }
+        [Required(ErrorMessage = "The field {0} is required")]
+        public int TypeofPaymentId { get; set; }
 
         [JsonIgnore]
         [ForeignKey("DeatilStoreId")]

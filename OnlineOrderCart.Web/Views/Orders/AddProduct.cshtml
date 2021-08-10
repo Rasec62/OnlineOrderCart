@@ -15,15 +15,20 @@
         </div>
         <div class="card-body text-dark">
             <div class="form-row">
-                <div class="form-group col-md-6">
+                <div class="form-group col-md-4">
                     <label asp-for="StoreId" class="control-label"></label>
-                    <select asp-for="StoreId" asp-items="Model.CombosWarehouses" class="form-control"></select>
+                    <select asp-for="StoreId" asp-items="Model.CombosWarehouses" class="form-control" style="float: left;text-align: center;border-radius: 60px;"></select>
                     <span asp-validation-for="StoreId" class="text-danger"></span>
                 </div>
-                <div class="form-group col-md-6">
+                <div class="form-group col-md-4">
                     <label asp-for="DeatilStoreId" class="control-label"></label>
-                    <select asp-for="DeatilStoreId" asp-items="Model.CombosDWProducts" class="form-control"></select>
+                    <select asp-for="DeatilStoreId" asp-items="Model.CombosDWProducts" class="form-control" style="float: left;text-align: center;border-radius: 60px;"></select>
                     <span asp-validation-for="DeatilStoreId" class="text-danger"></span>
+                </div>
+                <div class="form-group col-md-4">
+                    <label asp-for="TypeofPaymentId" class="control-label"></label>
+                    <select asp-for="TypeofPaymentId" asp-items="Model.CombosTypeofPayments" class="form-control" style="float: left;text-align: center;border-radius: 60px;"></select>
+                    <span asp-validation-for="TypeofPaymentId" class="text-danger"></span>
                 </div>
             </div>
             <div class="form-group">
@@ -55,11 +60,11 @@
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <script type="text/javascript">
         // Example starter JavaScript for disabling form submissions if there are invalid fields
-        
+
         $(document).ready(function () {
-            var items = "<option value='0'>Seleccionar Productos</option>";
+            var items = "<option value='0'>Select a Products</option>";
             $("#DeatilStoreId").html(items);
-            $("#StoreId").on("change", function () {
+            $("#SAtoreId").change(function () {
                 $list = $("#DeatilStoreId");
                 $.ajax({
                     type: "POST",//id of the state which is used to extract cities
@@ -68,7 +73,7 @@
                     traditional: true,
                     success: function (result) {
                         $list.empty();
-                        var items = "<option value='0'>Seleccion un Productos</option>";
+                        var items = "<option value='0'>Select a Products</option>";
                         $list.html(items);
                         $.each(result, function (i, item) {
                             $list.append('<option value="' + item["DeatilStoreId"] + '">' + item["Description"]+'</option>');
@@ -77,6 +82,19 @@
                     error: function () {
                         alert("Something went wrong call the police");
                     }
+                });
+            });
+
+            $('#StoreId').change(function () {
+                var url = '@Url.Content("~/")' + "Orders/GetSubProduct";
+                var ddlsource = "#StoreId";
+                $.getJSON(url, { StoreId: $(ddlsource).val() }, function (data) {
+                    var items = '';
+                    $('#DeatilStoreId').empty();
+                    $.each(data, function (i, product) {
+                        items += "<option value='" + product.value + "'>" + product.text + "</option>";
+                    });
+                    $('#DeatilStoreId').html(items);
                 });
             });
 

@@ -402,5 +402,26 @@ namespace OnlineOrderCart.Web.Helpers
             });
             return list;
         }
+
+        public IEnumerable<SelectListItem> GetComboTypeofPayments()
+        {
+            var list = _dataContext
+                .TypeofPayments
+                .Where(t => t.IsDeleted == 0)
+                  .Select(pt => new SelectListItem
+                  {
+                      Text = pt.PaymentName,
+                      Value = $"{pt.TypeofPaymentId}"
+                  })
+                   .OrderBy(pt => pt.Text)
+                   .ToList();
+
+            list.Insert(0, new SelectListItem
+            {
+                Text = "(Select a Type of Payments...)",
+                Value = "0"
+            });
+            return list;
+        }
     }
 }

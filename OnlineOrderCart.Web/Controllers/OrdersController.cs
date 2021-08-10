@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using OnlineOrderCart.Common.Entities;
@@ -7,6 +8,7 @@ using OnlineOrderCart.Web.DataBase.Repositories;
 using OnlineOrderCart.Web.Helpers;
 using OnlineOrderCart.Web.Models;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Vereyon.Web;
@@ -100,6 +102,7 @@ namespace OnlineOrderCart.Web.Controllers
                 }
             }
             model.CombosWarehouses = _combosHelper.GetComboWarehouses(model.DistributorId);
+            model.CombosTypeofPayments = _combosHelper.GetComboTypeofPayments();
             model.Quantity = 150;
             return View(model);
         }
@@ -114,6 +117,7 @@ namespace OnlineOrderCart.Web.Controllers
             var model = new AddItemViewModel
             {
                 CombosWarehouses = _combosHelper.GetComboWarehouses(_users.Result.DistributorId),
+                CombosTypeofPayments = _combosHelper.GetComboTypeofPayments(),
                 DistributorId = _users.Result.DistributorId,
                 Debtor = _users.Result.Debtor,
                 //CombosDWProducts = _combosHelper.GetNextDWComboProducts(_Storeid),
@@ -168,7 +172,26 @@ namespace OnlineOrderCart.Web.Controllers
                                   Description = st.Products.Description,
                               }).ToList();
 
-            return new JsonResult(DWare);
+            return new JsonResult(new SelectList(DWare, "DeatilStoreId", "Description"));
+        }
+        [HttpGet]
+        public JsonResult GetSubProduct(long StoreId)
+        {
+            List<DwhModel> subStoreslist = new List<DwhModel>();
+
+            // ------- Getting Data from Database Using EntityFrameworkCore -------
+            subStoreslist = (from subStore in _dataContext.DeatilWarehouses
+                             join p in _dataContext.Products on subStore.ProductId equals p.ProductId
+                               where subStore.StoreId == StoreId
+                               select new DwhModel
+                               { DeatilStoreId = subStore.DeatilStoreId, Description = p.Description 
+                               }).ToList();
+
+            // ------- Inserting Select Item in List -------
+            subStoreslist.Insert(0, new DwhModel { DeatilStoreId = 0, Description = "Select a products" });
+
+
+            return Json(new SelectList(subStoreslist, "DeatilStoreId", "Description"));
         }
     }
 }

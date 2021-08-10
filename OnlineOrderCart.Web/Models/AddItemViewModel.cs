@@ -25,10 +25,12 @@ namespace OnlineOrderCart.Web.Models
         [Range(1, long.MaxValue, ErrorMessage = "You must select a product.")]
         public long DeatilStoreId { get; set; }
         public int OrderDetailTmpId { get; set; }
+        [Range(1, long.MaxValue, ErrorMessage = "You must select a Type of Payment.")]
+        [Required(ErrorMessage = "The field {0} is required")]
+        [Display(Name = "Type of Payments")]
+        public int TypeofPaymentId { get; set; }
         public IEnumerable<SelectListItem> CombosWarehouses { get; set; }
-
         public IEnumerable<SelectListItem> CombosDWProducts { get; set; }
-
-        
+        public IEnumerable<SelectListItem> CombosTypeofPayments { get; set; }
     }
 }

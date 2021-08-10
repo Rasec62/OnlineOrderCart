@@ -28,12 +28,15 @@ namespace OnlineOrderCart.Common.Entities
         public long DeatilStoreId { get; set; }
         public string OrderStatus { get; set; }
 
+        [Required(ErrorMessage = "The field {0} is required")]
+        public int TypeofPaymentId { get; set; }
+
         [JsonIgnore]
         [ForeignKey("DeatilWarehouses")]
         [NotMapped]
         public virtual DeatilWarehouses DeatilWarehouses { get; set; }
 
-        [DisplayFormat(DataFormatString = "{0:C2}", ApplyFormatInEditMode = false)]
+        [DataType(DataType.Currency), DisplayFormat(DataFormatString = "{0:C2}", ApplyFormatInEditMode = false)]
         public decimal Value { get { return Price * (decimal)Quantity; } }
 
     }

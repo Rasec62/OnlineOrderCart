@@ -1,9 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using OnlineOrderCart.Common.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace OnlineOrderCart.Web.DataBase
 {
@@ -29,5 +25,30 @@ namespace OnlineOrderCart.Web.DataBase
         public DbSet<PrOrders> PrOrders { get; set; }
         public DbSet<PrOrderDetails> PrOrderDetails { get; set; }
         public DbSet<PrOrderDetailTmps> prOrderDetailTmps { get; set; }
+        public DbSet<IncentiveOrderDetailTmp> IncentiveOrderDetailTmp { get; set; }
+        public DbSet<IncentiveOrders> IncentiveOrders { get; set; }
+        public DbSet<IncentiveOrderDetails> IncentiveOrderDetails { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+            //  modelBuilder.Entity(typeof(Distributors))
+            // .HasOne(typeof(Users), "Users")
+            // .WithMany()
+            // .HasForeignKey("UserId")
+            // .OnDelete(DeleteBehavior.Restrict);
+
+            //  modelBuilder.Entity(typeof(PrOrders))
+            // .HasOne(typeof(Users), "Users")
+            // .WithMany()
+            // .HasForeignKey("UserId")
+            // .OnDelete(DeleteBehavior.Restrict);
+
+            //  modelBuilder.Entity(typeof(PrOrderDetails))
+            //.HasOne(typeof(PrOrders), "PrOrders")
+            //.WithMany()
+            //.HasForeignKey("OrderId")
+            //.OnDelete(DeleteBehavior.Restrict);
+        }
     }
 }

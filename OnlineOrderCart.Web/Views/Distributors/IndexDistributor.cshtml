@@ -3,12 +3,18 @@
     ViewData["Title"] = "Distributor";
 }
 
-<h1>Distributor</h1>
 <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/dataTables.bootstrap4.min.css" />
 <br />
-<p>
-    <a asp-action="CreateDistributor" class="btn btn-outline-primary text-uppercase" style="border-radius: 60px;"><img src="~/Image/Nuevo.png" /></a>
-</p>
+<div class="row">
+    <div class="col">
+        <h1>Distributor</h1>
+    </div>
+    <div class="col text-right">
+        <p>
+            <a asp-action="CreateDistributor" class="btn btn-outline-primary text-uppercase" style="border-radius: 60px;"><img src="~/Image/Nuevo.png" /></a>
+        </p>
+    </div>
+</div>
 
 <table class="table table-responsive-sm  table-hover table-striped" id="MyTable">
     <thead>
@@ -54,9 +60,9 @@
                         <img src="@Url.Content(item.PicturefullPath)" alt="Image" style="width:100px;height:100px;max-width: 100%; height: auto; border-radius:50%" />
                     }
                     @*else if (item.ImageId != "00000000-0000-0000-0000-000000000000")
-                    {
-                        <img src="@item.PicturePath" style="width:100px;height:100px;border-radius:50%" />
-                    }*@
+                        {
+                            <img src="@item.PicturePath" style="width:100px;height:100px;border-radius:50%" />
+                        }*@
 
 
                 </td>

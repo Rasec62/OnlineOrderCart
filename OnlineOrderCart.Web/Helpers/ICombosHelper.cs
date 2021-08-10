@@ -26,5 +26,6 @@ namespace OnlineOrderCart.Web.Helpers
         IEnumerable<SelectListItem> GettoNextDisComboProducts(long id, int SimTypeId);
         IEnumerable<SelectListItem> GetOrderStatuses();
         IEnumerable<SelectListItem> GetNextDWComboProducts(long id);
+        IEnumerable<SelectListItem> GetComboTypeofPayments();
     }
 }

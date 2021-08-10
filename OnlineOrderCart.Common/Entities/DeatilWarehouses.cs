@@ -27,5 +27,6 @@ namespace OnlineOrderCart.Common.Entities
         [JsonIgnore]
         public Warehouses Warehouses { get; set; }
         public ICollection<PrOrderDetails> GetPrOrderDetails { get; set; }
+        public ICollection<IncentiveOrderDetails> GetIncentiveOrderDetails { get; set; }
     }
 }

@@ -169,6 +169,7 @@ namespace OnlineOrderCart.Web.Helpers
                     Email = model.Email,
                     UserName = $"D{model.Debtor.ToString()}",
                     ImageId = imageId,
+                    PicturePath = model.PicturePath,
                     Password = _password.Message,
                     IsDistributor = 1,
                     IsDeleted = 100,
@@ -244,6 +245,7 @@ namespace OnlineOrderCart.Web.Helpers
                 DeatilStoreId = model.DeatilStoreId,
                 Price = _pprice.Products.Price,
                 TaxRate = _pprice.Products.ValueWithOutTax,
+                TypeofPaymentId = model.TypeofPaymentId,
                 OrderStatus = "0",
                 OrderDetailTmpId = isNew ? 0 : model.OrderDetailTmpId,
             };

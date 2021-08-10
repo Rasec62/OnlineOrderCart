@@ -114,8 +114,7 @@ namespace OnlineOrderCart.Web.Controllers
                 model.PicturePath = path; 
                 Response<Users> user = await _distributorHelper.AddDistributorAsync(model, imageId);
                
-                if (user == null)
-                {
+                if (user == null || user.IsSuccess == false){
                     _flashMessage.Danger(user.Message, "This email is already used.");
                     ModelState.AddModelError(string.Empty, "This email is already used.");
                     model.ComboGenders = _combosHelper.GetComboGenders();

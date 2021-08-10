@@ -14,6 +14,20 @@ namespace OnlineOrderCart.Web.DataBase
         {
             dataContext.Database.EnsureCreated();
 
+            if (!dataContext.TypeofPayments.Any())
+            {
+                var _TypeofPay = new List<TypeofPayments>
+                {
+                            new TypeofPayments { PaymentName  = "PAGO CON LINEA DE CREDITO", CodeKey = "PLC", IsDeleted =0 , RegistrationDate = DateTime.Now.ToUniversalTime() },
+                            new TypeofPayments { PaymentName  = "PAGO CON TRANSFERENCIA",  CodeKey = "PT", IsDeleted =0 , RegistrationDate = DateTime.Now.ToUniversalTime() },
+                            new TypeofPayments { PaymentName  = "PAGO CON NOTAS DE CREDITO",  CodeKey = "PNC", IsDeleted =0 , RegistrationDate = DateTime.Now.ToUniversalTime()  },
+                            new TypeofPayments { PaymentName  = "'PAGO CON NOTAS DE CREDITO DEL INCENTIVO",  CodeKey = "PNCI", IsDeleted =0 , RegistrationDate = DateTime.Now.ToUniversalTime()  },
+                };
+
+                dataContext.TypeofPayments.AddRange(_TypeofPay);
+                dataContext.SaveChanges();
+            }
+
             if (!dataContext.Roles.Any())
             {
                 var _rol = new List<Roles>
@@ -133,7 +147,7 @@ namespace OnlineOrderCart.Web.DataBase
                             Users.PicturePath = $"{"~/image/users/avatar.png"}";
                             Users.UserName = $"E{numberEm}";
                             Users.GenderId = gender;
-                            Users.Password = CreateSHA256("D*12345467890");
+                            Users.Password = CreateSHA256("S4rSC0v*2");
                             Users.IsDeleted = 100;
                             Users.IsDistributor = 0;
                             Users.RegistrationDate = DateTime.Now.ToUniversalTime();

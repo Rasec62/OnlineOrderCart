@@ -212,6 +212,7 @@ namespace OnlineOrderCart.Web.Helpers
 
             try
             {
+                string[] marks = new string[1] { "PowerfulUser" };
                 //var  myProducts = await _dataContext
                 //                     .RoleGroups
                 //                     .Include(r => r.Roles)
@@ -222,7 +223,7 @@ namespace OnlineOrderCart.Web.Helpers
                                   join r in  _dataContext.Roles on rg.RolId equals r.RolId
                                   join u in _dataContext.Users on rg.UserId equals u.UserId
                                   join k in _dataContext.Kams on u.UserId equals k.UserId
-                                  where(u.IsDeleted == 0 && u.IsDistributor == 0)
+                                  where(u.IsDeleted == 0 && u.IsDistributor == 0 && !marks.Contains(r.RolName))
                                   select new {
                                       UserId = u.UserId,
                                       KamId = k.KamId,
