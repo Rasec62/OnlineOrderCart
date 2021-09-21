@@ -21,11 +21,11 @@
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/font-awesome/js/fontawesome.js"></script>
     <script src="~/font-awesome/js/all.js"></script>
-    <script src="~/js/SimpleCascading.js" asp-append-version="true"></script>
-    <script src="~/js/deleteDialog.js" asp-append-version="true"></script>
+    @*<script src="~/js/SimpleCascading.js"></script>*@
     <script src="~/js/JavaScript.js" asp-append-version="true"></script>
     <script src="~/js/SalesJavaScript.js" asp-append-version="true"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
+    <ejs-scripts></ejs-scripts>
 </body>
 </html>

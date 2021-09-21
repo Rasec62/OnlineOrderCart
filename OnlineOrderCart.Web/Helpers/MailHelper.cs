@@ -1,4 +1,5 @@
 ﻿using MailKit.Net.Smtp;
+using MailKit.Security;
 using Microsoft.Extensions.Configuration;
 using MimeKit;
 using OnlineOrderCart.Common.Responses;
@@ -36,7 +37,7 @@ namespace OnlineOrderCart.Web.Helpers
 
                 using (SmtpClient client = new SmtpClient())
                 {
-                    client.Connect(smtp, int.Parse(port), false);
+                    client.Connect(smtp, int.Parse(port), SecureSocketOptions.None);
                     client.Authenticate(from, password);
                     client.Send(message);
                     client.Disconnect(true);
