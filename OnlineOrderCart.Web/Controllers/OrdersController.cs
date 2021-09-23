@@ -165,7 +165,7 @@ namespace OnlineOrderCart.Web.Controllers
         {
             long storeid = Convert.ToInt64(StoreId);
             var DWare = (from st in _dataContext.DeatilWarehouses
-                              where st.StoreId.Equals(storeid)
+                              where st.StoreId.Equals(storeid) && st.IsDeleted == 0
                               select new
                               {
                                   DeatilStoreId = st.DeatilStoreId,
@@ -182,7 +182,7 @@ namespace OnlineOrderCart.Web.Controllers
             // ------- Getting Data from Database Using EntityFrameworkCore -------
             subStoreslist = (from subStore in _dataContext.DeatilWarehouses
                              join p in _dataContext.Products on subStore.ProductId equals p.ProductId
-                               where subStore.StoreId == StoreId
+                               where subStore.StoreId == StoreId && p.IsDeleted == 0
                                select new DwhModel
                                { DeatilStoreId = subStore.DeatilStoreId, Description = p.Description 
                                }).ToList();

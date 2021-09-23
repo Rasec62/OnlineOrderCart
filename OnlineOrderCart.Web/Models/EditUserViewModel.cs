@@ -12,6 +12,7 @@ namespace OnlineOrderCart.Web.Models
     {
         public long UserId { get; set; }
 
+        [Display(Name = "Kam")]
         public long KamId { get; set; }
         [Display(Name = "First Name")]
         [MaxLength(50)]
@@ -51,12 +52,14 @@ namespace OnlineOrderCart.Web.Models
         [Required(ErrorMessage = "The field {0} is mandatory.")]
         [Display(Name = "Rol")]
         [Range(1, int.MaxValue, ErrorMessage = "You must select a role.")]
-        public int RoleId { get; set; }
+        public int RolId { get; set; }
 
+        [Display(Name = "K Gerente")]
         [Range(0, int.MaxValue, ErrorMessage = "The {0} field can not have more than {1} characters.")]
         public long? KamManagerId { get; set; }
 
         public string CodeKey { get; set; }
+        public int IsCoordinator { get; set; }
 
         public IEnumerable<SelectListItem> ComboKams { get; set; }
 

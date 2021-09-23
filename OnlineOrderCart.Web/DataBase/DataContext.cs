@@ -28,7 +28,8 @@ namespace OnlineOrderCart.Web.DataBase
         public DbSet<IncentiveOrderDetailTmp> IncentiveOrderDetailTmp { get; set; }
         public DbSet<IncentiveOrders> IncentiveOrders { get; set; }
         public DbSet<IncentiveOrderDetails> IncentiveOrderDetails { get; set; }
-
+        public DbSet<TblOptionalEmail> TblOptionalEmail { get; set; }
+        public DbSet<TblResetPasswords> TblResetPasswords { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);

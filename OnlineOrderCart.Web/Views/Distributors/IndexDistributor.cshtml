@@ -3,11 +3,12 @@
     ViewData["Title"] = "Distributor";
 }
 
-<link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/dataTables.bootstrap4.min.css" />
+<link rel="stylesheet" href="https://cdn.datatables.net/1.10.25/css/dataTables.bootstrap4.min.css" />
 <br />
 <div class="row">
     <div class="col">
         <h1>Distributor</h1>
+        <flash dismissable="true" />
     </div>
     <div class="col text-right">
         <p>
@@ -15,7 +16,6 @@
         </p>
     </div>
 </div>
-
 <table class="table table-responsive-sm  table-hover table-striped" id="MyTable">
     <thead>
         <tr>
@@ -23,13 +23,13 @@
                 @Html.DisplayNameFor(model => model.RolName)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.KFullName)
+                Kam
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.BusinessName)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Username)
+                @Html.DisplayNameFor(model => model.Debtor)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.PicturePath)
@@ -51,7 +51,7 @@
                     @Html.DisplayFor(modelItem => item.BusinessName)
                 </th>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Username)
+                    @Html.DisplayFor(modelItem => item.Debtor)
                 </td>
                 <td>
                     @if (item.PicturefullPath != null)
@@ -59,16 +59,11 @@
                         @*<img src="@item.PicturefullPath" style="width:80px;height:80px;max-width: 100%; height: auto; border-radius:50%" />*@
                         <img src="@Url.Content(item.PicturefullPath)" alt="Image" style="width:100px;height:100px;max-width: 100%; height: auto; border-radius:50%" />
                     }
-                    @*else if (item.ImageId != "00000000-0000-0000-0000-000000000000")
-                        {
-                            <img src="@item.PicturePath" style="width:100px;height:100px;border-radius:50%" />
-                        }*@
-
-
                 </td>
                 <td>
                     <a asp-action="EditDistributor" asp-route-id="@item.DistributorId" class="btn btn-outline-warning text-uppercase" style="border-radius: 60px;"><img src="~/Image/Editar.png" /></a>
                     <a asp-action="DetailDistributor" asp-route-id="@item.DistributorId" class="btn btn-outline-info  text-uppercase" style="border-radius: 60px;"><img src="~/Image/detalles.png" /></a>
+                    <a asp-action="DetailOptionalEmail" asp-route-id="@item.DistributorId" class="btn btn-outline-secondary  text-uppercase" style="border-radius: 60px;"><img src="~/Image/Email-Logo-Transparent.png" style="width:100px;height:100px;max-width: 45%; height: auto; border-radius:25%" /></a>
                     <button data-id="@item.DistributorId" class="btn btn-outline-danger text-uppercase deleteItem" data-toggle="modal" data-target="#deleteDialog" style="border-radius: 60px;"><img src="~/Image/Eliminar.png" /></button>
                 </td>
             </tr>
@@ -79,13 +74,13 @@
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-    <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
-    <script src="https://cdn.datatables.net/1.10.21/js/dataTables.bootstrap4.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.25/js/dataTables.bootstrap4.min.js"></script>
 
     <script type="text/javascript">
         $(document).ready(function () {
             $('#MyTable').DataTable({
-                "order": [[3, "desc"]],
+                order: [[3, 'desc'], [0, 'asc']],
                 "lengthMenu": [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]]
             });
 
@@ -101,5 +96,3 @@
             });
         });</script>
 }
-
-

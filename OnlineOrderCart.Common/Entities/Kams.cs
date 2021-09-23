@@ -20,6 +20,9 @@ namespace OnlineOrderCart.Common.Entities
         public int IsDeleted { get; set; }
         public DateTime RegistrationDate { get; set; }
         [Required(ErrorMessage = "The field {0} is mandatory.")]
+        public int IsCoordinator { get; set; }
+
+        [Required(ErrorMessage = "The field {0} is mandatory.")]
         [Range(1, int.MaxValue, ErrorMessage = "The {0} field can not have more than {1} characters.")]
         [Display(Name = "User")]
         [ForeignKey("Users")]

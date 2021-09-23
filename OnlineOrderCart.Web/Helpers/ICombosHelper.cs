@@ -27,5 +27,7 @@ namespace OnlineOrderCart.Web.Helpers
         IEnumerable<SelectListItem> GetOrderStatuses();
         IEnumerable<SelectListItem> GetNextDWComboProducts(long id);
         IEnumerable<SelectListItem> GetComboTypeofPayments();
+        IEnumerable<SelectListItem> GetComboCoordRoles();
+        IEnumerable<SelectListItem> GetComboKamCoords();
     }
 }

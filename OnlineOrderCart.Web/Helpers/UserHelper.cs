@@ -1,10 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using System.Security.Claims;
+using System.Text;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
 using OnlineOrderCart.Common.Entities;
 using OnlineOrderCart.Common.Responses;
 using OnlineOrderCart.Web.DataBase;
@@ -47,7 +51,7 @@ namespace OnlineOrderCart.Web.Helpers
                         };
                     }
 
-                    Roles _roles = await _dataContext.Roles.FindAsync(model.RoleId);
+                    Roles _roles = await _dataContext.Roles.FindAsync(model.RolId);
 
                     if (_roles == null)
                     {
@@ -66,6 +70,7 @@ namespace OnlineOrderCart.Web.Helpers
                         UserId = _users.UserId,
                         EmployeeNumber = model.EmployeeNumber,
                         KamManagerId = model.KamManagerId == 0? null: model.KamManagerId,
+                        IsCoordinator = model.IsCoordinator == 0 ? 0 : model.IsCoordinator,
                         CodeKey = $"{_users.FirstName.ToUpper().Substring(0,1)}{_users.LastName1.ToUpper().Substring(0, 1)}{_users.LastName2.ToUpper().Substring(0, 1)}",
                         IsDeleted = 100,
                         RegistrationDate = DateTime.Now.ToUniversalTime(),
@@ -75,7 +80,7 @@ namespace OnlineOrderCart.Web.Helpers
 
                        RoleGroups UsersRols = await _dataContext
                        .RoleGroups
-                       .Where(r => r.RolId == model.RoleId && r.UserId == _users.UserId)
+                       .Where(r => r.RolId == model.RolId && r.UserId == _users.UserId)
                        .FirstOrDefaultAsync();
 
                     if (UsersRols != null)
@@ -91,7 +96,7 @@ namespace OnlineOrderCart.Web.Helpers
                     {
                         IsDeleted = 0,
                         RegistrationDate = DateTime.Now.ToUniversalTime(),
-                        RolId = model.RoleId,
+                        RolId = model.RolId,
                         UserId = _users.UserId,
                     };
                     _dataContext.RoleGroups.Add(usersRole);
@@ -213,17 +218,12 @@ namespace OnlineOrderCart.Web.Helpers
             try
             {
                 string[] marks = new string[1] { "PowerfulUser" };
-                //var  myProducts = await _dataContext
-                //                     .RoleGroups
-                //                     .Include(r => r.Roles)
-                //                     .Include(u => u.Users)
-                //                     .ThenInclude(k => k.GetKamsCollection)
-                //                     .Where(u => u.Users.IsDeleted == 0).ToListAsync();
+                
                 var myProducts = await (from rg in _dataContext.RoleGroups
                                   join r in  _dataContext.Roles on rg.RolId equals r.RolId
                                   join u in _dataContext.Users on rg.UserId equals u.UserId
                                   join k in _dataContext.Kams on u.UserId equals k.UserId
-                                  where(u.IsDeleted == 0 && u.IsDistributor == 0 && !marks.Contains(r.RolName))
+                                  where(u.IsDeleted == 0 && u.IsDistributor == 0 && !marks.Contains(r.RolName) && k.IsCoordinator == 0)
                                   select new {
                                       UserId = u.UserId,
                                       KamId = k.KamId,
@@ -412,7 +412,7 @@ namespace OnlineOrderCart.Web.Helpers
                var _Users = await _dataContext
                     .Kams
                     .Include(k => k.Users)
-                    .Where(k => k.IsDeleted == 0 && k.KamId == id)
+                    .Where(k => k.IsDeleted == 0 && k.KamId == id && k.IsCoordinator == 0)
                     .FirstOrDefaultAsync();
 
                 if (_Users == null)
@@ -423,6 +423,10 @@ namespace OnlineOrderCart.Web.Helpers
                     };
                 }
 
+                var _rols = await _dataContext.RoleGroups
+                            .Include(x => x.Roles)
+                            .Include(x => x.Users).FirstOrDefaultAsync(x => x.UserId.Equals(_Users.UserId));
+
                 var model = new UserManagerEntity {
                     UserId = _Users.UserId,
                     KamId =_Users.KamId,
@@ -432,6 +436,8 @@ namespace OnlineOrderCart.Web.Helpers
                     Email = _Users.Users.Email,
                     Username = _Users.Users.UserName,
                     EmployeeNumber = _Users.EmployeeNumber,
+                    RolId = _rols.RolId,
+                    GenderId = Convert.ToInt32(_Users.Users.GenderId),
                 };
 
                 return new Response<UserManagerEntity>
@@ -442,22 +448,11 @@ namespace OnlineOrderCart.Web.Helpers
             }
             catch (Exception ex)
             {
-                if (ex.InnerException.Message.Contains("duplicate"))
-                {
-                    return new Response<UserManagerEntity>
-                    {
-                        IsSuccess = false,
-                        Message = "Already there is a record with the same name.",
-                    };
-                }
-                else
-                {
                     return new Response<UserManagerEntity>
                     {
                         IsSuccess = false,
                         Message = ex.InnerException.Message,
                     };
-                }
             }
         }
         public async Task<Response<RUKDViewModel>> GetValidateLoginAsync(LoginViewModel model){
@@ -775,6 +770,331 @@ namespace OnlineOrderCart.Web.Helpers
                     Message = ex.InnerException.Message,
                 };
             }
+        }
+        public async Task<ObservableCollection<UserManagerEntity>> GetAllCoordRecordsAsync()
+        {
+            try
+            {
+                string[] marks = new string[1] { "PowerfulUser" };
+
+                var myProducts = await (from rg in _dataContext.RoleGroups
+                                        join r in _dataContext.Roles on rg.RolId equals r.RolId
+                                        join u in _dataContext.Users on rg.UserId equals u.UserId
+                                        join k in _dataContext.Kams on u.UserId equals k.UserId
+                                        where (u.IsDeleted == 0 && u.IsDistributor == 0 && !marks.Contains(r.RolName) && k.IsCoordinator == 1)
+                                        select new
+                                        {
+                                            UserId = u.UserId,
+                                            KamId = k.KamId,
+                                            Email = u.Email,
+                                            EmployeeNumber = k.EmployeeNumber,
+                                            FirstName = u.FirstName,
+                                            LastName1 = u.LastName1,
+                                            LastName2 = u.LastName2,
+                                            GenderId = Convert.ToInt32(u.GenderId),
+                                            ImageFullPath = u.ImageFullPath,
+                                            PicturePath = u.PicturePath,
+                                            KamManagerId = k.KamManagerId,
+                                            UserName = u.UserName,
+                                            RolName = r.RolName,
+                                            IsCoordinator = k.IsCoordinator,
+
+                                        }).ToListAsync();
+
+                this.MyManger = new ObservableCollection<UserManagerEntity>(
+               myProducts.Select(p => new UserManagerEntity
+               {
+                   UserId = p.UserId,
+                   KamId = p.KamId,
+                   Email = p.Email,
+                   EmployeeNumber = p.EmployeeNumber,
+                   FirstName = p.FirstName,
+                   LastName1 = p.LastName1,
+                   LastName2 = p.LastName2,
+                   GenderId = Convert.ToInt32(p.GenderId),
+                   ImageFullPath = p.ImageFullPath,
+                   PicturePath = p.PicturePath,
+                   KamManagerId = p.KamManagerId,
+                   Username = p.UserName,
+                   RolName = p.RolName,
+                   KFullName = KamManager(p.KamManagerId),
+                   IsAdmin = p.RolName == "KamAdCoordinator" ? true : false,
+                   IsCoordinator = p.IsCoordinator,
+               })
+           .OrderBy(p => p.Username)
+           .ToList());
+                return MyManger;
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
+        private string KamManager(long? id)
+        {
+            string kams = string.Empty;
+            try
+            {
+
+                var myKam = (from rg in _dataContext.RoleGroups
+                             join r in _dataContext.Roles on rg.RolId equals r.RolId
+                             join u in _dataContext.Users on rg.UserId equals u.UserId
+                             join k in _dataContext.Kams on u.UserId equals k.UserId
+                             where (u.IsDeleted == 0 && u.IsDistributor == 0 && k.KamId.Equals(id) && k.IsCoordinator == 0)
+                             select new
+                             {
+                                 UserId = u.UserId,
+                                 KamId = k.KamId,
+                                 Email = u.Email,
+                                 EmployeeNumber = k.EmployeeNumber,
+                                 FirstName = u.FirstName,
+                                 LastName1 = u.LastName1,
+                                 LastName2 = u.LastName2,
+                                 UserName = u.UserName,
+                                 RolName = r.RolName,
+                             }).FirstOrDefault();
+                kams = $"{myKam.FirstName}{" "}{myKam.LastName1}{" "}{myKam.LastName2}";
+                return kams;
+            }
+            catch (Exception)
+            {
+                return string.Empty;
+            }
+        }
+        public async Task<Response<UserManagerEntity>> GetCoordByIdAsync(long id)
+        {
+            try
+            {
+                var _Users = await _dataContext
+                     .Kams
+                     .Include(k => k.Users)
+                     .Where(k => k.IsDeleted == 0 && k.KamId == id && k.IsCoordinator == 1 && k.Users.IsDistributor == 0)
+                     .FirstOrDefaultAsync();
+
+                if (_Users == null)
+                {
+                    return new Response<UserManagerEntity>
+                    {
+                        IsSuccess = false,
+                    };
+                }
+
+                var model = new UserManagerEntity
+                {
+                    UserId = _Users.UserId,
+                    KamId = _Users.KamId,
+                    FirstName = _Users.Users.FirstName,
+                    LastName1 = _Users.Users.LastName1,
+                    LastName2 = _Users.Users.LastName2,
+                    Email = _Users.Users.Email,
+                    Username = _Users.Users.UserName,
+                    KamManagerId = _Users.KamManagerId,
+                    EmployeeNumber = _Users.EmployeeNumber,
+                };
+
+                return new Response<UserManagerEntity>
+                {
+                    IsSuccess = true,
+                    Result = model,
+                };
+            }
+            catch (Exception ex)
+            {
+                if (ex.InnerException.Message.Contains("duplicate"))
+                {
+                    return new Response<UserManagerEntity>
+                    {
+                        IsSuccess = false,
+                        Message = "Already there is a record with the same name.",
+                    };
+                }
+                else
+                {
+                    return new Response<UserManagerEntity>
+                    {
+                        IsSuccess = false,
+                        Message = ex.InnerException.Message,
+                    };
+                }
+            }
+        }
+        public async Task<Response<AddUserViewModel>> GetCoordByEmailAsync(string UserName)
+        {
+            try
+            {
+                var _truefalse = await _dataContext
+                    .RoleGroups
+                    .Include(r => r.Roles)
+                    .Include(u => u.Users)
+                    .ThenInclude(u => u.GetKamsCollection).Where(u => u.Users.UserName.ToUpper() == UserName.ToUpper() && u.IsDeleted == 0 && u.Users.IsDistributor == 0).FirstOrDefaultAsync();
+                if (_truefalse == null)
+                {
+                    return new Response<AddUserViewModel>
+                    {
+                        IsSuccess = false,
+                        Message = "the user data is not correct check the data ....!"
+                    };
+                }
+
+                var _manager = new AddUserViewModel
+                {
+                    UserId = _truefalse.UserId,
+                    FirstName = _truefalse.Users.FirstName,
+                    LastName1 = _truefalse.Users.LastName1,
+                    LastName2 = _truefalse.Users.LastName2,
+                    Email = _truefalse.Users.Email,
+                    Username = _truefalse.Users.UserName,
+                    ImageId = _truefalse.Users.ImageId,
+                    PicturePath = _truefalse.Users.ImageFullPath,
+                    PictureFPath = _truefalse.Users.PicturePath,
+                    GenderId = Convert.ToInt32(_truefalse.Users.GenderId),
+                    RolId = Convert.ToInt32(_truefalse.RolId),
+                };
+
+                var _result = _truefalse.Users.GetKamsCollection.Where(k => k.UserId == _manager.UserId).FirstOrDefault();
+                _manager.KamId = _result.KamId;
+                _manager.EmployeeNumber = _result.EmployeeNumber;
+                _manager.CodeKey = _result.CodeKey;
+                _manager.KamManagerId = _result.KamManagerId == 0 ? 0 : _result.KamManagerId;
+                _manager.IsCoordinator = _result.IsCoordinator;
+
+                var _IsCoordinator = await _dataContext.Kams
+                                     .Include(k => k.Users)
+                                     .Where(k => k.KamManagerId == _manager.UserId && k.IsCoordinator == 1).FirstOrDefaultAsync();
+                if (_IsCoordinator != null)
+                {
+                    _manager.Email = $"{_manager.Email}{";"}{_IsCoordinator.Users.Email}";
+                }
+
+                return new Response<AddUserViewModel>
+                {
+                    IsSuccess = true,
+                    Message = "Ok ....!",
+                    Result = _manager,
+                };
+            }
+
+            catch (Exception ex)
+            {
+                return new Response<AddUserViewModel>
+                {
+                    IsSuccess = false,
+                    Message = ex.Message
+                };
+            }
+        }
+        public async Task<Response<object>> ResetPasswordAsync(UserManagerEntity model, string jwt, string token, string password)
+        {
+            using (Microsoft.EntityFrameworkCore.Storage.IDbContextTransaction transaction = _dataContext.Database.BeginTransaction())
+            {
+                try
+                {
+                    var _Tbl = await _dataContext
+                        .TblResetPasswords
+                        .FirstOrDefaultAsync(x => x.Jwt.Equals(jwt) && x.Token.Equals(token) && x.UserName.Equals(model.Username) && x.IsDeleted.Equals(10));
+                    if (_Tbl == null)
+                    {
+                        return new Response<object>
+                        {
+                            IsSuccess = false,
+                            Message = "Do not Data!",
+                        };
+                    }
+
+                    var _truefUsers = await _dataContext.Users
+                       .Where(u => u.UserName.ToUpper() == model.Username.ToUpper() && u.IsDeleted == 0 && u.UserId.Equals(model.UserId))
+                       .FirstOrDefaultAsync();
+
+                    if (_truefUsers == null)
+                    {
+                        return new Response<object>
+                        {
+                            IsSuccess = false,
+                            Message = "the user data is not correct check the data ....!"
+                        };
+                    }
+                    var _password = _converterHelper.CreateSHA256(password);
+                    _truefUsers.Password = _password.Message;
+                    _dataContext.Users.Update(_truefUsers);
+
+                    _Tbl.IsDeleted = 0;
+                    _dataContext.TblResetPasswords.Update(_Tbl);
+                    await _dataContext.SaveChangesAsync();
+                    transaction.Commit();
+                    return new Response<object>
+                    {
+                        IsSuccess = true,
+                        Message = "Win!",
+                    };
+                }
+                catch (Exception ex)
+                {
+                    transaction.Rollback();
+                    return new Response<object>
+                    {
+                        IsSuccess = false,
+                        Message = ex.Message,
+                    };
+                }
+            }
+        }
+        public async Task<Response<TokenResponse>> GeneratePasswordResetTokenAsync(UserManagerEntity user)
+        {
+            try
+            {
+                var _truefalse = await _dataContext
+               .RoleGroups
+               .Include(r => r.Roles)
+               .Include(u => u.Users)
+               .Where(u => u.Users.UserName.ToUpper() == user.Username.ToUpper() && u.IsDeleted == 0).FirstOrDefaultAsync();
+
+
+                if (_truefalse == null)
+                {
+                    return new Response<TokenResponse>
+                    {
+                        IsSuccess = false,
+                    };
+                }
+
+                var tokenr = GetToken(user.Username);
+
+                return new Response<TokenResponse>
+                {
+                    IsSuccess = true,
+                    Result = tokenr,
+                };
+            }
+            catch (Exception ex)
+            {
+                return new Response<TokenResponse>
+                {
+                    IsSuccess = false,
+                    Message = ex.Message,
+                };
+            }
+        }
+        private TokenResponse GetToken(string email)
+        {
+            Claim[] claims = new[]
+            {
+                new Claim(JwtRegisteredClaimNames.Sub, email),
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+            };
+
+            SymmetricSecurityKey key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Tokens:SecretKey"]));
+            SigningCredentials credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+            JwtSecurityToken token = new JwtSecurityToken(
+                _configuration["Tokens:Issuer"],
+                _configuration["Tokens:Audience"],
+                claims,
+                expires: DateTime.UtcNow.AddDays(2),
+                signingCredentials: credentials);
+            return new TokenResponse
+            {
+                Token = new JwtSecurityTokenHandler().WriteToken(token),
+                Expiration = token.ValidTo
+            };
         }
     }
 }

@@ -49,11 +49,11 @@ namespace OnlineOrderCart.Web.Controllers
 
                 act.IsDeleted = 1;
                 await _repository.UpdateAsync(act);
-                _flashMessage.Confirmation("The Trademars was deleted.");
+                _flashMessage.Confirmation("The Sim Types was deleted.");
             }
             catch (Exception ex)
             {
-                _flashMessage.Danger($"The Trademars can't be deleted because it has related records. {ex.Message}");
+                _flashMessage.Danger($"The Sim Types can't be deleted because it has related records. {ex.Message}");
             }
             return RedirectToAction(nameof(Index));
         }
@@ -102,7 +102,7 @@ namespace OnlineOrderCart.Web.Controllers
                 }
                 catch (Exception ex)
                 {
-                    _flashMessage.Danger($"The Role can't be created because it has related records.  {ex.Message}");
+                    _flashMessage.Danger($"The Sim Types can't be created because it has related records.  {ex.Message}");
                 }
             }
 
@@ -123,6 +123,29 @@ namespace OnlineOrderCart.Web.Controllers
                 return new NotFoundViewResult("_ResourceNotFound");
             }
             return View(_model);
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(int id,SimTypes model)
+        {
+            if (id != model.SimTypeId)
+            {
+                return new NotFoundViewResult("_ResourceNotFound");
+            }
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    await _repository.UpdateAsync(model);
+                    return RedirectToAction(nameof(Index));
+                }
+                catch (Exception ex)
+                {
+                    _flashMessage.Danger("The Sim Types can't be deleted because it has related records.  {0}", ex.Message);
+                }
+            }
+            return View(model);
         }
     }
 }

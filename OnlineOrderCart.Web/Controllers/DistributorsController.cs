@@ -60,6 +60,7 @@ namespace OnlineOrderCart.Web.Controllers
 
         public async Task<IActionResult> IndexDistributor()
         {
+           IEnumerable<IndexUserDistEntity> GetListIndexUserDist = new List<IndexUserDistEntity>();
             if (User.Identity.Name == null)
             {
                 return new NotFoundViewResult("_ResourceNotFound");
@@ -69,8 +70,32 @@ namespace OnlineOrderCart.Web.Controllers
             {
                 return new NotFoundViewResult("_ResourceNotFound");
             }
+            var RolUser = await _movementsHelper.GetRolAvatarConfirmAsync(User.Identity.Name);
 
-            return View( _movementsHelper.GetSqlAllDataDistributors());
+            if (!RolUser.IsSuccess){
+                return new NotFoundViewResult("_ResourceNotFound");
+            }
+            
+            switch (RolUser.Result.RolName)
+            {
+                case "KamAdmin":
+                    GetListIndexUserDist = _movementsHelper
+                        .GetSqlAllDataDistributors()
+                        .OrderBy(k => k.KamId);
+                    break;
+                case "Kam":
+                    GetListIndexUserDist = _movementsHelper
+                        .GetSqlAllDataDistributors()
+                        .Where(u => u.KamId == _users.Result.KamId)
+                        .OrderBy(k => k.KamId);
+                    break;
+                default:
+                    GetListIndexUserDist = _movementsHelper
+                        .GetSqlAllDataDistributors().OrderBy(k => k.KamId);
+                    break;
+            }
+
+            return View(GetListIndexUserDist);
         }
 
         //[Authorize(Roles = "Admin")]
@@ -83,8 +108,8 @@ namespace OnlineOrderCart.Web.Controllers
                PasswordConfirm = _configuration["SecretP:SecretPassword"],
                ComboGenders = _combosHelper.GetComboGenders(),
                ComboDisRoles = _combosHelper.GetComboDisRoles(),
-               ComboKams = _movementsHelper.GetSqlComboAllKams(),
-               GenderId = 3,
+               ComboKams = _combosHelper.GetComboKamCoords(),
+                GenderId = 3,
             };
 
             return View(model);
@@ -119,7 +144,7 @@ namespace OnlineOrderCart.Web.Controllers
                     ModelState.AddModelError(string.Empty, "This email is already used.");
                     model.ComboGenders = _combosHelper.GetComboGenders();
                     model.ComboDisRoles = _combosHelper.GetComboDisRoles();
-                    model.ComboKams = _movementsHelper.GetSqlComboAllKams();
+                    model.ComboKams = _combosHelper.GetComboKamCoords();
                     return View(model);
                 }
 
@@ -167,7 +192,7 @@ namespace OnlineOrderCart.Web.Controllers
             }
             model.ComboGenders = _combosHelper.GetComboGenders();
             model.ComboDisRoles = _combosHelper.GetComboDisRoles();
-            model.ComboKams = _movementsHelper.GetSqlComboAllKams();
+            model.ComboKams = _combosHelper.GetComboKamCoords();
             return View(model);
         }
 
@@ -286,7 +311,7 @@ namespace OnlineOrderCart.Web.Controllers
 
             model.ComboGenders = _combosHelper.GetComboGenders();
             model.ComboDisRoles = _combosHelper.GetComboDisRoles();
-            model.ComboKams = _movementsHelper.GetSqlComboAllKams();
+            model.ComboKams = _combosHelper.GetComboKamCoords();
             return View(model);
         }
         [HttpPost]
@@ -347,7 +372,7 @@ namespace OnlineOrderCart.Web.Controllers
                         transaction.Rollback();
                         model.ComboGenders = _combosHelper.GetComboGenders();
                         model.ComboDisRoles = _combosHelper.GetComboDisRoles();
-                        model.ComboKams = _movementsHelper.GetSqlComboAllKams();
+                        model.ComboKams = _combosHelper.GetComboKamCoords();
                         _flashMessage.Danger(ex.Message, "This email is already used.");
                         return View(model);
                     }
@@ -355,7 +380,7 @@ namespace OnlineOrderCart.Web.Controllers
             }
             model.ComboGenders = _combosHelper.GetComboGenders();
             model.ComboDisRoles = _combosHelper.GetComboDisRoles();
-            model.ComboKams = _movementsHelper.GetSqlComboAllKams();
+            model.ComboKams = _combosHelper.GetComboKamCoords();
             return View(model);
         }
         [HttpGet]
@@ -483,62 +508,6 @@ namespace OnlineOrderCart.Web.Controllers
             model.ComboPurposes = _combosHelper.GetComboPurposes();
             return View(model);
         }
-
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> IndexWarehouseDist(IndexWarehouseDistViewModel model)
-        //{
-        //    var _Dis = await _distributorHelper.GetDistrByIdAsync(model.DistributorId);
-        //    if (ModelState.IsValid)
-        //    {
-        //        if (User.Identity.Name == null)
-        //        {
-        //            return new NotFoundViewResult("_ResourceNotFound");
-        //        }
-        //        var _users = await _userHelper.GetUserByEmailAsync(User.Identity.Name);
-        //        if (!_users.IsSuccess || _users.Result == null)
-        //        {
-        //            return new NotFoundViewResult("_ResourceNotFound");
-        //        }
-
-        //        var dbparams = new DynamicParameters();
-
-        //        int Result = 0;
-
-        //        dbparams.Add("DistributorId", model.DistributorId, DbType.Int64, ParameterDirection.Output);
-        //        dbparams.Add("ProductId", model.ProductId, DbType.Int32);
-        //        dbparams.Add("PurposeId", model.ProductId, DbType.Int32);
-        //        dbparams.Add("DelegationMunicipality", model.DelegationMunicipality, DbType.String);
-        //        dbparams.Add("PostalCode", model.PostalCode, DbType.String);
-        //        dbparams.Add("ShippingBranchNo", model.ShippingBranchNo, DbType.String);
-        //        dbparams.Add("ShippingBranchName", model.ShippingBranchName, DbType.String);
-        //        dbparams.Add("SapClient", model.SapClient, DbType.String);
-        //        dbparams.Add("SapDescription", model.SapDescription, DbType.String);
-        //        dbparams.Add("Warehousepvs", model.Warehousepvs, DbType.String);
-        //        dbparams.Add("Observations", model.Observations, DbType.String);
-        //        dbparams.Add("State", model.State, DbType.String);
-        //        dbparams.Add("StreetNumber", model.StreetNumber, DbType.String);
-        //        dbparams.Add("Suburd", model.Suburd, DbType.String);
-
-
-
-        //        Result = dbparams.Get<int>("@Result");
-
-        //        //var result = await Task.FromResult(_dapper.Insert<int>("sp_AddWarehouses"
-        //        //    , dbparams,
-        //        //    commandType: CommandType.StoredProcedure));
-
-        //        _dapper.Insert<Warehouses>("sp_AddWarehouses", dbparams,commandType: CommandType.StoredProcedure);
-
-        //        return RedirectToAction("IndexWarehouseDist", "Distributors", new { id = model.DistributorId });
-        //    }
-        //    model.DetailWarehousess = await _distributorHelper.GetWarehousesList(_Dis.Result);
-        //    model.ComboDistributors = _combosHelper.GetComboDistributors().Where(d => d.Value == _Dis.Result.DistributorId.ToString());
-        //    model.ComboProducts = _combosHelper.GettoNextComboProducts(_Dis.Result.DistributorId);
-        //    model.ComboPurposes = _combosHelper.GetComboPurposes();
-        //    return View(model);
-        //}
-
         [HttpGet]
         [Authorize(Roles = "PowerfulUser,KamAdmin,KamAdCoordinator")]
         public async Task<IActionResult> DistributorWareDelete(int? id) {
@@ -865,12 +834,198 @@ namespace OnlineOrderCart.Web.Controllers
             return _DeatilW;
         }
 
+        [HttpGet]
+        [Authorize(Roles = "PowerfulUser,KamAdmin,KamAdCoordinator")]
+        public async Task<IActionResult> Emailforwarding()
+        {
+            if (User.Identity.Name == null)
+            {
+                return new NotFoundViewResult("_ResourceNotFound");
+            }
+            var _users = await _userHelper.GetUserByEmailAsync(User.Identity.Name);
+            if (!_users.IsSuccess || _users.Result == null)
+            {
+                return new NotFoundViewResult("_ResourceNotFound");
+            }
+
+            return View(_movementsHelper
+                        .GetSqlforwardingDataDistributors().OrderBy(k => k.KamId));
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> DistributorActivations(int? id)
+        {
+            if (id == null)
+            {
+                return new NotFoundViewResult("_ResourceNotFound");
+            }
+            long _Id = Convert.ToInt64(id);
+            var _Dis = await _distributorHelper.GetDistrBySentIdAsync(_Id);
+            if (_Dis == null)
+            {
+                return new NotFoundViewResult("_ResourceNotFound");
+            }
+
+            var _Result = await _movementsHelper
+                .GetSqlEmailforwardingDataDistributors(_Dis.Result.UserId, _Dis.Result.Username, _Dis.Result.Email);
+            if (!_Result.IsSuccess)
+            {
+                return new NotFoundViewResult("_ResourceNotFound");
+            }
+            string Password = _configuration["SecretP:SecretPassword"];
+            string tokenLink = Url.Action("ConfirmEmail", "Account", new
+            {
+                userid = _Dis.Result.UserId,
+                username = _Dis.Result.Username,
+                Jwt = _Result.Result.ActivationCode,
+                token = _Result.Result.JwtId,
+            }, protocol: HttpContext.Request.Scheme);
+
+            Response<object> response = _mailHelper.SendMail(_Dis.Result.Email, $"Email confirmation. this is your UserName:{_Dis.Result.Username} and password :{Password}", $"<h1>Email Confirmation</h1>" +
+                $"To forwarding the Distributor, " +
+                $"plase click in this link:<p><a href = \"{tokenLink}\">Confirm Email . this is your UserName:{_Dis.Result.Username} and  Temporal Password :{Password}</a></p>");
+            if (response.IsSuccess)
+            {
+                ViewBag.Message = "The instructions to allow your user has been sent to email.";
+                _flashMessage.Confirmation("The instructions to allow your user has been sent to email.");
+                return RedirectToAction("Emailforwarding", "Distributors");
+            }
+            else
+            {
+                _flashMessage.Danger(string.Empty, response.Message);
+            }
+            return RedirectToAction("Emailforwarding", "Distributors");
+        }
+
+        [HttpGet]
+        [Authorize(Roles = "PowerfulUser,KamAdmin,KamAdCoordinator")]
+        public async Task<IActionResult> DetailOptionalEmail(long? id)
+        {
+            if (id == null)
+            {
+                return new NotFoundViewResult("_ResourceNotFound");
+            }
+            try
+            {
+                var _OpEmailDis = await _dataContext.Distributors
+                                .Include(u => u.Users)
+                                .FirstOrDefaultAsync(x => x.DistributorId.Equals(id) && x.Users.IsDistributor.Equals(1));
+
+                if (_OpEmailDis == null)
+                {
+                    return new NotFoundViewResult("_ResourceNotFound");
+                }
+
+                OptionemailViewModel model = new OptionemailViewModel
+                {
+                    BusinessName = _OpEmailDis.BusinessName,
+                    DistributorId = _OpEmailDis.DistributorId,
+                    Debtor = _OpEmailDis.Debtor,
+                    UserId = _OpEmailDis.UserId,
+                    DetailsOptionalEmail = await _movementsHelper.GetDetailsOptionalEmailAsync(_OpEmailDis.Users.UserId, _OpEmailDis.Debtor),
+                };
+                return View(model);
+            }
+            catch (Exception ex)
+            {
+                _flashMessage.Danger(ex.Message);
+            }
+            return RedirectToAction(nameof(IndexDistributor), new { });
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DetailOptionalEmail(OptionemailViewModel model)
+        {
+
+            if (ModelState.IsValid)
+            {
+
+                try
+                {
+                    Guid Code = Guid.NewGuid();
+                    TblOptionalEmail _optionalEmail = new TblOptionalEmail
+                    {
+                        Id = Code,
+                        OptionalEmail = model.OptionalEmail,
+                        UserId = model.UserId,
+                        Debtor = model.Debtor,
+                        IsDeleted = 0,
+                        RegistrationDate = DateTime.UtcNow,
+                    };
+                    _dataContext.TblOptionalEmail.Add(_optionalEmail);
+                    await _dataContext.SaveChangesAsync();
+                    _flashMessage.Confirmation(string.Empty, $"Exito con Email Opcional. {model.OptionalEmail}");
+                    return RedirectToAction("DetailOptionalEmail", "Distributors", new { id = model.DistributorId });
+                }
+                catch (DbUpdateException dbUpdateException)
+                {
+                    if (dbUpdateException.InnerException.Message.Contains("duplicate"))
+                    {
+                        ModelState.AddModelError(string.Empty, $"Ya existe un Optional Email. {model.OptionalEmail}");
+                        _flashMessage.Danger(string.Empty, $"Ya existe un Optional Email. {model.OptionalEmail}");
+                    }
+                    else
+                    {
+                        ModelState.AddModelError(string.Empty, dbUpdateException.InnerException.Message);
+                        _flashMessage.Danger(string.Empty, dbUpdateException.InnerException.Message);
+                    }
+                    model.DetailsOptionalEmail = await _movementsHelper.GetDetailsOptionalEmailAsync(model.UserId, model.Debtor);
+                    return View(model);
+                }
+                catch (Exception ex)
+                {
+                    _flashMessage.Danger(string.Empty, ex.Message);
+                    model.DetailsOptionalEmail = await _movementsHelper.GetDetailsOptionalEmailAsync(model.UserId, model.Debtor);
+                    return View(model);
+                }
+            }
+            model.DetailsOptionalEmail = await _movementsHelper.GetDetailsOptionalEmailAsync(model.UserId, model.Debtor);
+            return View(model);
+        }
+        [HttpGet]
+        [Authorize(Roles = "PowerfulUser,KamAdmin,KamAdCoordinator")]
+        public async Task<IActionResult> DeletedOptionalEmail(string id)
+        {
+            if (string.IsNullOrEmpty(id)){
+                return new NotFoundViewResult("_ResourceNotFound");
+            }
+            long Distid = 0;
+            Guid newGuid = Guid.Parse(id);
+            try
+            {
+                var distOptionalEmail = await _dataContext.TblOptionalEmail
+                    .FirstOrDefaultAsync(x => x.Id == newGuid);
+                if (distOptionalEmail == null)
+                {
+                    return new NotFoundViewResult("_ResourceNotFound");
+                }
+
+                var _UserDist = await _dataContext.Distributors
+                                .Include(u => u.Users)
+                                .FirstOrDefaultAsync(x => x.UserId.Equals(distOptionalEmail.UserId)&& x.Users.IsDistributor == 1 && x.Debtor == distOptionalEmail.Debtor);
+
+                
+                if (_UserDist == null)
+                {
+                    return new NotFoundViewResult("_ResourceNotFound");
+                }
+                Distid = _UserDist.DistributorId;
+                _dataContext.TblOptionalEmail.Remove(distOptionalEmail);
+                await _dataContext.SaveChangesAsync();
+                _flashMessage.Confirmation("Se ha eliminado el correo electrónico opcional.");
+            }
+            catch (Exception ex)
+            {
+                _flashMessage.Danger($"El correo electrónico opcional no se puede eliminar porque tiene registros relacionados. {ex.Message}");
+            }
+            return RedirectToAction("DetailOptionalEmail", "Distributors", new { id = Distid });
+        }
         [HttpPost]
         public JsonResult OnChangeAutoComplete(string SimTypeId)
         {
             int TypeId = Convert.ToInt32(SimTypeId);
             var _Prod = (from st in _dataContext.Products
-                         where st.SimTypeId.Equals(TypeId)
+                         where st.SimTypeId.Equals(TypeId) && st.IsDeleted == 0
                          select new
                          {
                              ProductId = st.ProductId,
@@ -885,7 +1040,7 @@ namespace OnlineOrderCart.Web.Controllers
 
             // ------- Getting Data from Database Using EntityFrameworkCore -------
             subProductslist = (from subcategory in _dataContext.Products
-                               where subcategory.SimTypeId == SimTypeId
+                               where subcategory.SimTypeId == SimTypeId && subcategory.IsDeleted == 0
                                select subcategory).ToList();
 
             // ------- Inserting Select Item in List -------

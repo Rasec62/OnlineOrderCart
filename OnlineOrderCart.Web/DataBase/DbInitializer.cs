@@ -13,7 +13,6 @@ namespace OnlineOrderCart.Web.DataBase
         public static void Initialize(DataContext dataContext)
         {
             dataContext.Database.EnsureCreated();
-
             if (!dataContext.TypeofPayments.Any())
             {
                 var _TypeofPay = new List<TypeofPayments>
@@ -21,13 +20,12 @@ namespace OnlineOrderCart.Web.DataBase
                             new TypeofPayments { PaymentName  = "PAGO CON LINEA DE CREDITO", CodeKey = "PLC", IsDeleted =0 , RegistrationDate = DateTime.Now.ToUniversalTime() },
                             new TypeofPayments { PaymentName  = "PAGO CON TRANSFERENCIA",  CodeKey = "PT", IsDeleted =0 , RegistrationDate = DateTime.Now.ToUniversalTime() },
                             new TypeofPayments { PaymentName  = "PAGO CON NOTAS DE CREDITO",  CodeKey = "PNC", IsDeleted =0 , RegistrationDate = DateTime.Now.ToUniversalTime()  },
-                            new TypeofPayments { PaymentName  = "'PAGO CON NOTAS DE CREDITO DEL INCENTIVO",  CodeKey = "PNCI", IsDeleted =0 , RegistrationDate = DateTime.Now.ToUniversalTime()  },
+                            new TypeofPayments { PaymentName  = "PAGO CON NOTAS DE CREDITO DEL INCENTIVO",  CodeKey = "PNCI", IsDeleted =0 , RegistrationDate = DateTime.Now.ToUniversalTime()  },
                 };
 
                 dataContext.TypeofPayments.AddRange(_TypeofPay);
                 dataContext.SaveChanges();
             }
-
             if (!dataContext.Roles.Any())
             {
                 var _rol = new List<Roles>
@@ -108,8 +106,7 @@ namespace OnlineOrderCart.Web.DataBase
             bool _Result = false;
             Kams _kams = new Kams();
             var strategy = dataContext.Database.CreateExecutionStrategy();
-            strategy.Execute(() =>
-            {
+            strategy.Execute(() => {
                 using (var transaction = dataContext.Database.BeginTransaction())
                 {
                     try
@@ -166,6 +163,7 @@ namespace OnlineOrderCart.Web.DataBase
                             _kams.UserId = Users.UserId;
                             _kams.CodeKey = codeKey;
                             _kams.EmployeeNumber = numberEm;
+                            _kams.IsCoordinator = 0;
                         }
                         else
                         {
@@ -173,6 +171,7 @@ namespace OnlineOrderCart.Web.DataBase
                             _kams.CodeKey = codeKey;
                             _kams.EmployeeNumber = numberEm;
                             _kams.KamManagerId = _managerk.KamId;
+                            _kams.IsCoordinator = 1;
                         }
 
                         _kams.IsDeleted = 0;

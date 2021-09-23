@@ -51,10 +51,7 @@ namespace OnlineOrderCart.Web.Controllers
             _movementsHelper = movementsHelper;
             _imageHelper = ImageHelper;
         }
-        public IActionResult Index()
-        {
-            return View();
-        }
+        [Authorize(Roles = "PowerfulUser,KamAdmin,KamAdCoordinator")]
         public async Task<IActionResult> IndexRegister()
         {
 
@@ -62,12 +59,13 @@ namespace OnlineOrderCart.Web.Controllers
 
             return View(ListAsync);
         }
-
-
         public IActionResult ResourceNotFound()
         {
             return this.View();
         }
+
+        [HttpGet]
+        [AllowAnonymous]
         public IActionResult AccessDenied(string returnUrl)
         {
             return View();
@@ -132,7 +130,7 @@ namespace OnlineOrderCart.Web.Controllers
             return RedirectToAction("Index", "Home");
         }
 
-        [Authorize]
+        [Authorize(Roles = "PowerfulUser,KamAdmin,KamAdCoordinator")]
         public async Task<IActionResult> ChangeUser()
         {
             if (User.Identity.Name == null)
@@ -157,7 +155,7 @@ namespace OnlineOrderCart.Web.Controllers
                 KamId = user.KamId,
                 KamManagerId = user.KamManagerId,
                 GenderId = user.GenderId,
-                RoleId = user.RolId,
+                RolId = user.RolId,
                 Email = user.Email,
                 Username = user.Username,
                 EmployeeNumber = user.EmployeeNumber,
@@ -273,7 +271,6 @@ namespace OnlineOrderCart.Web.Controllers
         {
             return View();
         }
-
         [HttpPost]
         public async Task<IActionResult> RecoverPasswordMVC(RecoverPasswordViewModel model)
         {
@@ -286,20 +283,84 @@ namespace OnlineOrderCart.Web.Controllers
                     return View(model);
                 }
 
-                //var myToken = await _userHelper.GeneratePasswordResetTokenAsync(user);
-                //var link = Url.Action(
-                //    "ResetPassword",
-                //    "Account",
-                //    new { token = myToken }, protocol: HttpContext.Request.Scheme);
+                var myToken = await _userHelper.GeneratePasswordResetTokenAsync(user.Result);
+                Guid activationCode = Guid.NewGuid();
+                var TblResetP = new TblResetPasswords
+                {
+                    Id = Guid.NewGuid(),
+                    UserName = user.Result.Username,
+                    Jwt = activationCode.ToString(),
+                    Token = myToken.Result.Token,
+                    ExpirationDate = myToken.Result.Expiration.ToUniversalTime(),
+                    IsDeleted = 10,
+                    RegistrationDate = DateTime.Now.ToUniversalTime(),
+                };
 
-                //_mailHelper.SendMail(model.Email, "MyLeasing Password Reset", $"<h1>MyLeasing Password Reset</h1>" +
-                //    $"To reset the password click in this link:</br></br>" +
-                //    $"<a href = \"{link}\">Reset Password</a>");
-                //ViewBag.Message = "The instructions to recover your password has been sent to email.";
+                _dataContext.TblResetPasswords.Add(TblResetP);
+                await _dataContext.SaveChangesAsync();
+
+                var link = Url.Action(
+                    "ResetPassword",
+                    "Account",
+                    new { PostalCode = user.Result.Username, Jwt = activationCode, token = myToken.Result.Token }, protocol: HttpContext.Request.Scheme);
+
+                Response<object> response = _mailHelper.SendMail(user.Result.Email, "Shopping Cart System Password Reset", $"<h1>Shopping Cart System Password Reset</h1>" +
+                    $"To reset the password click in this link:</br></br>" +
+                    $"<a href = \"{link}\">Reset Password</a>");
+                if (response.IsSuccess)
+                {
+                    ViewBag.Message = "The instructions to recover your password has been sent to email.";
+                    _flashMessage.Confirmation("The instructions to allow your user has been sent to email.");
+                    return RedirectToAction("Login", "Account");
+                }
+                else
+                {
+                    ModelState.AddModelError(string.Empty, response.Message);
+                    _flashMessage.Danger(string.Empty, response.Message);
+                }
+
                 return View();
 
             }
 
+            return View(model);
+        }
+        public IActionResult ResetPassword(string PostalCode, string Jwt, string token)
+        {
+            if (string.IsNullOrEmpty(token) || string.IsNullOrEmpty(Jwt) || string.IsNullOrEmpty(PostalCode))
+            {
+                return new NotFoundViewResult("_ResourceNotFound");
+            }
+            var _MyRPToken = _dataContext
+                .TblResetPasswords
+                .FirstOrDefaultAsync(x => x.Jwt == Jwt && x.Token == token && x.UserName == PostalCode && x.IsDeleted == 10);
+            if (_MyRPToken == null)
+            {
+                return new NotFoundViewResult("_ResourceNotFound");
+            }
+            var model = new ResetPasswordViewModel { Token = token, Jwt = Jwt, PostalCode = PostalCode };
+            return View(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ResetPassword(ResetPasswordViewModel model)
+        {
+            var user = await _userHelper.GetUserByEmailAsync(model.UserName);
+            if (user != null)
+            {
+                var result = await _userHelper.ResetPasswordAsync(user.Result, model.Jwt, model.Token, model.Password);
+                if (result.IsSuccess)
+                {
+                    ViewBag.Message = "Password reset successful.";
+                    _flashMessage.Confirmation("", "Password reset successful.");
+                    return RedirectToAction("Login", "Account");
+                }
+
+                ViewBag.Message = "Error while resetting the password.";
+                return View(model);
+            }
+
+            ViewBag.Message = "User not found.";
             return View(model);
         }
 
@@ -380,94 +441,108 @@ namespace OnlineOrderCart.Web.Controllers
         {
             if (ModelState.IsValid)
             {
-
-
-                if (User.Identity.Name == null)
+                try
                 {
-                    return new NotFoundViewResult("_ResourceNotFound");
+
+                    if (User.Identity.Name == null)
+                    {
+                        return new NotFoundViewResult("_ResourceNotFound");
+                    }
+
+                    var _users = await _userHelper.GetUserByEmailAsync(User.Identity.Name);
+
+
+                    if (!_users.IsSuccess || _users.Result == null)
+                    {
+                        return new NotFoundViewResult("_ResourceNotFound");
+                    }
+
+                    switch (model.RolId)
+                    {
+                        case 2:
+                            model.KamManagerId = 0;
+                            model.IsCoordinator = 0;
+                            break;
+                        case 3:
+                            model.KamManagerId = _users.Result.KamId;
+                            model.IsCoordinator = 1;
+                            break;
+                        case 4:
+                            model.KamManagerId = 0;
+                            model.IsCoordinator = 0;
+                            break;
+                    }
+
+                    Guid imageId = Guid.Empty;
+                    string Path = string.Empty;
+
+                    if (model.ImageFile != null)
+                    {
+                        //imageId = await _blobHelper.UploadBlobAsync(model.ImageFile, "users");
+                        model.PicturePath = await _imageHelper.UploadImageAsync(model.ImageFile, "users");
+                    }
+
+                    Response<Users> user = await _userHelper.AddUserAsync(model, imageId);
+                    if (user.IsSuccess == false)
+                    {
+                        _flashMessage.Danger(string.Empty, user.Message);
+                        ModelState.AddModelError(string.Empty, user.Message);
+                        model.ComboGender = _combosHelper.GetComboGenders();
+                        model.ComboRoles = _combosHelper.GetComboRoles();
+                        return View(model);
+                    }
+
+                    TokenResponse myToken = GetToken(user.Result.Email);
+
+                    Guid activationCode = Guid.NewGuid();
+                    var userActivations = new UserActivations
+                    {
+                        ActivationCode = activationCode,
+                        UserId = user.Result.UserId,
+                        UserName = user.Result.UserName,
+                        EventAction = "ConfirmEmail - KamRegister",
+                        JwtId = myToken.Token,
+                        CreationDate = DateTime.UtcNow.ToUniversalTime(),
+                        ExpiryDate = myToken.Expiration,
+                        IsDeleted = 0,
+                        RegistrationDate = DateTime.Now.ToUniversalTime(),
+                    };
+
+                    _dataContext.UserActivations.Add(userActivations);
+                    await _dataContext.SaveChangesAsync();
+                    string Password = _configuration["SecretP:SecretPassword"];
+
+                    string tokenLink = Url.Action("ConfirmEmail", "Account", new
+                    {
+                        userid = user.Result.UserId,
+                        username = user.Result.UserName,
+                        Jwt = activationCode,
+                        token = myToken.Token,
+                    }, protocol: HttpContext.Request.Scheme);
+
+                    Response<object> response = _mailHelper.SendMail(model.Email, $"Email confirmation. this is your User Name :{user.Result.UserName} and Temporal password :{Password}", $"<h1>Email Confirmation</h1>" +
+                        $"To allow the user, " +
+                        $"plase click in this link:<p><a href = \"{tokenLink}\" style='color: #8ebf42'>Confirm Email . this is your User Name :{user.Result.UserName} and  Temporal Password :{Password}</a></p>");
+                    if (response.IsSuccess)
+                    {
+                        ViewBag.Message = "The instructions to allow your user has been sent to email.";
+                        _flashMessage.Confirmation("The instructions to allow your user has been sent to email.");
+                        return RedirectToAction("IndexRegister", "Account");
+                    }
+
+                    ModelState.AddModelError(string.Empty, response.Message);
+                    _flashMessage.Danger(string.Empty, response.Message);
+
                 }
-
-                var _users = await _userHelper.GetUserByEmailAsync(User.Identity.Name);
-
-
-                if (!_users.IsSuccess || _users.Result == null)
+                catch (Exception ex)
                 {
-                    return new NotFoundViewResult("_ResourceNotFound");
-                }
 
-                switch (model.RoleId)
-                {
-                    case 2:
-                        model.KamManagerId = 0;
-                        break;
-                    case 3:
-                        model.KamManagerId = _users.Result.KamId;
-                        break;
-                    case 4:
-                        model.KamManagerId = 0;
-                        break;
-                }
-
-                Guid imageId = Guid.Empty;
-                string Path = string.Empty;
-
-                if (model.ImageFile != null)
-                {
-                    //imageId = await _blobHelper.UploadBlobAsync(model.ImageFile, "users");
-                    model.PicturePath = await _imageHelper.UploadImageAsync(model.ImageFile, "users");
-                }
-
-                Response<Users> user = await _userHelper.AddUserAsync(model, imageId);
-                if (user == null)
-                {
-                    _flashMessage.Danger(user.Message, "This email is already used.");
-                    ModelState.AddModelError(string.Empty, "This email is already used.");
+                    _flashMessage.Danger(ex.Message, "This Confirm Email is already used.");
                     model.ComboGender = _combosHelper.GetComboGenders();
                     model.ComboRoles = _combosHelper.GetComboRoles();
+                    //model.ComboKams = _combosHelper.GetComboKams();
                     return View(model);
                 }
-
-                TokenResponse myToken = GetToken(user.Result.Email);
-
-                Guid activationCode = Guid.NewGuid();
-                var userActivations = new UserActivations
-                {
-                    ActivationCode = activationCode,
-                    UserId = user.Result.UserId,
-                    UserName = user.Result.UserName,
-                    EventAction = "ConfirmEmail - KamRegister",
-                    JwtId = myToken.Token,
-                    CreationDate = DateTime.UtcNow.ToUniversalTime(),
-                    ExpiryDate = myToken.Expiration,
-                    IsDeleted = 0,
-                    RegistrationDate = DateTime.Now.ToUniversalTime(),
-                };
-
-                _dataContext.UserActivations.Add(userActivations);
-                await _dataContext.SaveChangesAsync();
-                string Password = _configuration["SecretP:SecretPassword"];
-
-                string tokenLink = Url.Action("ConfirmEmail", "Account", new
-                {
-                    userid = user.Result.UserId,
-                    username = user.Result.UserName,
-                    Jwt = activationCode,
-                    token = myToken.Token,
-                }, protocol: HttpContext.Request.Scheme);
-
-                Response<object> response = _mailHelper.SendMail(model.Email, $"Email confirmation. this is your password :{Password}", $"<h1>Email Confirmation</h1>" +
-                    $"To allow the user, " +
-                    $"plase click in this link:<p><a href = \"{tokenLink}\">Confirm Email . this is your password :{Password}</a></p>");
-                if (response.IsSuccess)
-                {
-                    ViewBag.Message = "The instructions to allow your user has been sent to email.";
-                    _flashMessage.Confirmation("The instructions to allow your user has been sent to email.");
-                    return RedirectToAction("Index", "Homr");
-                }
-
-                ModelState.AddModelError(string.Empty, response.Message);
-                _flashMessage.Danger(response.Message, "This Confirm Email is already used.");
-
             }
             model.ComboGender = _combosHelper.GetComboGenders();
             model.ComboRoles = _combosHelper.GetComboRoles();
@@ -495,9 +570,6 @@ namespace OnlineOrderCart.Web.Controllers
             {
                 return new NotFoundViewResult("_ResourceNotFound"); ;
             }
-
-
-
             var _users = await _userHelper.GetKamByIdAsync(id.Value);
             if (!_users.IsSuccess)
             {
@@ -521,7 +593,7 @@ namespace OnlineOrderCart.Web.Controllers
                 GenderId = _managerIndexs.Result.GenderId,
                 Email = _managerIndexs.Result.Email,
                 Username = _managerIndexs.Result.Username,
-                RoleId = _managerIndexs.Result.RolId,
+                RolId = _managerIndexs.Result.RolId,
                 PicturePath = _managerIndexs.Result.PicturePath,
                 PictureFPath = _managerIndexs.Result.PictureFullPath,
                 EmployeeNumber = _managerIndexs.Result.EmployeeNumber,
@@ -562,7 +634,7 @@ namespace OnlineOrderCart.Web.Controllers
 
                         Users _users = await _dataContext
                            .Users
-                           .Where(u => u.UserId == model.UserId && u.UserName == model.Username)
+                           .Where(u => u.UserId == model.UserId && u.UserName == model.Username && u.IsDistributor == 0)
                            .FirstOrDefaultAsync();
 
                         _users.FirstName = model.FirstName ?? _users.FirstName;
@@ -578,7 +650,8 @@ namespace OnlineOrderCart.Web.Controllers
 
                         Kams _kams = await _dataContext
                             .Kams
-                            .Where(k => k.KamId == model.KamId && k.UserId == _users.UserId).FirstOrDefaultAsync();
+                            .Where(k => k.KamId == model.KamId && k.UserId == _users.UserId && k.IsCoordinator == 0)
+                            .FirstOrDefaultAsync();
 
                         if (_kams == null)
                         {
@@ -593,6 +666,26 @@ namespace OnlineOrderCart.Web.Controllers
                         await _dataContext.SaveChangesAsync();
                         transaction.Commit();
                         return RedirectToAction("Index", "Home");
+                    }
+                    catch (DbUpdateException dbUpdateException)
+                    {
+                        transaction.Rollback();
+                        if (dbUpdateException.InnerException.Message.Contains("duplicate"))
+                        {
+                            ModelState.AddModelError(string.Empty, "Ya existe un vehículo con esa placa.");
+                            _flashMessage.Danger(string.Empty, "Ya existe un Usuario.");
+                        }
+                        else
+                        {
+                            ModelState.AddModelError(string.Empty, dbUpdateException.InnerException.Message);
+                            _flashMessage.Danger(string.Empty, dbUpdateException.InnerException.Message);
+                        }
+
+                        model.ComboGender = _combosHelper.GetComboGenders();
+                        model.ComboRoles = _combosHelper.GetComboRoles();
+                        model.ComboKams = _movementsHelper.GetSqlDataKams();
+
+                        return View(model);
                     }
                     catch (Exception ex)
                     {
@@ -641,8 +734,6 @@ namespace OnlineOrderCart.Web.Controllers
         {
             return View();
         }
-
-
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ConfirmPassword(ConfirmPasswordViewModel model)

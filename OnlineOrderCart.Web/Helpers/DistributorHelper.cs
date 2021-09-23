@@ -24,7 +24,6 @@ namespace OnlineOrderCart.Web.Helpers
             _converterHelper = converterHelper;
             MyManger = new ObservableCollection<IndexUserDistEntity>();
         }
-
         public async Task<ObservableCollection<IndexUserDistEntity>> GetAllDistrsRecordsAsync()
         {
             try
@@ -392,7 +391,6 @@ namespace OnlineOrderCart.Web.Helpers
                 };
             }
         }
-
         public async Task<Response<Distributors>> GetByDistrEmailAsync(string Debtor)
         {
             try{
@@ -412,6 +410,57 @@ namespace OnlineOrderCart.Web.Helpers
                         IsSuccess = false,
                        Message = ex.Message,
 
+                };
+            }
+        }
+        public async Task<Response<AddDistributorViewModel>> GetDistrBySentIdAsync(long Id)
+        {
+            try
+            {
+                var _Distri = await (from rg in _dataContext.RoleGroups
+                                     join r in _dataContext.Roles on rg.RolId equals r.RolId
+                                     join u in _dataContext.Users on rg.UserId equals u.UserId
+                                     join d in _dataContext.Distributors on u.UserId equals d.UserId
+                                     join k in _dataContext.Kams on d.KamId equals k.KamId
+                                     where (d.DistributorId == Id && u.IsDeleted == 100 && d.IsDeleted == 100 && u.IsDistributor == 1)
+                                     select new AddDistributorViewModel
+                                     {
+                                         BusinessName = d.BusinessName,
+                                         Debtor = Convert.ToInt32(d.Debtor.ToString()),
+                                         DistributorId = d.DistributorId,
+                                         MD = d.MD,
+                                         UserId = u.UserId,
+                                         Username = u.UserName,
+                                         GenderId = Convert.ToInt32(u.GenderId),
+                                         Email = u.Email,
+                                         RoleId = r.RolId,
+                                         KamId = k.KamId,
+                                         ImageId = u.ImageId,
+                                         PicturePath = u.ImageFullPath,
+                                         PictureFullPath = u.PictureFullPath
+                                     }).FirstOrDefaultAsync();
+                if (_Distri == null)
+                {
+                    return new Response<AddDistributorViewModel>
+                    {
+                        IsSuccess = false,
+                        Message = "No data Distributor",
+                    };
+                }
+
+                return new Response<AddDistributorViewModel>
+                {
+                    IsSuccess = true,
+                    Message = "Success",
+                    Result = _Distri,
+                };
+            }
+            catch (Exception exception)
+            {
+                return new Response<AddDistributorViewModel>
+                {
+                    IsSuccess = false,
+                    Message = exception.InnerException.Message,
                 };
             }
         }

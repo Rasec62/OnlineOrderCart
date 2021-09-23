@@ -21,5 +21,10 @@ namespace OnlineOrderCart.Web.Helpers
         Task<Response<object>> ConfirmEmailAsync(Users user, string Jwt, string token);
         Task<Response<object>> GetConfirmPasswordAsync(ConfirmPasswordViewModel model);
         Task<Response<object>> GetAllAvatarConfirmAsync(string UserName);
+        Task<ObservableCollection<UserManagerEntity>> GetAllCoordRecordsAsync();
+        Task<Response<UserManagerEntity>> GetCoordByIdAsync(long id);
+        Task<Response<AddUserViewModel>> GetCoordByEmailAsync(string email);
+        Task<Response<object>> ResetPasswordAsync(UserManagerEntity model, string jwt, string token, string password);
+        Task<Response<TokenResponse>> GeneratePasswordResetTokenAsync(UserManagerEntity user);
     }
 }

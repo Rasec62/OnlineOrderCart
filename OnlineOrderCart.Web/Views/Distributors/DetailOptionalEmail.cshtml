@@ -1,0 +1,105 @@
+﻿@model OptionemailViewModel
+@{
+    ViewData["Title"] = "DetailOptionalEmail";
+}
+<link rel="stylesheet" href="https://cdn.datatables.net/1.10.25/css/jquery.dataTables.min.css" />
+
+<form method="post" asp-action="DetailOptionalEmail">
+    <div class="card text-center border-info mb-3" style="max-width: 70rem;">
+        <div class="card-header  bg-transparent border-dark">
+            <h1>Detail Optional Email</h1>
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="UserId" />
+            <input type="hidden" asp-for="DistributorId" />
+            <flash dismissable="true" />
+        </div>
+        <div class="card-body text-secondary">
+            <partial name="_OptionalEmail" />
+        </div>
+        <div class="card-footer text-muted bg-transparent border-dark">
+            @if (Model.DetailsOptionalEmail.Count <= 2)
+            {
+                <input type="submit" value="Save Optional Email" class="btn btn-outline-primary" style="border-radius: 60px;" />
+            }
+            <a asp-action="IndexDistributor" class="btn btn-outline-secondary" style="border-radius: 60px;"><i class="fas fa-paper-plane"></i> Back to List</a>
+        </div>
+    </div>
+</form>
+<hr />
+<fieldset>
+    <legend>Optional Email</legend>
+    @if (Model.DetailsOptionalEmail.Count == 0)
+    {
+        <h5>No details added yet</h5>
+    }
+    else
+    {
+        <table class="display" id="example" style="width:100%">
+            <thead align="Center">
+                <tr>
+                    <th>
+                        @Html.DisplayNameFor(model => model.DetailsOptionalEmail[0].DateLocal)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.DetailsOptionalEmail[0].Debtor)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.DetailsOptionalEmail[0].OptionalEmail)
+                    </th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.DetailsOptionalEmail)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.DateLocal)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Debtor)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.OptionalEmail)
+                        </td>
+                        <td>
+                            <a asp-action="EditOptionalEmail" asp-route-id="@item.Id" class="btn btn-outline-warning" style="border-radius: 60px;"><i class="fa fa-plus"></i></a>
+                            <a asp-action="DeletedOptionalEmail" asp-route-id="@item.Id" class="btn btn-outline-danger" style="border-radius: 60px;" onclick="return confirm('Are you sure you wish to delete this post?');">Delete</a>
+                            <button data-id="@item.Id" class="btn btn-outline-danger text-uppercase deleteItem" data-toggle="modal" data-target="#deleteDialog" style="border-radius: 60px;"></button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+</fieldset>
+<partial name="_DeleteDialog" />
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            $('#datepicker').datetimepicker({ format: 'YYYY/MM/DD' });
+        });
+        $(document).ready(function () {
+
+            $('#example').DataTable({
+                "language": {
+                    "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Spanish.json"
+                },
+                "order": [[2, "desc"]],
+                "lengthMenu": [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]]
+            });
+            // Delete item
+            var item_to_delete;
+
+            $('.deleteItem').click((e) => {
+                item_to_delete = e.currentTarget.dataset.id;
+            });
+
+            $("#btnYesDelete").click(function () {
+                window.location.href = '/Distributors/DeletedOptionalEmail/' + item_to_delete;
+            });
+        });
+    </script>
+}

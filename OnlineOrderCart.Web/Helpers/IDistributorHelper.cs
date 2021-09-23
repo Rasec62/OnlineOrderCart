@@ -18,5 +18,6 @@ namespace OnlineOrderCart.Web.Helpers
         Task<Response<Warehouses>> GetAddWarehouses(IndexDWarehouseViewModel model);
         Task<Response<object>> PostAddWarehouseOtherProduct(DeatilWarehouses model);
         Task<Response<Distributors>> GetByDistrEmailAsync(string Debtor);
+        Task<Response<AddDistributorViewModel>> GetDistrBySentIdAsync(long Id);
     }
 }

@@ -21,9 +21,9 @@
                     <div class="form-row">
                         <div class="col-md-6 mb-6">
                             <div class="form-group">
-                                <label asp-for="RoleId" class="control-label"></label>
-                                <select asp-for="RoleId" asp-items="Model.ComboRoles" class="form-control" style="float: left;text-align: center;" disabled></select>
-                                <span asp-validation-for="RoleId" class="text-danger"></span>
+                                <label asp-for="RolId" class="control-label"></label>
+                                <select asp-for="RolId" asp-items="Model.ComboRoles" class="form-control" style="float: left;text-align: center;" disabled></select>
+                                <span asp-validation-for="RolId" class="text-danger"></span>
                             </div>
                         </div>
                         <div class="col-md-6 mb-6">
@@ -36,36 +36,7 @@
 
                     </div>
                     <partial name="_Users" />
-                    @*<div class="form-row">
-
-                    <div class="col-md-6 mb-3">
-                        <div class="form-group">
-                            <div class="form-group">
-                                <label asp-for="Password" class="control-label"></label>
-                                <div class="input-group">
-                                    <input asp-for="Password" class="form-control" type="password" placeholder="Contraseña" style="float: left;text-align: center;" />
-                                    <span class="input-group-btn">
-                                        <button id="verPassword" class="btn btn-outline-success" type="button">
-                                            <i class="glyphicon glyphicon-eye-open"></i>
-                                            <i class="fa fa-eye" aria-hidden="true"></i>
-                                        </button>
-                                    </span>
-                                </div>
-                                <span asp-validation-for="Password" class="text-danger"></span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-6 mb-3">
-                        <div class="form-group">
-                            <label asp-for="PasswordConfirm" class="control-label"></label>
-                            <input asp-for="PasswordConfirm" class="form-control" placeholder="Confirmación de Contraseña" style="float: left;text-align: center;" />
-                            <span asp-validation-for="PasswordConfirm" class="text-danger"></span>
-                        </div>
-                    </div>
-                    <div class="col-md-4 mb-3">
-
-                    </div>
-                </div>*@
+                   
                     <hr />
                 </div>
                 <div class="card-footer  bg-transparent border-secondary text-muted">
