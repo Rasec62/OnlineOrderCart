@@ -72,13 +72,21 @@ namespace OnlineOrderCart.Web
                 cfg.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
             });
 
-            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-            .AddCookie(options =>
-            {
-                options.AccessDeniedPath = "/account/AccessDenied";
-                options.LoginPath = "/account/login";
+            //services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+            //.AddCookie(options =>
+            //{
+            //    options.AccessDeniedPath = "/account/AccessDenied";
+            //    options.LoginPath = "/account/login";
+            //    options.ExpireTimeSpan = TimeSpan.FromMinutes(15);
+            //});
+
+            services.ConfigureApplicationCookie(options => {
+                options.LoginPath = "/Account/NotAuthorized";
+                options.AccessDeniedPath = "/Account/NotAuthorized";
                 options.ExpireTimeSpan = TimeSpan.FromMinutes(15);
             });
+
+
 
             //Register dapper in scope    
             services.AddScoped<IDapper, Dapperr>();
@@ -153,6 +161,7 @@ namespace OnlineOrderCart.Web
                 }
                 await next();
             });
+            app.UseStatusCodePagesWithReExecute("/error/{0}");
             app.UseHttpsRedirection();
             app.UseDefaultFiles();
             app.UseStaticFiles();

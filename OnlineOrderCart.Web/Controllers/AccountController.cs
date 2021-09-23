@@ -875,5 +875,9 @@ namespace OnlineOrderCart.Web.Controllers
             var _kam = await _dataContext.Kams.FindAsync(id);
             return _kam;
         }
+        public IActionResult NotAuthorized()
+        {
+            return View();
+        }
     }
 }
