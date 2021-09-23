@@ -1,0 +1,105 @@
+﻿@model IEnumerable<OnlyOrderDetails>
+@{
+    ViewData["Title"] = "Index";
+}
+<link rel="stylesheet" href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.min.css" />
+<br />
+
+<div class="row">
+    <div class="col">
+        <h1></h1>
+    </div>
+    <div class="col text-right">
+        <a asp-action="Create" class="btn btn-outline-success" style="border-radius: 60px;">New Order</a>
+    </div>
+</div>
+<br />
+<flash dismissable="true" />
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="panel panel-heading">
+            <div class="panel-heading">
+                <h3 class="panel-title">Index Orders</h3>
+            </div>
+            <div class="panel-body">
+                <div class="table-responsive-xl">
+                    <table class="display table-hover" id="example" style="width:100%">
+                        <caption>List of Index Orders</caption>
+                        <thead class="thead-dark">
+                            <tr>
+                                <th scope="col">
+                                    @Html.DisplayNameFor(model => model.OrderDate)
+                                </th>
+                                <th scope="col">
+                                    @Html.DisplayNameFor(model => model.Debtor)
+                                </th>
+                                <th scope="col">
+                                    @Html.DisplayNameFor(model => model.BusinessName)
+                                </th>
+                                <th scope="col">
+                                    @Html.DisplayNameFor(model => model.FullName)
+                                </th>
+                                <th scope="col">
+                                    @Html.DisplayNameFor(model => model.Observations)
+                                </th>
+                                <th scope="col">
+                                    @Html.DisplayNameFor(model => model.OrderStatus)
+                                </th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.OrderDate)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Debtor)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.BusinessName)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.FullName)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Observations)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.OrderStatus)
+                                    </td>
+                                    <td>
+                                        <a asp-action="OrderConfirm" asp-route-id="@item.OrderId" class="btn btn-outline-warning" style="border-radius: 60px;"><i class="fas fa-fighter-jet"></i></a>
+                                        <a asp-action="OrderDetails" asp-route-id="@item.OrderId" class="btn btn-outline-info" style="border-radius: 60px;"><i class="fab fa-leanpub"></i></a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<partial name="_DeleteDialog" />
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.min.js"></script>
+    <script src="/js/deleteDialog.js"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#example').DataTable({
+                "language": {
+                    "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Spanish.json"
+                },
+                "order": [[2, "desc"]],
+                "lengthMenu": [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]]
+            });
+        });</script>
+}

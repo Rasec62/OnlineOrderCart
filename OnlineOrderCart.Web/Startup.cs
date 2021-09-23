@@ -62,29 +62,24 @@ namespace OnlineOrderCart.Web
                 options.Lockout.MaxFailedAccessAttempts = 3;
                 options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(15);
             });
-            services.ConfigureApplicationCookie(options =>
-            {
-                options.LoginPath = "/Account/NotAuthorized";
-                options.AccessDeniedPath = "/Account/NotAuthorized";
-            });
             services.AddDbContext<DataContext>(cfg =>
             {
                 cfg.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
             });
 
-            //services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-            //.AddCookie(options =>
-            //{
-            //    options.AccessDeniedPath = "/account/AccessDenied";
-            //    options.LoginPath = "/account/login";
-            //    options.ExpireTimeSpan = TimeSpan.FromMinutes(15);
-            //});
-
-            services.ConfigureApplicationCookie(options => {
+            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+            .AddCookie(options =>
+            {
+                options.AccessDeniedPath = "/account/NotAuthorized";
                 options.LoginPath = "/Account/NotAuthorized";
-                options.AccessDeniedPath = "/Account/NotAuthorized";
                 options.ExpireTimeSpan = TimeSpan.FromMinutes(15);
             });
+
+            //services.ConfigureApplicationCookie(options => {
+            //    options.LoginPath = "/Account/NotAuthorized";
+            //    options.AccessDeniedPath = "/Account/NotAuthorized";
+            //    options.ExpireTimeSpan = TimeSpan.FromMinutes(15);
+            //});
 
 
 

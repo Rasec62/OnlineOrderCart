@@ -9,5 +9,6 @@ namespace OnlineOrderCart.Web.Helpers
     public interface IDevelopmentHelper
     {
         Task<List<TmpOrderViewModel>> GetSqlDataTmpOrders(string Debtor);
+        Task<List<TmpOrderViewModel>> GetSqlDataTmpCKOrders();
     }
 }

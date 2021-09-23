@@ -175,9 +175,9 @@ namespace OnlineOrderCart.Web.Controllers
                     token = myToken.Token,
                 }, protocol: HttpContext.Request.Scheme);
 
-                Response<object> response = _mailHelper.SendMail(model.Email, $"Email confirmation. this is your password :{Password}", $"<h1>Email Confirmation</h1>" +
+                Response<object> response = _mailHelper.SendMail(model.Email, $"Email confirmation. this is your UserName:{user.Result.UserName} and password :{Password}", $"<h1>Email Confirmation</h1>" +
                     $"To allow the Distributor, " +
-                    $"plase click in this link:<p><a href = \"{tokenLink}\">Confirm Email . this is your password :{Password}</a></p>");
+                    $"plase click in this link:<p><a href = \"{tokenLink}\" style='color: ##dc2a04'>Confirm Email . this is your UserName:{user.Result.UserName} and  Temporal Password :{Password}</a></p>");
                 if (response.IsSuccess)
                 {
                     ViewBag.Message = "The instructions to allow your user has been sent to email.";

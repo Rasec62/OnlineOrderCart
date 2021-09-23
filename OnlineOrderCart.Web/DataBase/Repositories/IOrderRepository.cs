@@ -25,5 +25,7 @@ namespace OnlineOrderCart.Web.DataBase.Repositories
         Task<bool> ConfirmOrderAsync(string userName);
 
         Task DeliverOrder(DeliverViewModel model);
+        Task<List<OnlyOrderDetails>> GetOnlyOrdersAsync(long Distributorid);
+        Task<List<OnlyOrderDetails>> GetCKOnlyOrdersAsync();
     }
 }

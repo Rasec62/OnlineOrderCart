@@ -43,7 +43,8 @@ namespace OnlineOrderCart.Common.Entities
         [DisplayFormat(DataFormatString = "{0:yyyy/MM/dd hh:mm tt}")]
         public DateTime DDateLocal => DeliveryDate.ToLocalTime();
 
-
+        public long? CKamManagerId { get; set; }
+        public int? GenerateUserId { get; set; }
         [JsonIgnore]
         [ForeignKey("UserId")]
         public virtual Users Users { get; set; }

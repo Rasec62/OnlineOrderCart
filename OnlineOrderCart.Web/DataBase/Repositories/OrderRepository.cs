@@ -81,5 +81,67 @@ namespace OnlineOrderCart.Web.DataBase.Repositories
                 await _datacontext.SaveChangesAsync();
             }
         }
+        public async Task<List<OnlyOrderDetails>> GetOnlyOrdersAsync(long Distributorid)
+        {
+
+            try
+            {
+                List<OnlyOrderDetails> ListIndexOrder = await (from p in _datacontext.PrOrders
+                                                               join u in _datacontext.Users on p.UserId equals u.UserId
+                                                               join d in _datacontext.Distributors on p.DistributorId equals d.DistributorId
+                                                               join k in _datacontext.Kams on d.KamId equals k.KamId
+                                                               where d.DistributorId == Distributorid
+                                                               select new OnlyOrderDetails
+                                                               {
+                                                                   Debtor = d.Debtor,
+                                                                   BusinessName = d.BusinessName,
+                                                                   Observations = p.Observations,
+                                                                   OrderId = p.OrderId,
+                                                                   FullName = $"{k.Users.FullName}",
+                                                                   OrderDate = p.DateLocal,
+                                                                   OrderStatus = p.OrderStatus,
+                                                               }).ToListAsync();
+
+
+
+                return ListIndexOrder.OrderBy(t => t.OrderId).ToList();
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
+        public async Task<List<OnlyOrderDetails>> GetCKOnlyOrdersAsync()
+        {
+            try
+            {
+                List<OnlyOrderDetails> ListIndexOrder = await(from p in _datacontext.PrOrders
+                                                              join u in _datacontext.Users on p.UserId equals u.UserId
+                                                              join d in _datacontext.Distributors on p.DistributorId equals d.DistributorId
+                                                              join k in _datacontext.Kams on d.KamId equals k.KamId
+                                                              where p.GenerateUserId == 1
+                                                              select new OnlyOrderDetails
+                                                              {
+                                                                  Debtor = d.Debtor,
+                                                                  BusinessName = d.BusinessName,
+                                                                  Observations = p.Observations,
+                                                                  OrderId = p.OrderId,
+                                                                  FullName = $"{k.Users.FullName}",
+                                                                  OrderDate = p.DateLocal,
+                                                                  OrderStatus = p.OrderStatus,
+                                                              }).ToListAsync();
+
+
+
+                return ListIndexOrder.OrderBy(t => t.OrderId).ToList();
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
     }
 }

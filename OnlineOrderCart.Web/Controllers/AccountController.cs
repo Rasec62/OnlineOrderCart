@@ -707,6 +707,8 @@ namespace OnlineOrderCart.Web.Controllers
         [HttpGet]
         public async Task<IActionResult> ConfirmEmail(string userId, string username, string Jwt, string token)
         {
+            await HttpContext.SignOutAsync(
+            CookieAuthenticationDefaults.AuthenticationScheme);
 
             if (string.IsNullOrEmpty(userId) || string.IsNullOrEmpty(username) || string.IsNullOrEmpty(token) || string.IsNullOrEmpty(Jwt))
             {
@@ -724,8 +726,8 @@ namespace OnlineOrderCart.Web.Controllers
             {
                 return new NotFoundViewResult("_ResourceNotFound");
             }
-            await HttpContext.SignOutAsync(
-            CookieAuthenticationDefaults.AuthenticationScheme);
+            //await HttpContext.SignOutAsync(
+            //CookieAuthenticationDefaults.AuthenticationScheme);
             return View();
         }
 
