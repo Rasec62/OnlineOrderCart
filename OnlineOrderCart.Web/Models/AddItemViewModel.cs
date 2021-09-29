@@ -13,6 +13,8 @@ namespace OnlineOrderCart.Web.Models
 
         public int Debtor { get; set; }
 
+        [Display(Name = "Observaciones")]
+        [Required(ErrorMessage = "El campo {0} es obligatorio.")]
         [DataType(DataType.MultilineText)]
         public string Observations { get; set; }
 

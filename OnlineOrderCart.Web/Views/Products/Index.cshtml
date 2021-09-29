@@ -24,6 +24,9 @@
                                 @localizer["Description"]
                             </th>
                             <th>
+                                @localizer["ShortDescription"]
+                            </th>
+                            <th>
                                 @localizer["ProductsType"]
                             </th>
                             <th>
@@ -44,31 +47,34 @@
                     <tbody>
                         @foreach (var item in Model)
                         {
-                            <tr>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.Description)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.ProductsType.Description)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.Trademarks.Description)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.ActivationsForm.Description)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.ActivationsType.Description)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.SimTypes.Description)
-                                </td>
-                                <td>
-                                    <a asp-action="Edit" asp-route-id="@item.ProductId" class="btn btn-outline-warning" style="border-radius: 60px;"><i class="fas fa-snowplow"></i></a>
-                                    <a asp-action="Details" asp-route-id="@item.ProductId" class="btn btn-outline-info" style="border-radius: 60px;"><i class="fas fa-space-shuttle"></i></a>
-                                    <button data-id="@item.ProductId" class="btn btn-outline-danger deleteItem" data-toggle="modal" data-target="#deleteDialog" style="border-radius: 60px;"><i class="fas fa-skull-crossbones"></i></button>
-                                </td>
-                            </tr>
+                        <tr>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Description)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.ShortDescription)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.ProductsType.Description)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Trademarks.Description)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.ActivationsForm.Description)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.ActivationsType.Description)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.SimTypes.Description)
+                            </td>
+                            <td>
+                                <a asp-action="Edit" asp-route-id="@item.ProductId" class="btn btn-outline-warning" style="border-radius: 60px;"><i class="fas fa-snowplow"></i></a>
+                                <a asp-action="Details" asp-route-id="@item.ProductId" class="btn btn-outline-info" style="border-radius: 60px;"><i class="fas fa-space-shuttle"></i></a>
+                                <button data-id="@item.ProductId" class="btn btn-outline-danger deleteItem" data-toggle="modal" data-target="#deleteDialog" style="border-radius: 60px;"><i class="fas fa-skull-crossbones"></i></button>
+                            </td>
+                        </tr>
                         }
                     </tbody>
                 </table>

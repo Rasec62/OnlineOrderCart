@@ -20,6 +20,9 @@ namespace OnlineOrderCart.Web.Models
         public string OrderStatus { get; set; }
         public string DeatilProducts { get; set; }
         public string OrderCode { get; set; }
+        public string MD { get; set; }
+        public string ShippingBranchNo { get; set; }
+        public string PayofType { get; set; }
         [DisplayFormat(DataFormatString = "{0:C2}", ApplyFormatInEditMode = false)]
         public decimal Value { get { return Price * (decimal)Quantity; } }
     }

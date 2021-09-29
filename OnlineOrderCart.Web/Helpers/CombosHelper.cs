@@ -498,5 +498,52 @@ namespace OnlineOrderCart.Web.Helpers
             });
             return Listfruits;
         }
+
+        public IEnumerable<SelectListItem> GetComboKDistributors(string UserName)
+        {
+            var _UserK = _dataContext.Kams
+                .Include(u => u.Users)
+                .Where(k => k.IsDeleted == 0 && k.Users.UserName == UserName && k.Users.IsDistributor == 0)
+                .FirstOrDefault();
+
+            var list = _dataContext
+              .Distributors
+              .Where(t => t.IsDeleted == 0 && t.KamId.Equals(_UserK.KamId))
+                .Select(pt => new SelectListItem
+                {
+                    Text = pt.BusinessName,
+                    Value = $"{pt.DistributorId}"
+                })
+                 .OrderBy(pt => pt.Text)
+                 .ToList();
+
+            list.Insert(0, new SelectListItem
+            {
+                Text = "(Select a Distributor...)",
+                Value = "0"
+            });
+            return list;
+        }
+
+        public IEnumerable<SelectListItem> GetComboAllKDistributors()
+        {
+            var list = _dataContext
+              .Distributors
+              .Where(t => t.IsDeleted == 0)
+                .Select(pt => new SelectListItem
+                {
+                    Text = pt.BusinessName,
+                    Value = $"{pt.DistributorId}"
+                })
+                 .OrderBy(pt => pt.Text)
+                 .ToList();
+
+            list.Insert(0, new SelectListItem
+            {
+                Text = "(Selecciona un  Distribuidor...)",
+                Value = "0"
+            });
+            return list;
+        }
     }
 }

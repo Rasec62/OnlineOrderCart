@@ -1,4 +1,4 @@
-﻿@model GenerateaNormalOrderViewModel
+﻿@model AddGenerateNormalOrderModel
 @{
     ViewData["Title"] = "AddProduct";
 }
@@ -6,7 +6,9 @@
 <form asp-action="AddProduct" method="post">
     <div asp-validation-summary="All" class="text-danger"></div>
     <flash dismissable="true" />
-    <input type="hidden" asp-for="Debtor" />
+    <input type="hidden" asp-for="GenerateUserId" />
+    <input type="hidden" asp-for="UserId" />
+    <input type="hidden" asp-for="EmployeeNumber" />
     @*<input type="hidden" asp-for="Quantity" />*@
     <div class="card text-center border-secondary mb-3" style="max-width: 60rem;">
         <div class="card-header bg-transparent border-danger">
@@ -59,8 +61,8 @@
         <hr />
         <div class="card-footer  bg-transparent border-danger text-muted">
             <div class="form-group">
-                <button type="submit" class="btn btn-outline-primary  btn-sm" style="border-radius: 60px;">Add the Order</button>
-                <a asp-action="Create" class="btn btn-outline-secondary btn-sm" style="border-radius: 60px;"><i class="fa fa-accusoft" aria-hidden="true"></i> Back to list</a>
+                <button type="submit" class="btn btn-outline-primary  btn-sm" style="border-radius: 60px;"><i class="fab fa-phoenix-squadron"></i> Add the Order</button>
+                <a asp-action="Create" class="btn btn-outline-secondary btn-sm" style="border-radius: 60px;"><i class="fas fa-hiking"></i> Back to list</a>
             </div>
         </div>
     </div>

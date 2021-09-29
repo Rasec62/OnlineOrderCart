@@ -165,7 +165,7 @@ namespace OnlineOrderCart.Web.Controllers
 
                     _Prod.ProductId = model.ProductId;
                     _Prod.Description = model.Description ?? _Prod.Description;
-                    _Prod.CodeKey = model.CodeKey ?? _Prod.CodeKey;
+                    _Prod.CodeKey = model.ShortDescription.ToUpper() ?? _Prod.ShortDescription.ToUpper();
                     _Prod.ProductTypeId = model.ProductTypeId;
                     _Prod.ValueWithOutTax = model.ValueWithOutTax;
                     _Prod.TrademarkId = model.TrademarkId;
@@ -176,6 +176,7 @@ namespace OnlineOrderCart.Web.Controllers
                     _Prod.ActivationTypeId = model.ActivationTypeId;
                     _Prod.SimTypeId = model.SimTypeId;
                     _Prod.OraclepId = model.OraclepId;
+                    _Prod.ShortDescription = model.ShortDescription.ToUpper() ?? _Prod.ShortDescription.ToUpper();
                     _Prod.IsDeleted = 0;
                     _Prod.RegistrationDate = DateTime.Now.ToUniversalTime();
                    

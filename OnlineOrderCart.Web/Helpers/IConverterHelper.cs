@@ -26,5 +26,7 @@ namespace OnlineOrderCart.Web.Helpers
         #endregion
 
         Task<PrOrderDetailTmps> ToOrdersTmpEntity(AddItemViewModel model, bool isNew);
+        Task<PrOrderDetailTmps> ToGenerateaNormalOrdersTmpEntity(GenerateaNormalOrderViewModel model, bool isNew);
+
     }
 }

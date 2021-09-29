@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -12,6 +13,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
 using OnlineOrderCart.Web.DataBase;
 using OnlineOrderCart.Web.DataBase.Repositories;
 using OnlineOrderCart.Web.Helpers;
@@ -20,6 +22,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using Vereyon.Web;
 
@@ -61,6 +64,19 @@ namespace OnlineOrderCart.Web
                 // Lockout settings.
                 options.Lockout.MaxFailedAccessAttempts = 3;
                 options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(15);
+            });
+
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
+            {
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Token:SecretKey"])),
+                    ValidIssuer = Configuration["Token:Issuer"],
+                    ValidateIssuer = true,
+                    ValidateAudience = false
+                };
+
             });
             services.AddDbContext<DataContext>(cfg =>
             {
@@ -104,6 +120,7 @@ namespace OnlineOrderCart.Web
             services.AddScoped<IWarehouseRepository, WarehouseRepository>();
             services.AddScoped<IOrderRepository, OrderRepository>();
             services.AddScoped<IDevelopmentHelper, DevelopmentHelper>();
+            services.AddScoped<ICreateFileOrFolder, CreateFileOrFolder>();
 
             services.AddLocalization(opt => { opt.ResourcesPath = "Resources"; });
             services.AddMvc()
@@ -115,11 +132,11 @@ namespace OnlineOrderCart.Web
             services.Configure<RequestLocalizationOptions>(options =>
             {
                 var supportedCultures = new List<CultureInfo> {
-                    new CultureInfo("en"),
-                    new CultureInfo("es"),
-                    new CultureInfo("pt")
+                    new CultureInfo("en-US"),
+                    new CultureInfo("es-MX"),
+                    new CultureInfo("pt-PT")
                 };
-                options.DefaultRequestCulture = new RequestCulture("en");
+                options.DefaultRequestCulture = new RequestCulture("en-US");
                 options.SupportedCultures = supportedCultures;
                 options.SupportedUICultures = supportedCultures;
             });

@@ -1,0 +1,92 @@
+﻿@model DisUserOrdersVModel
+<div class="container-fluid">
+    <div class="row">
+        <div class="col">
+            <input asp-for="BusinessName" class="form-control" placeholder="Code Key" style="float: left;text-align: center;" readonly />
+        </div>
+        <div class="col">
+            <input asp-for="Debtor" class="form-control" placeholder="Code Key" style="float: left;text-align: center;" readonly />
+        </div>
+        <div class="col">
+            <input asp-for="FullName" class="form-control" placeholder="Code Key" style="float: left;text-align: center;" readonly />
+        </div>
+    </div>
+    <br />
+    <div class="row">
+        <div class="col">
+            <input asp-for="DateLocal" class="form-control" placeholder="Code Key" style="float: left;text-align: center;" readonly />
+        </div>
+        <div class="col">
+            <input asp-for="OrderStatus" class="form-control" placeholder="Code Key" style="float: left;text-align: center;" readonly />
+        </div>
+        <div class="col">
+            <textarea asp-for="Observations" class="form-control" rows="5" cols="40" readonly></textarea>
+        </div>
+    </div>
+</div>
+<br />
+<div class="container-fluid">
+    <div class="card text-center border-secondary mb-3" style="max-width: 80rem;">
+        <div class="card-header bg-transparent border-dark">
+            <flash dismissable="true" />
+        </div>
+        <div class="card-body text-dark">
+            <h5 class="card-title">Special Order Details</h5>
+            @if (Model.DetailsOrders.Count == 0)
+            {
+                <h5>No details added yet</h5>
+            }
+            else
+            {
+                <table class="display" id="example" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th scope="col">@Html.DisplayNameFor(model => model.DetailsOrders[0].Debtor)</th>
+                            <th scope="col">@Html.DisplayNameFor(model => model.DetailsOrders[0].BusinessName)</th>
+                            <th scope="col">@Html.DisplayNameFor(model => model.DetailsOrders[0].OrderDate)</th>
+                            <th scope="col">@Html.DisplayNameFor(model => model.DetailsOrders[0].OrderStatus)</th>
+                            <th scope="col">@Html.DisplayNameFor(model => model.DetailsOrders[0].PayofType)</th>
+                            <th scope="col">@Html.DisplayNameFor(model => model.DetailsOrders[0].ShippingBranchNo)</th>
+                            <th scope="col">@Html.DisplayNameFor(model => model.DetailsOrders[0].ShippingBranchName)</th>
+
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.DetailsOrders)
+                        {
+                            <tr>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Debtor)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.BusinessName)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.OrderDate)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.OrderStatus)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.PayofType)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.ShippingBranchNo)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.ShippingBranchName)
+                                </td>
+                                <td>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+        </div>
+        <div class="card-footer bg-transparent border-secondary">
+            @*<a asp-action="Index" class="btn btn-outline-secondary"><i class="fas fa-paper-plane"></i> Back to List</a>*@
+        </div>
+    </div>
+</div>

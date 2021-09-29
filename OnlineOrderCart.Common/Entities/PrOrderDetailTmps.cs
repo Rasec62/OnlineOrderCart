@@ -11,6 +11,7 @@ namespace OnlineOrderCart.Common.Entities
         [Required(ErrorMessage = "The field {0} is required")]
         public string Debtor { get; set; }
 
+        [Required(ErrorMessage = "The field {0} is required")]
         public int Quantity { get; set; }
 
         [DisplayFormat(DataFormatString = "{0:N2}")]
@@ -25,9 +26,9 @@ namespace OnlineOrderCart.Common.Entities
 
         [MaxLength(50, ErrorMessage = "The {0} field can not have more than {1} characters.")]
         public string Observations { get; set; }
-
         public string OrderCode { get; set; }
         //[NotMapped]
+        [Required(ErrorMessage = "The field {0} is required")]
         public long DeatilStoreId { get; set; }
         
         public string OrderStatus { get; set; }
@@ -35,15 +36,14 @@ namespace OnlineOrderCart.Common.Entities
         [Required(ErrorMessage = "The field {0} is required")]
         public int TypeofPaymentId { get; set; }
 
-        public long DistributorId { get; set; }
-        public long UserId { get; set; }
+        public long? DistributorId { get; set; }
+        public long? KamId { get; set; }
+        public long? GenerateUserId { get; set; }
 
         [Display(Name = "Employee Number")]
         [Required(ErrorMessage = "The field {0} is mandatory.")]
         [MaxLength(10, ErrorMessage = "The {0} field can not have more than {1} characters.")]
         public string EmployeeNumber { get; set; }
-
-        public long GenerateUserId { get; set; }
 
         [JsonIgnore]
         [ForeignKey("DeatilWarehouses")]

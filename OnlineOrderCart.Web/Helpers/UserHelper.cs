@@ -311,6 +311,7 @@ namespace OnlineOrderCart.Web.Helpers
         {
             try
             {
+                UserManagerEntity _manager = new UserManagerEntity();
                 var _truefalse = await _dataContext
                     .RoleGroups
                     .Include(r => r.Roles)
@@ -325,25 +326,89 @@ namespace OnlineOrderCart.Web.Helpers
                     };
                 }
 
-                var _manager = new UserManagerEntity {
-                      UserId = _truefalse.UserId,
-                      FirstName = _truefalse.Users.FirstName,
-                      LastName1 = _truefalse.Users.LastName1,
-                      LastName2 = _truefalse.Users.LastName2,
-                      Email = _truefalse.Users.Email,
-                      Username = _truefalse.Users.UserName,
-                      ImageId = _truefalse.Users.ImageId,
-                      PicturePath = _truefalse.Users.ImageFullPath,
-                      PictureFullPath = _truefalse.Users.PicturePath,
-                      GenderId  = Convert.ToInt32(_truefalse.Users.GenderId),
-                      RolId = Convert.ToInt32(_truefalse.RolId),
-                };
+                switch (_truefalse.Roles.RolName)
+                {
+                    case "Distributor":
+                        _manager = new UserManagerEntity{
+                            UserId = _truefalse.UserId,
+                            FirstName = _truefalse.Users.FirstName,
+                            LastName1 = _truefalse.Users.LastName1,
+                            LastName2 = _truefalse.Users.LastName2,
+                            Email = _truefalse.Users.Email,
+                            Username = _truefalse.Users.UserName,
+                            ImageId = _truefalse.Users.ImageId,
+                            PicturePath = _truefalse.Users.ImageFullPath,
+                            PictureFullPath = _truefalse.Users.PicturePath,
+                            GenderId = Convert.ToInt32(_truefalse.Users.GenderId),
+                            RolId = Convert.ToInt32(_truefalse.RolId),
+                        };
+                        break;
+                    case "PowerfulUser":
+                    case "KamAdmin":
+                    case "KamAdCoordinator":
+                    case "KamCoordinator":
+                    case "Kam":
+                        _manager = new UserManagerEntity{
+                            UserId = _truefalse.UserId,
+                            FirstName = _truefalse.Users.FirstName,
+                            LastName1 = _truefalse.Users.LastName1,
+                            LastName2 = _truefalse.Users.LastName2,
+                            Email = _truefalse.Users.Email,
+                            Username = _truefalse.Users.UserName,
+                            ImageId = _truefalse.Users.ImageId,
+                            PicturePath = _truefalse.Users.ImageFullPath,
+                            PictureFullPath = _truefalse.Users.PicturePath,
+                            GenderId = Convert.ToInt32(_truefalse.Users.GenderId),
+                            RolId = Convert.ToInt32(_truefalse.RolId),
+                        };
+                        var _result = await _dataContext.Kams
+                                                .Include(k => k.Users)
+                                                .Where(k => k.UserId == _manager.UserId && k.IsCoordinator == 0)
+                                                .FirstOrDefaultAsync();
 
-                var _result = _truefalse.Users.GetKamsCollection.Where(k => k.UserId == _manager.UserId).FirstOrDefault();
-                _manager.KamId = _result.KamId;
-                _manager.EmployeeNumber = _result.EmployeeNumber;
-                _manager.CodeKey = _result.CodeKey;
-                _manager.KamManagerId = _result.KamManagerId == 0 ? 0 : _result.KamManagerId;
+                        if (_result != null)
+                        {
+                            _manager.KamId = _result.KamId;
+                            _manager.EmployeeNumber = _result.EmployeeNumber;
+                            _manager.CodeKey = _result.CodeKey;
+                            _manager.KamManagerId = _result.KamManagerId == 0 ? 0 : _result.KamManagerId;
+                            _manager.IsCoordinator = _result.IsCoordinator;
+                            var _IsCoordinator = await _dataContext.Kams
+                                               .Include(k => k.Users)
+                                               .Where(k => k.UserId == _manager.UserId && k.IsCoordinator == 1).FirstOrDefaultAsync();
+                            if (_IsCoordinator != null)
+                            {
+                                _manager.Email = $"{_manager.Email}{";"}{_IsCoordinator.Users.Email}";
+                            }
+                        }
+                        else {
+                            
+                            var _resultCoord = await _dataContext.Kams
+                                                .Include(k => k.Users)
+                                                .Where(k => k.UserId == _manager.UserId && k.IsCoordinator == 1)
+                                                .FirstOrDefaultAsync();
+
+                            _manager.KamId = _resultCoord.KamId;
+                            _manager.EmployeeNumber = _resultCoord.EmployeeNumber;
+                            _manager.CodeKey = _resultCoord.CodeKey;
+                            _manager.KamManagerId = _resultCoord.KamManagerId == 0 ? 0 : _resultCoord.KamManagerId;
+                            _manager.IsCoordinator = _resultCoord.IsCoordinator;
+
+                            var _IsKam = await _dataContext.Kams
+                                              .Include(k => k.Users)
+                                              .Where(k => k.KamId == _manager.KamManagerId && k.IsCoordinator == 0).FirstOrDefaultAsync();
+                            if (_IsKam != null)
+                            {
+                                _manager.Email = $"{_manager.Email}{";"}{_IsKam.Users.Email}";
+                            }
+
+                        }
+                        break;
+                    default:
+                        // code block
+                        break;
+                }
+
                 return new Response<UserManagerEntity>
                 {
                     IsSuccess = true,

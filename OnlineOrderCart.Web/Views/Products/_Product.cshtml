@@ -7,10 +7,15 @@
 </div>
 <br />
 <div class="form-group">
+    <label asp-for="ShortDescription" class="control-label"></label>
+    <input asp-for="ShortDescription" class="form-control" placeholder="Short Description" style="float: left; text-align: center; border-radius: 60px;" required />
+    <span asp-validation-for="ShortDescription" class="text-danger"></span>
+</div>
+@*<div class="form-group">
     <label asp-for="CodeKey" class="control-label"></label>
     <input asp-for="CodeKey" class="form-control" placeholder="Code Key" style="float: left; text-align: center; border-radius: 60px;" />
     <span asp-validation-for="CodeKey" class="text-danger"></span>
-</div>
+</div>*@
 <br />
 <div class="form-group">
     <label asp-for="OraclepId" class="control-label"></label>

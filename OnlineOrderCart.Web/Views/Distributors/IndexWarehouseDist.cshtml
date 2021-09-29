@@ -1,4 +1,5 @@
-﻿@model IndexWarehouseDistViewModel
+﻿
+@model IndexWarehouseDistViewModel
 @{
     ViewData["Title"] = "IndexWarehouseDist";
     string Deb = $"{Model.BusinessName}{" - "}{Model.Debtor}";
@@ -65,11 +66,19 @@
                                             @Html.DisplayFor(modelItem => item.ShippingBranchName)
                                         </td>
                                         <td>
-                                            <a asp-action="EditofDetailWarehouses" class="btn btn-outline-warning" asp-route-id="@item.StoreId" title="Edit of Detail Warehouses"> <img src="~/Image/editar.png" /></a>
-                                            <a asp-action="GuardiansofDetailWarehouses" class="btn btn-outline-success" asp-route-id="@item.StoreId" title="Detail of Warehouse"> <img src="~/Image/Detalles.png" /></a>
-                                            <a asp-action="OtherProduct" class="btn btn-outline-secondary" asp-route-id="@item.StoreId" title="Other Product"> <i class="fa fa-book fa-fw" aria-hidden="true"></i></a>
-                                            @*<button data-id="@item.StoreId" class="btn btn-outline-secondary StoreItem"><i class="fa fa-book fa-fw" aria-hidden="true"></i>Other Product</button>*@
-                                            <button data-id="@item.StoreId" class="btn btn-outline-danger deleteItem" data-toggle="modal" data-target="#deleteDialog"> <img src="~/Image/Eliminar.png" /></button>
+                                            @if (item.IsDeleted == 0)
+                                            {
+                                                <a asp-action="EditofDetailWarehouses" class="btn btn-outline-warning" asp-route-id="@item.StoreId" title="Edit of Detail Warehouses"> <img src="~/Image/editar.png" /></a>
+                                                <a asp-action="GuardiansofDetailWarehouses" class="btn btn-outline-success" asp-route-id="@item.StoreId" title="Detail of Warehouse"> <img src="~/Image/Detalles.png" /></a>
+                                                <a asp-action="OtherProduct" class="btn btn-outline-secondary" asp-route-id="@item.StoreId" title="Other Product"> <i class="fa fa-book fa-fw" aria-hidden="true"></i></a>
+                                                @*<button data-id="@item.StoreId" class="btn btn-outline-secondary StoreItem"><i class="fa fa-book fa-fw" aria-hidden="true"></i>Other Product</button>*@
+                                                <button data-id="@item.StoreId" class="btn btn-outline-danger deleteItem" data-toggle="modal" data-target="#deleteDialog"> <img src="~/Image/Eliminar.png" /></button>
+                                            }
+                                            else
+                                            {
+                                                    <a asp-action="ActiveofDetailWarehouses" class="btn btn-outline-warning" asp-route-id="@item.StoreId" title="Active of Detail Warehouses"> <i class="fa fa-book fa-ad" aria-hidden="true"></i></a>
+                                            }
+
                                         </td>
                                     </tr>
                                 }

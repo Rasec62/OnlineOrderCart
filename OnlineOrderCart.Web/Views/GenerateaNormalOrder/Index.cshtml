@@ -72,8 +72,8 @@
                                         @Html.DisplayFor(modelItem => item.OrderStatus)
                                     </td>
                                     <td>
-                                        <a asp-action="OrderConfirm" asp-route-id="@item.OrderId" class="btn btn-outline-warning" style="border-radius: 60px;"><i class="fas fa-fighter-jet"></i></a>
-                                        <a asp-action="OrderDetails" asp-route-id="@item.OrderId" class="btn btn-outline-info" style="border-radius: 60px;"><i class="fab fa-leanpub"></i></a>
+                                        <a asp-action="OrderConfirmation" asp-route-id="@item.OrderId" class="btn btn-outline-warning" style="border-radius: 60px;"><i class="fas fa-fighter-jet"></i></a>
+                                        <a asp-action="Details" asp-route-id="@item.OrderId" class="btn btn-outline-info" style="border-radius: 60px;"><i class="fab fa-leanpub"></i></a>
                                     </td>
                                 </tr>
                             }

@@ -12,12 +12,16 @@ namespace OnlineOrderCart.Common.Entities
         [Key]
         public long DeatilStoreId { get; set; }
         [ForeignKey("Warehouses")]
+        [Required(ErrorMessage = "The field {0} is mandatory.")]
         public long StoreId { get; set; }
         [ForeignKey("Products")]
+        [Required(ErrorMessage = "The field {0} is mandatory.")]
         public int ProductId { get; set; }
         [ForeignKey("Purposes")]
+        [Required(ErrorMessage = "The field {0} is mandatory.")]
         public int PurposeId { get; set; }
-        public int IsDeleted { get; set; }
+        public int? IsDeleted { get; set; }
+        [DisplayFormat(DataFormatString = "{0:yyyy/MM/dd hh:mm}")]
         public DateTime RegistrationDate { get; set; }
 
         [JsonIgnore]

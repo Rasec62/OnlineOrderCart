@@ -293,7 +293,7 @@ namespace OnlineOrderCart.Web.Helpers
                 }
             }
             catch (Exception ex){
-                throw new Exception("No show to Warehouse List");
+                throw new Exception($"{"No show to Warehouse List"} { ex.Message}");
             }
         }
         public async Task<Response<Warehouses>> GetAddWarehouses(IndexDWarehouseViewModel model)

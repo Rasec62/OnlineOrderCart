@@ -59,11 +59,10 @@ namespace OnlineOrderCart.Web.Helpers
         public Products ToProductEntity(AddProductViewModel model, bool isNew)
         {
             Guid name = Guid.NewGuid();
-            return new Products
-            {
+            return new Products{
                 ProductId = isNew ? 0 : model.ProductId,
                 Description = model.Description,
-                CodeKey = model.CodeKey,
+                CodeKey = model.ShortDescription.ToUpper(),
                 ProductTypeId = model.ProductTypeId,
                 ValueWithOutTax = model.ValueWithOutTax,
                 TrademarkId = model.TrademarkId,
@@ -73,14 +72,14 @@ namespace OnlineOrderCart.Web.Helpers
                 ActivationTypeId = model.ActivationTypeId,
                 SimTypeId = model.SimTypeId,
                 OraclepId = model.OraclepId,
+                ShortDescription = model.ShortDescription.ToUpper(),
                 IsDeleted = 0,
                 RegistrationDate = DateTime.Now.ToUniversalTime(),
             };
         }
         public AddProductViewModel ToProductViewModel(Products model)
         {
-            return new AddProductViewModel
-            {
+            return new AddProductViewModel{
                 ProductId = model.ProductId,
                 CodeKey = model.CodeKey,
                 Description = model.Description,
@@ -93,8 +92,9 @@ namespace OnlineOrderCart.Web.Helpers
                 SimTypeId = model.SimTypeId,
                 Price = model.Price,
                 UnitsInStock = model.UnitsInStock,
+                ShortDescription = model.ShortDescription,
                 IsDeleted = 0,
-                RegistrationDate = DateTime.Now.ToUniversalTime(),
+                RegistrationDate = model.RegistrationDate.ToLocalTime(),
             };
         }
         public Users ToRegisterAsync(AddUserViewModel model, Guid imageId, bool isNew)
@@ -248,6 +248,30 @@ namespace OnlineOrderCart.Web.Helpers
                 TypeofPaymentId = model.TypeofPaymentId,
                 OrderStatus = "0",
                 OrderDetailTmpId = isNew ? 0 : model.OrderDetailTmpId,
+            };
+        }
+
+        public async Task<PrOrderDetailTmps> ToGenerateaNormalOrdersTmpEntity(GenerateaNormalOrderViewModel model, bool isNew)
+        {
+            var _pprice = await _dataContext.DeatilWarehouses
+                    .Include(dw => dw.Products)
+                    .Where(dw => dw.DeatilStoreId == model.DeatilStoreId).FirstOrDefaultAsync();
+
+            return new PrOrderDetailTmps{
+                Debtor = model.Debtor.ToString(),
+                Quantity = model.Quantity,
+                Observations = model.Observations,
+                DeatilStoreId = model.DeatilStoreId,
+                Price = _pprice.Products.Price,
+                TaxRate = _pprice.Products.ValueWithOutTax,
+                TypeofPaymentId = model.TypeofPaymentId,
+                OrderStatus = "0",
+                OrderDetailTmpId = isNew ? 0 : model.OrderDetailTmpId,
+                DistributorId = model.DistributorId,
+                EmployeeNumber = model.EmployeeNumber,
+                GenerateUserId = model.GenerateUserId,
+                OrderCode = "",
+                KamId = model.KamId,
             };
         }
         #endregion

@@ -9,7 +9,6 @@ namespace OnlineOrderCart.Web.Models
 {
     public class GenerateaNormalOrderViewModel : AddItemViewModel
     {
-        public long UserId { get; set; }
         public long GenerateUserId { get; set; }
 
         [Display(Name = "Employee Number")]

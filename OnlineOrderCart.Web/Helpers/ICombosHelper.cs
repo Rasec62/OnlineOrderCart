@@ -29,5 +29,7 @@ namespace OnlineOrderCart.Web.Helpers
         IEnumerable<SelectListItem> GetComboTypeofPayments();
         IEnumerable<SelectListItem> GetComboCoordRoles();
         IEnumerable<SelectListItem> GetComboKamCoords();
+        IEnumerable<SelectListItem> GetComboKDistributors(string UserName);
+        IEnumerable<SelectListItem> GetComboAllKDistributors();
     }
 }

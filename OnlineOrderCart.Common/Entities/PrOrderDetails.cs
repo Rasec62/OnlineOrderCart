@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -34,6 +35,14 @@ namespace OnlineOrderCart.Common.Entities
         public long DeatilStoreId { get; set; }
         [Required(ErrorMessage = "The field {0} is required")]
         public int TypeofPaymentId { get; set; }
+
+        [Required(ErrorMessage = "The field {0} is mandatory.")]
+        [Display(Name = "Order Status")]
+        public string OrderStatus { get; set; }
+
+        public int IsDeleted { get; set; }
+        [DisplayFormat(DataFormatString = "{0:yyyy/MM/dd hh:mm}")]
+        public DateTime? RegistrationDate { get; set; }
 
         [JsonIgnore]
         [ForeignKey("DeatilStoreId")]

@@ -1,141 +1,171 @@
 ﻿@model AddGenerateNormalOrderModel
+
 @{
     ViewData["Title"] = "New Order";
+    var _KamManagerId = Model.KamManagerId;
+    string _KamName = Model.KamManagerId == 0 ? $"{"Kam   :"}{Model.KamName}" : $"{"Coordinad@r   :"}{Model.KamName}";
 }
 <link rel="stylesheet" href="https://cdn.datatables.net/1.10.25/css/jquery.dataTables.min.css" />
+<div class="container">
+    <div class="row">
+        <div class="col-md-7">
+            <form asp-action="Create" method="post">
+                <div asp-validation-summary="All" class="text-danger"></div>
+                <flash dismissable="true" />
+                <input type="hidden" asp-for="UserId" />
+                <input type="hidden" asp-for="OrderStatusId" />
+                <input type="hidden" asp-for="GenerateUserId" />
+                <input type="hidden" asp-for="UserId" />
+                <input type="hidden" asp-for="EmployeeNumber" />
+                <div class="card text-center border-dark mb-3" style="max-width: 70rem;">
+                    <div class="card-header bg-transparent border-secondary">
+                        <div class="alert alert-secondary">
+                            <hr />
+                                <strong>@_KamName</strong>
+                        </div>
+                    </div>
+                    <div class="card-body text-dark">
+                        <h5 class="card-title">
+                            New Order
+                        </h5>
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label asp-for="OrderStatusId" class="control-label"></label>
+                                <select asp-for="OrderStatusId" asp-items="Model.CombosOrderStatuses" class="form-control" style="border-radius: 60px;" disabled></select>
+                                <span asp-validation-for="OrderStatusId" class="text-danger"></span>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label asp-for="OrderDate" class="control-label"></label>
+                                <input asp-for="OrderDate" type="datetime-local" class="form-control" style="border-radius: 60px;" />
+                                <span asp-validation-for="OrderDate" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Observations" class="control-label"></label>
+                            <input asp-for="Observations" class="form-control" placeholder="Observations" style="border-radius: 60px;" />
+                            @Html.ValidationMessageFor(model => model.Observations, "", new { @class = "text-danger" })
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label asp-for="KamId" class="control-label"></label>
+                                <select asp-for="KamId" asp-items="Model.CombosKams" class="form-control" style="float: left;text-align: center;border-radius: 60px;"></select>
+                                <span asp-validation-for="KamId" class="text-danger"></span>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label asp-for="DistributorId" class="control-label"></label>
+                                <select asp-for="DistributorId" asp-items="Model.CombosDistributors" class="form-control" style="float: left;text-align: center;border-radius: 60px;"></select>
+                                <span asp-validation-for="DistributorId" class="text-danger"></span>
+                            </div>
 
-<form asp-action="NewCKOrder" method="post">
-    <div asp-validation-summary="All" class="text-danger"></div>
-    <flash dismissable="true" />
-    <input type="hidden" asp-for="UserId" />
-    <input type="hidden" asp-for="OrderStatusId" />
-    <div class="card text-center border-dark mb-3" style="max-width: 70rem;">
-        <div class="card-header bg-transparent border-secondary">
-            <div class="alert alert-secondary">
-                <hr />
-                <strong>Kam          :</strong> @Model.KamName.
-            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label asp-for="StoreId" class="control-label"></label>
+                                <select asp-for="StoreId" asp-items="Model.CombosWarehouses" class="form-control" style="float: left;text-align: center;border-radius: 60px;"></select>
+                                <span asp-validation-for="StoreId" class="text-danger"></span>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label asp-for="DeatilStoreId" class="control-label"></label>
+                                <select asp-for="DeatilStoreId" asp-items="Model.CombosDWProducts" class="form-control" style="float: left;text-align: center;border-radius: 60px;"></select>
+                                <span asp-validation-for="DeatilStoreId" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group col-md-12">
+                                <label asp-for="TypeofPaymentId" class="control-label"></label>
+                                <select asp-for="TypeofPaymentId" asp-items="Model.CombosTypeofPayments" class="form-control" style="float: left;text-align: center;border-radius: 60px;"></select>
+                                <span asp-validation-for="TypeofPaymentId" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Quantity" class="control-label"></label>
+                            <input asp-for="@Model.Quantity" type="number" min="150" max="90000" placeholder="Quantity" class="form-control" style="float: left;text-align: center;border-radius: 60px;" />
+                            <span asp-validation-for="Quantity" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="card-footer bg-transparent border-danger text-muted">
+                        <div class="form-group">
+                            <div class="col-md-offset-2 col-md-10">
+                                <i class="fab fa-teamspeak"></i><input type="submit" value="Add New Order" class="btn btn-outline-primary" style="border-radius: 60px;" />
+                                <a class="btn btn-outline-warning" style="border-radius: 60px;" asp-action="OrderVerification" asp-controller="GenerateaNormalOrder"><i class="fab fa-the-red-yeti"></i> Verify the Order</a>
+                                <a asp-action="Index" class="btn btn-outline-secondary" style="border-radius: 60px;"><i class="fab fa-fulcrum"></i> Back to List</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
         </div>
-        <div class="card-body text-dark">
-            <h5 class="card-title">
-                New Order
-            </h5>
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="row">
-                <div class="col">
-                    <div class="form-group">
-                        <label asp-for="OrderStatusId" class="control-label"></label>
-                        <select asp-for="OrderStatusId" asp-items="Model.CombosOrderStatuses" class="form-control" style="border-radius: 60px;" disabled></select>
-                        <span asp-validation-for="OrderStatusId" class="text-danger"></span>
-                    </div>
-                </div>
-                
-                <div class="w-100"></div>
-                <div class="col">
-                    <div class="form-group">
-                        @*@Html.LabelFor(model => model.Observations, htmlAttributes: new { @class = "control-label col-md-2" })*@
-                        <label asp-for="Observations" class="control-label"></label>
-                        @*<div class="col-md-10">*@
-                        @*@Html.EditorFor(model => model.Observations, new { htmlAttributes = new { @class = "form-control" } })*@
-                        <input asp-for="Observations" class="form-control" placeholder="Observations" style="border-radius: 60px;" />
-                        @Html.ValidationMessageFor(model => model.Observations, "", new { @class = "text-danger" })
-                        @*</div>*@
-                    </div>
-                </div>
-                <div class="col">
-                    <div class="form-group">
-                        <label asp-for="OrderDate" class="control-label"></label>
-                        <input asp-for="OrderDate" type="datetime-local" class="form-control" style="border-radius: 60px;" />
-                        <span asp-validation-for="OrderDate" class="text-danger"></span>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="card-footer bg-transparent border-danger text-muted">
-            <div class="form-group">
-                <div class="col-md-offset-2 col-md-10">
-                    <input type="submit" value="Save Orders" class="btn btn-outline-primary" style="border-radius: 60px;" />
-                    @*@Html.ActionLink("Add Product", "AddProduct", "Orders", new { }, new { @class = "btn btn-outline-warning  popup" })*@
-                    <a class="btn btn-outline-warning" style="border-radius: 60px;" asp-action="AddProduct" asp-controller="GenerateaNormalOrder">Add New Order <i class="fa fa-plus"></i></a>
-                    <a asp-action="Index" class="btn btn-outline-secondary" style="border-radius: 60px;"><i class="fas fa-paper-plane"></i> Back to List</a>
-                    @*@Html.ActionLink("Back to Orders", "IndexOrders", new { }, new { @class = "btn btn-outline-dark" })*@
-                </div>
-            </div>
+        <div class="col-md-5">
+            <fieldset>
+                <legend>Pending Order Detail</legend>
+                @if (Model.Details.Count == 0)
+                {
+                    <h5>No details added yet</h5>
+                }
+                else
+                {
+                    <table class="display" id="example" style="width:100%">
+                        <thead align="Center">
+                            <tr>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.Details[0].OrderCode)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.Details[0].Price)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.Details[0].Quantity)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.Details[0].Value)
+                                </th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model.Details)
+                            {
+                                <tr>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.OrderCode)
+                                    </td>
+                                    <td align="right">
+                                        @Html.DisplayFor(modelItem => item.Price)
+                                    </td>
+                                    <td align="right">
+                                        @Html.DisplayFor(modelItem => item.Quantity)
+                                    </td>
+                                    <td align="right">
+                                        @Html.DisplayFor(modelItem => item.Value)
+                                    </td>
+                                    <td>
+                                        <a asp-action="Increase" asp-route-id="@item.OrderDetailTmpId" class="btn btn-outline-warning" style="border-radius: 60px;"><i class="fa fa-plus"></i></a>
+                                        <a asp-action="Decrease" asp-route-id="@item.OrderDetailTmpId" class="btn btn-outline-dark" style="border-radius: 60px;"><i class="fa fa-minus"></i></a>
+                                        @*<a asp-action="DeletedTmp"  asp-route-id="@item.OrderDetailTmpId" class="btn btn-outline-danger" style="border-radius: 60px;" onclick="return confirm('Are you sure you wish to delete this post?');">Delete</a>*@
+                                        @*@Html.ActionLink("Delete", "", new { id = item.OrderDetailTmpId }, new { @class = "btn btn-outline-danger", onclick = "return confirm('¿ Are you sure to delete this records?');" })*@
+                                        <button data-id="@item.OrderDetailTmpId" class="btn btn-outline-danger text-uppercase deleteItem" data-toggle="modal" data-target="#deleteDialog" style="border-radius: 60px;"><i class="fab fa-opencart"></i></button>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                        <tr>
+                            <td colspan="2" align="right">
+                                <strong>Total</strong>
+                            </td>
+                            <td align="right">
+                                <strong>@Html.DisplayFor(modelItem => Model.TotalQuantity)</strong>
+                            </td>
+                            <td align="right">
+                                <strong>@Html.DisplayFor(modelItem => Model.TotalValue)</strong>
+                            </td>
+                        </tr>
+                    </table>
+                }
+            </fieldset>
         </div>
     </div>
-</form>
-<hr />
-<fieldset>
-    <legend>Pending Order Detail</legend>
-    @if (Model.Details.Count == 0)
-    {
-        <h5>No details added yet</h5>
-    }
-    else
-    {
-        <table class="display" id="example" style="width:100%">
-            <thead align="Center">
-                <tr>
-                    <th>
-                        @Html.DisplayNameFor(model => model.Details[0].OrderCode)
-                    </th>
-                    @*<th>
-                            @Html.DisplayNameFor(model => model.Details[0].TaxRate)
-                        </th>*@
-                    <th>
-                        @Html.DisplayNameFor(model => model.Details[0].Price)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.Details[0].Quantity)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.Details[0].Value)
-                    </th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var item in Model.Details)
-                {
-                    <tr>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.OrderCode)
-                        </td>
-                        @*<td align="right">
-                                @Html.DisplayFor(modelItem => item.TaxRate)
-                            </td>*@
-                        <td align="right">
-                            @Html.DisplayFor(modelItem => item.Price)
-                        </td>
-                        <td align="right">
-                            @Html.DisplayFor(modelItem => item.Quantity)
-                        </td>
-                        <td align="right">
-                            @Html.DisplayFor(modelItem => item.Value)
-                        </td>
-                        <td>
-                            <a asp-action="Increase" asp-route-id="@item.OrderDetailTmpId" class="btn btn-outline-warning" style="border-radius: 60px;"><i class="fa fa-plus"></i></a>
-                            <a asp-action="Decrease" asp-route-id="@item.OrderDetailTmpId" class="btn btn-outline-dark" style="border-radius: 60px;"><i class="fa fa-minus"></i></a>
-                            <a asp-action="DeletedTmp" asp-route-id="@item.OrderDetailTmpId" class="btn btn-outline-danger" style="border-radius: 60px;" onclick="return confirm('Are you sure you wish to delete this post?');">Delete</a>
-                            @*@Html.ActionLink("Delete", "DeleteProduct", new { id = item.OrderDetailTmpId }, new { @class = "btn btn-outline-danger", onclick = "return confirm('¿ Are you sure to delete this records?');" })*@
-                        </td>
-                    </tr>
-                }
-            </tbody>
-            <tr>
-                <td colspan="2" align="right">
-                    <strong>Total</strong>
-                </td>
-                <td align="right">
-                    <strong>@Html.DisplayFor(modelItem => Model.TotalQuantity)</strong>
-                </td>
-                <td align="right">
-                    <strong>@Html.DisplayFor(modelItem => Model.TotalValue)</strong>
-                </td>
-            </tr>
-        </table>
-    }
-</fieldset>
+</div>
+<partial name="_DeleteDialog" />
 
 <partial name="_Modal" />
 
@@ -155,23 +185,111 @@
                 "order": [[2, "desc"]],
                 "lengthMenu": [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]]
             });
+            // Delete item
+            var item_to_delete;
 
-            //$("body").on("click", "a.dialog-window", null, function (e) {
-            //    e.preventDefault();
-            //    var $link = $(this);
-            //    var title = $link.text();
-            //    $('#AddProduct .modal-title').html(title);
-            //    var url = $(this).attr('href');
-            //    if (url.indexOf('#') == 0) {
-            //        $('#AddProduct').modal('show');
-            //    }
-            //    else {
-            //        $.get(url, function (data) {
-            //            $('#AddProduct .te').html(data);
-            //            $('#AddProduct').modal();
-            //        }).success(function () { $('input:text:visible:first').focus(); });
-            //    }
-            //});
+            $('.deleteItem').click((e) => {
+                item_to_delete = e.currentTarget.dataset.id;
+            });
+
+            $("#btnYesDelete").click(function () {
+                window.location.href = '/GenerateaNormalOrder/DeletedTmp/' + item_to_delete;
+            });
+
+            var items = "<option value='0'>Seleccionar Productos</option>";
+            var item = "<option value='0'>Seleccionar Distribuidor</option>";
+            var itema = "<option value='0'>Seleccionar Almacen</option>";
+
+            $("#DistributorId").html(item);
+            $("#StoreId").html(itema);
+            $("#DeatilStoreId").html(items);
+
+            $('#KamId').change(function () {
+                var url = '@Url.Content("~/")' + "GenerateaNormalOrder/GetSubOnDist";
+                var ddlsource = "#KamId";
+                $.getJSON(url, { KamId: $(ddlsource).val() }, function (data) {
+                    var Ditems = '';
+                    $('#DistributorId').empty();
+                    $.each(data, function (i, product) {
+                        Ditems += "<option value='" + product.value + "'>" + product.text + "</option>";
+                    });
+                    $('#DistributorId').html(Ditems);
+                });
+            });
+
+            $('#DistributorId').change(function () {
+                var url = '@Url.Content("~/")' + "GenerateaNormalOrder/GetSubOnWarehouses";
+                var ddlsource = "#DistributorId";
+                $.getJSON(url, { DistributorId: $(ddlsource).val() }, function (data) {
+                    var Witems = '';
+                    $('#StoreId').empty();
+                    $.each(data, function (i, product) {
+                        Witems += "<option value='" + product.value + "'>" + product.text + "</option>";
+                    });
+                    $('#StoreId').html(Witems);
+                });
+            });
+
+            $('#StoreId').change(function () {
+                var url = '@Url.Content("~/")' + "GenerateaNormalOrder/GetSubOnDeatilStores";
+                var ddlsource = "#StoreId";
+                $.getJSON(url, { StoreId: $(ddlsource).val() }, function (data) {
+                    var DWitems = '';
+                    $('#DeatilStoreId').empty();
+                    $.each(data, function (i, product) {
+                        DWitems += "<option value='" + product.value + "'>" + product.text + "</option>";
+                    });
+                    $('#DeatilStoreId').html(DWitems);
+                });
+            });
+
+            $("#SStoreId").on("change", function () {
+                $list = $("#DeatilStoreId");
+                $.ajax({
+                    type: "POST",//id of the state which is used to extract cities
+                    url: '/Orders/OnChangeAutoComplete/',
+                    data: { "StoreId": $("#StoreId").val() },
+                    traditional: true,
+                    success: function (result) {
+                        $list.empty();
+                        var items = "<option value='0'>Seleccion un Productos</option>";
+                        $list.html(items);
+                        $.each(result, function (i, item) {
+                            $list.append('<option value="' + item["DeatilStoreId"] + '">' + item["Description"]+'</option>');
+                        });
+                    },
+                    error: function () {
+                        alert("Something went wrong call the police");
+                    }
+                });
+            });
+
+            $("#Quantity").change(function () {
+                // Print entered value in a div box
+                var Quantity = document.getElementById("Quantity").value;
+                if (Quantity >= 150) {
+                    var rest = Quantity % 10;
+                    if (rest == 0) {
+                        alert("the amount is valid");
+                        $(this).css("background-color", "#EBEDEF");
+                        return true;
+                    }
+                    else {
+                        alert("the amount is not valid && Something went wrong call the police");
+                        document.getElementById("Quantity").focus();
+                        document.getElementById("Quantity").value = 150;
+                        $(this).css("background-color", "#CD6155");
+                        return false;
+                    }
+                }
+                else {
+                    alert('Data not Validation Quantity && Something went wrong call the police');
+                    document.getElementById("Quantity").focus();
+                    document.getElementById("Quantity").value = 150;
+                    $(this).css("background-color", "#F2D7D5");
+                    return false;
+                }
+            });
         });
     </script>
 }

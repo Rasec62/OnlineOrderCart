@@ -536,6 +536,34 @@ namespace OnlineOrderCart.Web.Controllers
             return RedirectToAction("IndexWarehouseDist", "Distributors", new { id = _ware.DistributorId });
         }
 
+        [HttpGet]
+        [Authorize(Roles = "PowerfulUser,KamAdmin,KamAdCoordinator")]
+        public async Task<IActionResult> ActiveofDetailWarehouses(int? id)
+        {
+            if (id == null)
+            {
+                return new NotFoundViewResult("_ResourceNotFound");
+            }
+            long _id = Convert.ToInt64(id);
+            var _ware = await _dataContext.Warehouses.FindAsync(_id);
+            if (_ware == null)
+            {
+                return new NotFoundViewResult("_ResourceNotFound");
+            }
+            try
+            {
+                DateTime saveUtcNow = DateTime.UtcNow;
+                _ware.IsDeleted = 0;
+                _ware.RegistrationDate = saveUtcNow;
+                _dataContext.Warehouses.Update(_ware);
+                await _dataContext.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                _flashMessage.Danger($"The Products can't be deleted because it has related records. {ex.Message}");
+            }
+            return RedirectToAction("IndexWarehouseDist", "Distributors", new { id = _ware.DistributorId });
+        }
 
         [HttpGet]
         [Authorize(Roles = "PowerfulUser,KamAdmin,KamAdCoordinator")]
@@ -589,6 +617,8 @@ namespace OnlineOrderCart.Web.Controllers
                  StoreId = model.StoreId,
                  PurposeId = model.PurposeId,
                  ProductId = model.ProductId,
+                 IsDeleted = 0,
+                 RegistrationDate = DateTime.Now.ToUniversalTime(),
                 };
 
                 var _R = await _distributorHelper.PostAddWarehouseOtherProduct(_model);
@@ -606,7 +636,6 @@ namespace OnlineOrderCart.Web.Controllers
             model.ComboPurposes = _combosHelper.GetComboPurposes();
             return View(model);
         }
-
 
         [HttpGet]
         public IActionResult OtherProducts(string storeId)
@@ -883,7 +912,7 @@ namespace OnlineOrderCart.Web.Controllers
 
             Response<object> response = _mailHelper.SendMail(_Dis.Result.Email, $"Email confirmation. this is your UserName:{_Dis.Result.Username} and password :{Password}", $"<h1>Email Confirmation</h1>" +
                 $"To forwarding the Distributor, " +
-                $"plase click in this link:<p><a href = \"{tokenLink}\">Confirm Email . this is your UserName:{_Dis.Result.Username} and  Temporal Password :{Password}</a></p>");
+                $"plase click in this link:<p><a href = \"{tokenLink}\" style='color: ##dc2a04'>Confirm Email . this is your UserName:{_Dis.Result.Username} and  Temporal Password :{Password}</a></p>");
             if (response.IsSuccess)
             {
                 ViewBag.Message = "The instructions to allow your user has been sent to email.";

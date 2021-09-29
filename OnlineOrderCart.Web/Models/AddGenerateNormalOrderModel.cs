@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace OnlineOrderCart.Web.Models
 {
-    public class AddGenerateNormalOrderModel
+    public class AddGenerateNormalOrderModel: GenerateaNormalOrderViewModel
     {
         [Display(Name = "Estatus del Pedido")]
         public int OrderStatusId { get; set; }
@@ -22,11 +22,8 @@ namespace OnlineOrderCart.Web.Models
         [Display(Name = "Fecha de Orden")]
         [DisplayFormat(DataFormatString = "{0:yyyy/MM/dd hh:mm tt}")]
         public DateTime DateLocal => OrderDate.ToLocalTime();
-
-        [Display(Name = "Observaciones")]
-        [Required(ErrorMessage = "The field {0} is required")]
-        [DataType(DataType.MultilineText)]
-        public string Observations { get; set; }
+        [Display(Name = "Kam Manager")]
+        public long? KamManagerId { get; set; }
 
         public IEnumerable<SelectListItem> CombosOrderStatuses { get; set; }
 
