@@ -7,7 +7,7 @@ namespace OnlineOrderCart.Web.Models
     public class IndexIncentiveDViewModel
     {
         [Display(Name = "Fecha de Pedido")]
-        [DisplayFormat(DataFormatString = "{0:yyyy/MM/dd hh:mm}")]
+        [DisplayFormat(DataFormatString = "{0:yyyy/MM/dd HH:mm}")]
         public DateTime? OrderDate { get; set; }
         public long IncentiveOrderId { get; set; }
         [Required(ErrorMessage = "The field {0} is mandatory.")]
@@ -61,5 +61,7 @@ namespace OnlineOrderCart.Web.Models
         public string PaymentMethod { get; set; } = "99";
         [Display(Name = "USO CFDI")]
         public string UseCfdi { get; set; } = "G01";
+        [Display(Name = "Descripcion Corta")]
+        public string ShortDescription { get; set; }
     }
 }

@@ -6,7 +6,7 @@ namespace OnlineOrderCart.Web.Models
     public class OrdersLayoutModel
     {
         [Display(Name = "Fecha de Pedido")]
-        [DisplayFormat(DataFormatString = "{0:yyyy/MM/dd hh:mm}")]
+        [DisplayFormat(DataFormatString = "{0:yyyy/MM/dd HH:mm}")]
         public DateTime OrderDate { get; set; }
         [Display(Name = "No. de Deudor")]
         public string Debtor { get; set; }
@@ -20,6 +20,7 @@ namespace OnlineOrderCart.Web.Models
         public string OraclepId { get; set; }
         [Display(Name = "Descripción")]
         public string Description { get; set; }
+        
         [Display(Name = "Cantidad")]
         public int Quantity { get; set; }
         [Required(ErrorMessage = "The field {0} is mandatory.")]
@@ -35,5 +36,8 @@ namespace OnlineOrderCart.Web.Models
         public string PaymentMethod { get; set; } = "99";
         [Display(Name = "USO CFDI")]
         public string UseCfdi { get; set; } = "G01";
+        [Display(Name = "Observaciones")]
+        public string Observations { get; set; }
+        public DKCEmailDetails OptionalEmailDetails { get; set; }
     }
 }

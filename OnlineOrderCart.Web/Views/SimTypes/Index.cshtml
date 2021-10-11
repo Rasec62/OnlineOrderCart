@@ -4,9 +4,16 @@
 }
 <link rel="stylesheet" href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.min.css" />
 <br />
-<p>
-    <a asp-action="Create" class="btn btn-outline-primary"><i class="fas fa-feather"></i> Add New</a>
-</p>
+<div class="row">
+    <div class="col">
+        <h1></h1>
+    </div>
+    <div class="col text-right">
+        <p>
+            <a asp-action="Create" class="btn btn-outline-primary text-uppercase" style="border-radius: 60px;"><i class="glyphicon glyphicon-plus"></i> New</a>
+        </p>
+    </div>
+</div>
 <flash dismissable="true" />
 <div class="row">
     <div class="col-md-12">
@@ -38,9 +45,9 @@
                                     @Html.DisplayFor(modelItem => item.CodeKey)
                                 </td>
                                 <td>
-                                    <a asp-action="Edit" asp-route-id="@item.SimTypeId" class="btn btn-outline-warning"><i class="fas fa-snowplow"></i></a>
-                                    <a asp-action="Details" asp-route-id="@item.SimTypeId" class="btn btn-outline-info"><i class="fas fa-space-shuttle"></i></a>
-                                    <button data-id="@item.SimTypeId" class="btn btn-outline-danger deleteItem" data-toggle="modal" data-target="#deleteDialog"><i class="fas fa-skull-crossbones"></i></button>
+                                    <a asp-action="Edit" asp-route-id="@item.SimTypeId" class="btn btn-outline-warning"><i class="glyphicon glyphicon-pencil"></i></a>
+                                    <a asp-action="Details" asp-route-id="@item.SimTypeId" class="btn btn-outline-info"><i class="glyphicon glyphicon glyphicon-align-justify"></i></a>
+                                    <button data-id="@item.SimTypeId" class="btn btn-outline-danger deleteItem" data-toggle="modal" data-target="#deleteDialog"><i class="glyphicon glyphicon-trash" style="border-radius: 60px;"></i></button>
                                 </td>
                             </tr>
                         }
@@ -62,7 +69,7 @@
         $(document).ready(function () {
             $('#example').DataTable({
                 "order": [[2, "desc"]],
-                "lengthMenu": [[5,10, 25, 50, -1], [5,10, 25, 50, "All"]]
+                "lengthMenu": [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]]
             });
 
             // Delete item

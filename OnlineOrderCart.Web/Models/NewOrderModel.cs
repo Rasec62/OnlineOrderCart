@@ -10,16 +10,18 @@ namespace OnlineOrderCart.Web.Models
 {
     public class NewOrderModel: PrOrders
     {
-        [Display(Name = "Warehouse")]
+        [Display(Name = "Razon social")]
         [Required(ErrorMessage = "The field {0} is mandatory.")]
         public string BusinessName { get; set; }
         public string KamName { get; set; }
        
         [Required(ErrorMessage = "The field {0} is mandatory.")]
-        [Range(1, int.MaxValue, ErrorMessage = "Usted debe de seleccionar un Products Type.")]
+        [Range(0, int.MaxValue, ErrorMessage = "Usted debe de seleccionar un Products Type.")]
         public int OrderStatusId { get; set; }
 
         public string OrderCode { get; set; }
+
+        public long GenerateDistributor { get; set; }
 
         public IEnumerable<SelectListItem> CombosOrderStatuses { get; set; }
 

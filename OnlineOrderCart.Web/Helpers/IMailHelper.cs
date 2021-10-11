@@ -12,5 +12,6 @@ namespace OnlineOrderCart.Web.Helpers
         Response<object> SendMail(string to, string subject, string body);
         Response<object> SendMailAttachments(string to, string subject, string body, string FilePath);
         Response<object> SendMailToCAttachments(string to, List<DKCEmailDetails> toC, string subject, string body, string FilePath);
+        Response<object> SendMailToOnlyCAttachments(string to, DKCEmailDetails toC, string subject, string body, string FilePath);
     }
 }

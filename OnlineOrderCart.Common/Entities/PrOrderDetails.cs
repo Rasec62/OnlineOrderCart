@@ -40,8 +40,11 @@ namespace OnlineOrderCart.Common.Entities
         [Display(Name = "Order Status")]
         public string OrderStatus { get; set; }
 
+        [Required(ErrorMessage = "The field {0} is mandatory.")]
+        public long GenerateDistributor { get; set; }
+
         public int IsDeleted { get; set; }
-        [DisplayFormat(DataFormatString = "{0:yyyy/MM/dd hh:mm}")]
+        [DisplayFormat(DataFormatString = "{0:yyyy/MM/dd HH:mm}")]
         public DateTime? RegistrationDate { get; set; }
 
         [JsonIgnore]

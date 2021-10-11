@@ -5,7 +5,7 @@
 <link rel="stylesheet" href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.min.css" />
 <br />
 <p>
-    <a asp-action="Create" class="btn btn-outline-primary"><i class="fas fa-feather"></i> Add New</a>
+    <a asp-action="Create" class="btn btn-outline-primary"  style="border-radius: 60px;"><i class="glyphicon glyphicon-plus"></i> New</a>
 </p>
 <flash dismissable="true" />
 <div class="row">
@@ -38,9 +38,9 @@
                                     @Html.DisplayFor(modelItem => item.CodeKey)
                                 </td>
                                 <td>
-                                    <a asp-action="Edit" asp-route-id="@item.ActivationFormId" class="btn btn-outline-warning"><i class="fas fa-snowplow"></i></a>
-                                    <a asp-action="Details" asp-route-id="@item.ActivationFormId" class="btn btn-outline-info"><i class="fas fa-space-shuttle"></i></a>
-                                    <button data-id="@item.ActivationFormId" class="btn btn-outline-danger deleteItem" data-toggle="modal" data-target="#deleteDialog"><i class="fas fa-skull-crossbones"></i></button>
+                                    <a asp-action="Edit" asp-route-id="@item.ActivationFormId" class="btn btn-outline-warning"><i class="glyphicon glyphicon-pencil"></i></a>
+                                    <a asp-action="Details" asp-route-id="@item.ActivationFormId" class="btn btn-outline-info"><i class="glyphicon glyphicon glyphicon-align-justify"></i></a>
+                                    <button data-id="@item.ActivationFormId" class="btn btn-outline-danger deleteItem" data-toggle="modal" data-target="#deleteDialog"><i class="glyphicon glyphicon-trash" style="border-radius: 60px;"></i></button>
                                 </td>
                             </tr>
                         }

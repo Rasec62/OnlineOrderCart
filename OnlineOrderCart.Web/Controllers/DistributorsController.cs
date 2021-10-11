@@ -101,14 +101,26 @@ namespace OnlineOrderCart.Web.Controllers
         //[Authorize(Roles = "Admin")]
         [HttpGet]
         [Authorize(Roles = "PowerfulUser,KamAdmin,KamAdCoordinator")]
-        public IActionResult CreateDistributor()
+        public async Task<IActionResult> CreateDistributor()
         {
-            AddDistributorViewModel model = new AddDistributorViewModel{
-               Password = _configuration["SecretP:SecretPassword"],
-               PasswordConfirm = _configuration["SecretP:SecretPassword"],
-               ComboGenders = _combosHelper.GetComboGenders(),
-               ComboDisRoles = _combosHelper.GetComboDisRoles(),
-               ComboKams = _combosHelper.GetComboKamCoords(),
+            if (User.Identity.Name == null)
+            {
+                return new NotFoundViewResult("_ResourceNotFound");
+            }
+            var _users = await _userHelper.GetUserByEmailAsync(User.Identity.Name);
+            if (!_users.IsSuccess || _users.Result == null)
+            {
+                return new NotFoundViewResult("_ResourceNotFound");
+            }
+
+            AddDistributorViewModel model = new AddDistributorViewModel
+            {
+                Password = _configuration["SecretP:SecretPassword"],
+                PasswordConfirm = _configuration["SecretP:SecretPassword"],
+                ComboGenders = _combosHelper.GetComboGenders(),
+                ComboDisRoles = _combosHelper.GetComboDisRoles(),
+                ComboKams = _combosHelper.GetComboKamCoords(),
+                EmployeeNumber = _users.Result.EmployeeNumber,
                 GenderId = 3,
             };
 
@@ -198,7 +210,7 @@ namespace OnlineOrderCart.Web.Controllers
 
         [HttpGet]
         [Authorize(Roles = "PowerfulUser,KamAdmin,KamAdCoordinator")]
-        public async Task<IActionResult> DeleteDistributor(int? id)
+        public async Task<IActionResult> DeleteDistributor(long? id)
         {
             if (id == null)
             {
@@ -224,15 +236,15 @@ namespace OnlineOrderCart.Web.Controllers
                 }
                 _user.IsDeleted = 1;
                 await _dataContext.SaveChangesAsync();
-                _flashMessage.Confirmation("The Trademars was deleted.");
+                _flashMessage.Confirmation("The Distributor was deleted.");
             }
             catch (Exception ex)
             {
                 _flashMessage.Danger($"The Products can't be deleted because it has related records. {ex.Message}");
             }
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(IndexDistributor));
         }
-        private async Task<Distributors> DistributorsExists(int id)
+        private async Task<Distributors> DistributorsExists(long id)
         {
             var _dist = await _dataContext.Distributors.FindAsync(id);
             return _dist;
@@ -264,7 +276,7 @@ namespace OnlineOrderCart.Web.Controllers
 
         [HttpGet]
         [Authorize(Roles = "PowerfulUser,KamAdmin,KamAdCoordinator")]
-        public async Task<IActionResult> EditDistributor(int? id)
+        public async Task<IActionResult> EditDistributor(long? id)
         {
             if (User.Identity.Name == null)
             {
@@ -385,7 +397,7 @@ namespace OnlineOrderCart.Web.Controllers
         }
         [HttpGet]
         [Authorize(Roles = "PowerfulUser,KamAdmin,KamAdCoordinator")]
-        public async Task<IActionResult> DetailDistributor(int? id)
+        public async Task<IActionResult> DetailDistributor(long? id)
         {
             if (User.Identity.Name == null)
             {
@@ -413,7 +425,7 @@ namespace OnlineOrderCart.Web.Controllers
 
         [HttpGet]
         [Authorize(Roles = "PowerfulUser,KamAdmin,KamAdCoordinator")]
-        public async Task<IActionResult> IndexWarehouseDist(int? id)
+        public async Task<IActionResult> IndexWarehouseDist(long? id)
         {
             if (User.Identity.Name == null)
             {
@@ -510,7 +522,7 @@ namespace OnlineOrderCart.Web.Controllers
         }
         [HttpGet]
         [Authorize(Roles = "PowerfulUser,KamAdmin,KamAdCoordinator")]
-        public async Task<IActionResult> DistributorWareDelete(int? id) {
+        public async Task<IActionResult> DistributorWareDelete(long? id) {
             if (id == null)
             {
                 return new NotFoundViewResult("_ResourceNotFound");
@@ -538,7 +550,7 @@ namespace OnlineOrderCart.Web.Controllers
 
         [HttpGet]
         [Authorize(Roles = "PowerfulUser,KamAdmin,KamAdCoordinator")]
-        public async Task<IActionResult> ActiveofDetailWarehouses(int? id)
+        public async Task<IActionResult> ActiveofDetailWarehouses(long? id)
         {
             if (id == null)
             {
@@ -567,7 +579,7 @@ namespace OnlineOrderCart.Web.Controllers
 
         [HttpGet]
         [Authorize(Roles = "PowerfulUser,KamAdmin,KamAdCoordinator")]
-        public async Task<IActionResult> OtherProduct(int? id)
+        public async Task<IActionResult> OtherProduct(long? id)
         {
             if (id == null)
             {
@@ -795,7 +807,7 @@ namespace OnlineOrderCart.Web.Controllers
 
         [HttpGet]
         [Authorize(Roles = "PowerfulUser,KamAdmin,KamAdCoordinator")]
-        public async Task<IActionResult> DetailWarehouseDelete(int? id)
+        public async Task<IActionResult> DetailWarehouseDelete(long? id)
         {
             if (id == null)
             {
@@ -830,7 +842,7 @@ namespace OnlineOrderCart.Web.Controllers
 
         [HttpGet]
         [Authorize(Roles = "PowerfulUser,KamAdmin,KamAdCoordinator")]
-        public async Task<IActionResult> ProductActivation(int? id)
+        public async Task<IActionResult> ProductActivation(long? id)
         {
             if (id == null)
             {

@@ -7,11 +7,11 @@ namespace OnlineOrderCart.Web.Models
     public class InOrderDetailViewModel
     {
         [Display(Name = "Fecha de Pedido")]
-        [DisplayFormat(DataFormatString = "{0:yyyy/MM/dd hh:mm}")]
+        [DisplayFormat(DataFormatString = "{0:yyyy/MM/dd HH:mm}")]
         public DateTime OrderDate { get; set; }
 
         [Display(Name = "Fecha de Entrega")]
-        [DisplayFormat(DataFormatString = "{0:yyyy/MM/dd hh:mm}")]
+        [DisplayFormat(DataFormatString = "{0:yyyy/MM/dd HH:mm}")]
         public DateTime? DeliveryDate { get; set; }
 
         public long OrderId { get; set; }
@@ -65,6 +65,10 @@ namespace OnlineOrderCart.Web.Models
         public string ShippingBranchNo { get; set; }
         [Display(Name = "Nombre sucursal de envío")]
         public string ShippingBranchName { get; set; }
+
+        [Display(Name = "Descripcion Corta")]
+        public string ShortDescription { get; set; }
+
         [Display(Name = "SKU")]
         public string OraclepId { get; set; }
         [Display(Name = "METODO DE PAGO")]

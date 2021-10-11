@@ -16,11 +16,11 @@ namespace OnlineOrderCart.Web.Models
         [Display(Name = "Kam")]
         public string KamName { get; set; }
 
-        [DisplayFormat(DataFormatString = "{0:yyyy/MM/dd hh:mm tt}")]
+        [DisplayFormat(DataFormatString = "{0:yyyy/MM/dd HH:mm}")]
         public DateTime OrderDate { get; set; }
 
         [Display(Name = "Fecha de Orden")]
-        [DisplayFormat(DataFormatString = "{0:yyyy/MM/dd hh:mm tt}")]
+        [DisplayFormat(DataFormatString = "{0:yyyy/MM/dd HH:mm}")]
         public DateTime DateLocal => OrderDate.ToLocalTime();
         [Display(Name = "Kam Manager")]
         public long? KamManagerId { get; set; }

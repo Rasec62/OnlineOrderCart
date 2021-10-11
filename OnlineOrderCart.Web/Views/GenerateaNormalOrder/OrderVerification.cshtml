@@ -106,95 +106,34 @@
                     $('#DistributorId').html(Ditems);
                 });
             });
-        });
-        $(function () {
+
+            
             $("#DistributorId").on("change", function () {
-                console.log($("#DistributorId").val());
-                let _distribuidor = $("#DistributorId").val();
-                alert(_distribuidor);
-                $.ajax({
-                    type: "POST",
-                    url: "/GenerateaNormalOrder/SpecialistDetails/",
-                    data: [{ Iddistributor: _distribuidor }],
-                    contentType: "application/json; charset=utf-8",
-                    dataType: "json",
-                    success: OnSuccess,
-                    failure: function (response) {
-                        console.log(response);
-                        alert(response.d);
-                    },
-                    error: function (response) {
-                        console.log(response);
-                        alert(response.d);
-                    }
-                });
-                 //GetSpecialistDetails();
-                //$.ajax({
-                //    type: "POST",//id of the state which is used to extract cities
-                //    url: '/GenerateaNormalOrder/SpecialistDetails/',
-                //    data: { "distributorId": $("#DistributorId").val() },
-                //    //contentType: "application/json; charset=utf-8",
-                //    dataType: "json",
-                //    //traditional: true,
-                //    success: function (data) {
-                //        var tr;
-                //        var table = $("#example");
-                //        table.find("tr:not(:first)").remove();
-                //        //Append each row to html table
-                //        if (data.length!=0) {
-                //            //for (var i = 0; i < Jsons.length; i++) {
-                //            //    tr = $('<tr/>');
-                //            //    tr.append("<td>" + Jsons[i].Debtor + "</td>");
-                //            //    tr.append("<td>" + Jsons[i].BusinessName + "</td>");
-                //            //    tr.append("<td>" + Jsons[i].ShippingBranchNo + "</td>");
-                //            //    tr.append("<td>" + Jsons[i].ShippingBranchName + "</td>");
-                //            //    tr.append("<td>" + Jsons[i].OraclepId + "</td>");
-                //            //    tr.append("<td>" + Jsons[i].DeatilProducts + "</td>");
-                //            //    tr.append("<td>" + Jsons[i].Quantity + "</td>");
-                //            //    tr.append("<td>" + Jsons[i].PaymentMethod + "</td>");
-                //            //    tr.append("<td>" + Jsons[i].UseCfdi + "</td>");
-                //            //    tr.append("<td>" + Jsons[i].OrderCode + "</td>");
-                //            //    $('#example').append(tr);
-                //            //}
-                //            $.each(data, function (i, item) {
-                //                var rows = "<tr>"
-                //                    + "<td >" + item.Debtor + "</td>"
-                //                    + "<td >" + item.BusinessName + "</td>"
-                //                    + "<td >" + item.ShippingBranchNo + "</td>"
-                //                    + "<td >" + item.ShippingBranchName + "</td>"
-                //                    + "<td >" + item.OraclepId + "</td>"
-                //                    + "<td >" + item.DeatilProducts + "</td>"
-                //                    + "<td >" + item.Quantity + "</td>"
-                //                    + "<td >" + item.PaymentMethod + "</td>"
-                //                    + "<td >" + item.UseCfdi + "</td>"
-                //                    + "<td >" + item.OrderCode + "</td>"
-                //                    + "</tr>";
-                //                $('#example tbody').append(rows);
-                //            });
-                //        }
-                //        else {
-                //            alert("Hello");
-                //            $('#example').append(tr);
-                //        }
-                //    },
-                //    error: function () {
-                //        alert("Something went wrong call the police");
-                //    }
-                //});
-            });
+                var distributorId = $("#DistributorId").val();
+                console.log(distributorId);
+                 GetSpecialistDetails();
+             });
         });
+
+
         function GetSpecialistDetails() {
             //var DDistributorId = $.trim($("#DistributorId").val());https://www.aspsnippets.com/Articles/Bind-JSON-data-to-View-in-ASPNet-MVC.aspx
-           
+
             var distributorId = $("#DistributorId").val();
+
+            var jsonInput = { DistributorId: $("#DistributorId").val() };
+
             console.log(distributorId);
+            var parameters = "{'DistributorId':'" + $("#DistributorId").val() + "'}";
             $.ajax({
                 type: "POST",
                 url: "/GenerateaNormalOrder/SpecialistDetails/",
-                data: "{distributorId:'" + distributorId + "'}",
+                /* data: "{distributorId:'" + distributorId + "'}",*/
+                /* data: parameters,*/
+                data: { jsonInput: JSON.stringify(jsonInput) },
                 traditional: true,
-                dataType: "json",
-                contentType: "application/json; charset=utf-8",
+               /* dataType: "json",*/
+                /*contentType: "application/json; charset=utf-8",*/
                 success: function (datas) {
                     console.log(datas);
                     var table = $("#example");

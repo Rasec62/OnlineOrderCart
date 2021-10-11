@@ -8,6 +8,10 @@
     <flash dismissable="true" />
     <input type="hidden" asp-for="Debtor" />
     <input type="hidden" asp-for="DistributorId" />
+    <input type="hidden" asp-for="KamId" />
+    <input type="hidden" asp-for="UserId" />
+    <input type="hidden" asp-for="EmployeeNumber" />
+    <input type="hidden" asp-for="GenerateDistributor" />
     @*<input type="hidden" asp-for="Quantity" />*@
     <div class="card text-center border-secondary mb-3" style="max-width: 60rem;">
         <div class="card-header bg-transparent border-danger">
@@ -45,8 +49,8 @@
         <hr />
         <div class="card-footer  bg-transparent border-danger text-muted">
             <div class="form-group">
-                <button type="submit" class="btn btn-outline-primary  btn-sm" style="border-radius: 60px;">Add the Order</button>
-                <a asp-action="NewOrder" class="btn btn-outline-secondary btn-sm" style="border-radius: 60px;"><i class="fa fa-accusoft" aria-hidden="true"></i> Back to list</a>
+                <button type="submit" class="btn btn-outline-primary  btn-sm" style="border-radius: 60px;"> <span class="glyphicon glyphicon-ok"></span> Add the Order</button>
+                <a asp-action="NewOrder" class="btn btn-outline-secondary btn-sm" style="border-radius: 60px;"><i class="glyphicon glyphicon-share-alt"></i> Back to list</a>
             </div>
         </div>
     </div>

@@ -54,7 +54,6 @@ namespace OnlineOrderCart.Web.Controllers
         [Authorize(Roles = "PowerfulUser,KamAdmin,KamAdCoordinator")]
         public async Task<IActionResult> IndexRegister()
         {
-
             var ListAsync = await _userHelper.GetAllKamsRecordsAsync();
 
             return View(ListAsync);
@@ -832,8 +831,9 @@ namespace OnlineOrderCart.Web.Controllers
             return View(model);
         }
 
-        [Authorize(Roles = "PowerfulUser,KamAdmin,KamCoordinator")]
-        public async Task<IActionResult> DeleteRegister(int? id)
+        [Authorize(Roles = "PowerfulUser,KamAdmin,KamAdCoordinator")]
+        [HttpGet]
+        public async Task<IActionResult> DeleteRegister(long? id)
         {
             if (User.Identity.Name == null)
             {
@@ -864,15 +864,15 @@ namespace OnlineOrderCart.Web.Controllers
                 }
                 _user.IsDeleted = 1;
                 await _dataContext.SaveChangesAsync();
-                _flashMessage.Confirmation("The Trademars was deleted.");
+                _flashMessage.Confirmation("The Kam was deleted.");
             }
             catch (Exception ex)
             {
                 _flashMessage.Danger($"The Products can't be deleted because it has related records. {ex.Message}");
             }
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(IndexRegister));
         }
-        private async Task<Kams> KamsExists(int id)
+        private async Task<Kams> KamsExists(long id)
         {
             var _kam = await _dataContext.Kams.FindAsync(id);
             return _kam;

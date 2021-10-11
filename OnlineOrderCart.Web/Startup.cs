@@ -14,6 +14,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using Newtonsoft.Json;
 using OnlineOrderCart.Web.DataBase;
 using OnlineOrderCart.Web.DataBase.Repositories;
 using OnlineOrderCart.Web.Helpers;
@@ -65,19 +66,28 @@ namespace OnlineOrderCart.Web
                 options.Lockout.MaxFailedAccessAttempts = 3;
                 options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(15);
             });
+            //services.AddAuthentication()
+            //    .AddCookie()
+            //    .AddJwtBearer(cfg => {
+            //        cfg.TokenValidationParameters = new TokenValidationParameters
+            //        {
+            //            ValidIssuer = Configuration["Tokens:Issuer"],
+            //            ValidAudience = Configuration["Tokens:Audience"],
+            //            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Tokens:SecretKey"]))
+            //        };
+            //    });
+            //services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
+            //{
+            //    options.TokenValidationParameters = new TokenValidationParameters
+            //    {
+            //        ValidateIssuerSigningKey = true,
+            //        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Token:SecretKey"])),
+            //        ValidIssuer = Configuration["Token:Issuer"],
+            //        ValidateIssuer = true,
+            //        ValidateAudience = false
+            //    };
 
-            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
-            {
-                options.TokenValidationParameters = new TokenValidationParameters
-                {
-                    ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Token:SecretKey"])),
-                    ValidIssuer = Configuration["Token:Issuer"],
-                    ValidateIssuer = true,
-                    ValidateAudience = false
-                };
-
-            });
+            //});
             services.AddDbContext<DataContext>(cfg =>
             {
                 cfg.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
@@ -90,7 +100,7 @@ namespace OnlineOrderCart.Web
                 options.LoginPath = "/Account/NotAuthorized";
                 options.ExpireTimeSpan = TimeSpan.FromMinutes(15);
             });
-
+           
             //services.ConfigureApplicationCookie(options => {
             //    options.LoginPath = "/Account/NotAuthorized";
             //    options.AccessDeniedPath = "/Account/NotAuthorized";
@@ -121,14 +131,29 @@ namespace OnlineOrderCart.Web
             services.AddScoped<IOrderRepository, OrderRepository>();
             services.AddScoped<IDevelopmentHelper, DevelopmentHelper>();
             services.AddScoped<ICreateFileOrFolder, CreateFileOrFolder>();
+            services.AddScoped<IOrderIncentiveRepository, OrderIncentiveRepository>();
+            
 
             services.AddLocalization(opt => { opt.ResourcesPath = "Resources"; });
-            services.AddMvc()
-                .AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix)
-                .AddDataAnnotationsLocalization();
-                //.AddNewtonsoftJson(options => {
-                //    options.SerializerSettings.ContractResolver = new Newtonsoft.Json.Serialization.DefaultContractResolver();
-                //});
+
+            services.AddMvcCore().AddNewtonsoftJson();
+            //services.AddMvc()
+            //    .AddNewtonsoftJson(options => {
+            //        options.SerializerSettings.ContractResolver = new Newtonsoft.Json.Serialization.DefaultContractResolver();
+            //    });
+
+
+            services.AddControllersWithViews()
+               .AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix)
+               .AddDataAnnotationsLocalization()
+               .AddRazorRuntimeCompilation();
+
+            //services.AddMvc()
+            //    .AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix)
+            //    .AddDataAnnotationsLocalization();
+            //    .AddNewtonsoftJson(options =>{
+            //         options.SerializerSettings.ContractResolver = new Newtonsoft.Json.Serialization.DefaultContractResolver();
+            //    });
             services.Configure<RequestLocalizationOptions>(options =>
             {
                 var supportedCultures = new List<CultureInfo> {
@@ -140,8 +165,8 @@ namespace OnlineOrderCart.Web
                 options.SupportedCultures = supportedCultures;
                 options.SupportedUICultures = supportedCultures;
             });
-            services.AddControllersWithViews()
-                .AddRazorRuntimeCompilation();
+           
+
             services.AddFlashMessage();
 
             services.AddSession();

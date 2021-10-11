@@ -5,7 +5,7 @@ namespace OnlineOrderCart.Web.Models
 {
     public class ExcelDesignModel
     {
-        [DisplayFormat(DataFormatString = "{0:yyyy/MM/dd hh:mm}")]
+        [DisplayFormat(DataFormatString = "{0:yyyy/MM/dd HH:mm}")]
         public DateTime Fecha_de_Pedido { get; set; }
         [Display(Name = "No. de Deudor")]
         public string No_de_Deudor { get; set; }

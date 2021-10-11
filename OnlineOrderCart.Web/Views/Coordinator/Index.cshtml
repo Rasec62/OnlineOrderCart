@@ -12,7 +12,7 @@
     </div>
     <div class="col text-right">
         <p>
-            <a asp-action="CreateCoordinator" class="btn btn-outline-primary text-uppercase" style="border-radius: 60px;"><img src="~/Image/Nuevo.png" /></a>
+            <a asp-action="CreateCoordinator" class="btn btn-outline-primary text-uppercase" style="border-radius: 60px;"><i  class="glyphicon glyphicon-plus"></i> New</a>
         </p>
     </div>
 </div>
@@ -65,9 +65,9 @@
                     <img src="@Url.Content(item.PicturePath)" alt="Image" style="width:100px;height:100px;max-width: 100%; height: auto; border-radius:50%" />
                 </td>
                 <td>
-                    <a asp-action="EditCoordinator" asp-route-id="@item.KamId" class="btn btn-outline-warning text-uppercase" style="border-radius: 60px;"><img src="~/Image/Editar.png" /></a>
-                    <a asp-action="DetailCoordinator" asp-route-id="@item.KamId" class="btn btn-outline-info  text-uppercase" style="border-radius: 60px;"><img src="~/Image/detalles.png" /></a>
-                    <button data-id="@item.KamId" class="btn btn-outline-danger text-uppercase deleteItem" data-toggle="modal" data-target="#deleteDialog" style="border-radius: 60px;"><img src="~/Image/Eliminar.png" /></button>
+                    <a asp-action="EditCoordinator" asp-route-id="@item.KamId" class="btn btn-outline-warning text-uppercase" style="border-radius: 60px;"><i class="glyphicon glyphicon-pencil"></i></a>
+                    <a asp-action="DetailCoordinator" asp-route-id="@item.KamId" class="btn btn-outline-info  text-uppercase" style="border-radius: 60px;"><i class="glyphicon glyphicon glyphicon-align-justify"></i></a>
+                    <button data-id="@item.KamId" class="btn btn-outline-danger text-uppercase deleteItem" data-toggle="modal" data-target="#deleteDialog" style="border-radius: 60px;"><i class="glyphicon glyphicon-trash" style="border-radius: 60px;"></i></button>
                 </td>
             </tr>
         }

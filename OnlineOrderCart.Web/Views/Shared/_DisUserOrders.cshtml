@@ -48,38 +48,41 @@
                             <th scope="col">@Html.DisplayNameFor(model => model.DetailsOrders[0].PayofType)</th>
                             <th scope="col">@Html.DisplayNameFor(model => model.DetailsOrders[0].ShippingBranchNo)</th>
                             <th scope="col">@Html.DisplayNameFor(model => model.DetailsOrders[0].ShippingBranchName)</th>
-
+                            <th scope="col">@Html.DisplayNameFor(model => model.DetailsOrders[0].ShortDescription)</th>
                             <th></th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach (var item in Model.DetailsOrders)
                         {
-                            <tr>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.Debtor)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.BusinessName)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.OrderDate)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.OrderStatus)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.PayofType)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.ShippingBranchNo)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.ShippingBranchName)
-                                </td>
-                                <td>
-                                </td>
-                            </tr>
+                        <tr>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Debtor)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.BusinessName)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.OrderDate)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.OrderStatus)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.PayofType)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.ShippingBranchNo)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.ShippingBranchName)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.ShortDescription)
+                            </td>
+                            <td>
+                            </td>
+                        </tr>
                         }
                     </tbody>
                 </table>

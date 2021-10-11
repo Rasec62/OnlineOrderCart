@@ -1,0 +1,364 @@
+﻿@model NOrderIncentiveViewModel
+@{
+    ViewData["Title"] = "NewOrderIncentive";
+}
+<link rel="stylesheet" href="https://cdn.datatables.net/1.10.25/css/jquery.dataTables.min.css" />
+<form asp-action="NewOrderIncentive" method="post">
+    <div class="row">
+        <div class="col-sm-6">
+            <div class="card text-center">
+                <div class="card-header">
+                    <input type="hidden" asp-for="OrderStatusId" />
+                    <div asp-validation-summary="All" class="text-danger"></div>
+                    <flash dismissable="true" />
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title">New Order Incentive</h5>
+                    <div class="row">
+                        <div class="form-group col-md-6">
+                            <label asp-for="DistributorId" class="control-label"></label>
+                            <select asp-for="DistributorId" asp-items="Model.CombosDistributors" class="form-control" style="float: left;text-align: center;border-radius: 60px;"></select>
+                            <span asp-validation-for="DistributorId" class="text-danger"></span>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label asp-for="OrderStatusId" class="control-label"></label>
+                            <select asp-for="OrderStatusId" asp-items="Model.CombosOrderStatuses" class="form-control" style="border-radius: 60px;"></select>
+                            <span asp-validation-for="OrderStatusId" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-sm-12">
+                            <label asp-for="StoreId" class="control-label"></label>
+                            <select asp-for="StoreId" asp-items="Model.CombosWarehouses" class="form-control" style="float: left;text-align: center;border-radius: 60px;"></select>
+                            <span asp-validation-for="StoreId" class="text-danger"></span>
+                        </div>
+                        @*<div class="form-group col-sm-6">
+                                <label asp-for="DeatilStoreId" class="control-label"></label>
+                                <select asp-for="DeatilStoreId" asp-items="Model.CombosDWProducts" class="form-control" style="float: left;text-align: center;border-radius: 60px;"></select>
+                                <span asp-validation-for="DeatilStoreId" class="text-danger"></span>
+                            </div>*@
+                    </div>
+                    <div class="form-row">
+                        @*<div class="form-group col-sm-6">
+                                <label asp-for="StoreId" class="control-label"></label>
+                                <select asp-for="StoreId" asp-items="Model.CombosWarehouses" class="form-control" style="float: left;text-align: center;border-radius: 60px;"></select>
+                                <span asp-validation-for="StoreId" class="text-danger"></span>
+                            </div>*@
+                        <div class="form-group col-sm-12">
+                            <label asp-for="DeatilStoreId" class="control-label"></label>
+                            <select asp-for="DeatilStoreId" asp-items="Model.CombosDWProducts" class="form-control" style="float: left;text-align: center;border-radius: 60px;"></select>
+                            <span asp-validation-for="DeatilStoreId" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer bg-transparent border-success">
+                    <input type="submit" value="adding To-Order" class="btn btn-outline-primary" style="border-radius: 60px;" />
+                    <a asp-action="DeliverOrderIncentive" asp-route-id="@Model.DistributorId" class="btn btn-outline-danger" style="border-radius: 60px;"><i class="fab fa-gitkraken"></i>Order Review</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6">
+            <div class="card text-center">
+                <div class="card-header">
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title">New Order Incentive</h5>
+                    <div class="form-row">
+                        <div class="form-group col-sm-12">
+                            <label asp-for="TypeofPaymentId" class="control-label"></label>
+                            <select asp-for="TypeofPaymentId" asp-items="Model.CombosTypeofPayments" class="form-control" style="float: left;text-align: center;border-radius: 60px;"></select>
+                            <span asp-validation-for="TypeofPaymentId" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-sm-12">
+                            <label asp-for="Quantity" class="control-label"></label>
+                            <input asp-for="@Model.Quantity" type="number" min="50" max="90000" placeholder="Quantity" class="form-control" style="float: left;text-align: center;border-radius: 60px;" />
+                            <span asp-validation-for="Quantity" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-sm-12">
+                            <label asp-for="Price" class="control-label"></label>
+                            <input asp-for="@Model.Price" type="number" placeholder="Price" class="form-control" style="float: left;text-align: center;border-radius: 60px;" disabled />
+                            <span asp-validation-for="Price" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="card-footer bg-transparent border-success">
+                    <a asp-action="Index" class="btn btn-outline-secondary btn-sm" style="border-radius: 60px;"><i class="fa fa-address-card" aria-hidden="true"></i> Back to list</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+<br />
+<div class="card text-center">
+    <div class="card-header">
+        <h5 class="card-title">Special details added yet</h5>
+    </div>
+    <div class="card-body">
+
+        @if (Model.DetailsTmp.Count == 0)
+        {
+            <h5>No details added yet</h5>
+        }
+        else
+        {
+            <table class="display" id="example" style="width:100%">
+                <thead align="Center">
+                    <tr>
+                        <th>
+                            @Html.DisplayNameFor(model => model.DetailsTmp[0].Debtor)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.DetailsTmp[0].OrderCode)
+                        </th>
+                        @*<th>
+                                @Html.DisplayNameFor(model => model.DetailsTmp[0].DeatilProducts)
+                            </th>*@
+                        <th>
+                            @Html.DisplayNameFor(model => model.DetailsTmp[0].Price)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.DetailsTmp[0].Quantity)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.DetailsTmp[0].Value)
+                        </th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.DetailsTmp)
+                    {
+                        <tr>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Debtor)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.OrderCode)
+                            </td>
+                            @*<td>
+                                    @Html.DisplayFor(modelItem => item.DeatilProducts)
+                                </td>*@
+                            <td align="right">
+                                @Html.DisplayFor(modelItem => item.Price)
+                            </td>
+                            <td align="right">
+                                @Html.DisplayFor(modelItem => item.Quantity)
+                            </td>
+                            <td align="right">
+                                @Html.DisplayFor(modelItem => item.Value)
+                            </td>
+                            <td align="center">
+                                <a asp-action="Increase" asp-route-id="@item.IncentiveId" class="btn btn-outline-warning" style="border-radius: 60px;"><i class="fa fa-plus"></i></a>
+                                <a asp-action="Decrease" asp-route-id="@item.IncentiveId" class="btn btn-outline-dark" style="border-radius: 60px;"><i class="fa fa-minus"></i></a>
+                                @*<a asp-action="GeneratetheIncentiveOrder" asp-route-id="@item.IncentiveId" class="btn btn-outline-secondary" style="border-radius: 60px;"><i class="fa fa-algolia"></i></a>*@
+                                <a asp-action="DeletedTmp" asp-route-id="@item.IncentiveId" class="btn btn-outline-danger" style="border-radius: 60px;" onclick="return confirm('Are you sure you wish to delete this post?');">Delete</a>
+                                @*@Html.ActionLink("Delete", "DeleteProduct", new { id = item.OrderDetailTmpId }, new { @class = "btn btn-outline-danger", onclick = "return confirm('¿ Are you sure to delete this records?');" })*@
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+                <tr>
+                    <td colspan="3" align="right">
+                        <strong>Total</strong>
+                    </td>
+                    <td align="right">
+                        <strong>@Html.DisplayFor(modelItem => Model.TotalQuantity)</strong>
+                    </td>
+                    <td align="right">
+                        <strong>@Html.DisplayFor(modelItem => Model.TotalValue)</strong>
+                    </td>
+                </tr>
+            </table>
+        }
+    </div>
+    <div class="card-footer text-muted"></div>
+</div>
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript">
+        // Example starter JavaScript for disabling form submissions if there are invalid fields
+
+            $(document).ready(function () {
+
+                var items = "<option value='0'>Seleccione un Producto</option>";
+                var itemstoreId = "<option value='0'>Seleccione un Almacen</option>";
+
+                $("#DeatilStoreId").html(items);
+                $("#StoreId").html(itemstoreId);
+                $("#AStoreId").on("change", function () {
+                    $list = $("#DeatilStoreId");
+                    $.ajax({
+                        type: "POST",//id of the state which is used to extract cities
+                        url: '/OrderIncentive/OnChangeAutoComplete/',
+                        data: { "StoreId": $("#StoreId").val() },
+                        traditional: true,
+                        success: function (result) {
+                            $list.empty();
+                            var items = "<option value='0'>Seleccione un Producto</option>";
+                            $list.html(items);
+                            $.each(result, function (i, item) {
+                                $list.append('<option value="' + item["DeatilStoreId"] + '">' + item["Description"] + '</option>');
+                            });
+                        },
+                        error: function () {
+                            alert("Something went wrong call the police");
+                        }
+                    });
+                });
+
+                $('#DistributorId').change(function () {
+                    $list = $("#StoreId");
+                    $list2 = $("#DeatilStoreId");
+
+                    var url = '@Url.Content("~/")' + "OrderIncentive/GetSubStores";
+                    var ddlsource = "#DistributorId";
+                    $.getJSON(url, { DistributorId: $(ddlsource).val() }, function (data) {
+                        var Ditems = '';
+                        $list.empty();
+                        $list2.empty();
+                        var items = "<option value='0'>*Seleccione un Almacen*</option>";
+                        var items2 = "<option value='0'>*Seleccione un Producto*</option>";
+                        $list.html(items);
+                        $list2.html(items2);
+                        $('#StoreId').empty();
+                        $.each(data, function (i, product) {
+                            Ditems += "<option value='" + product.value + "'>" + product.text + "</option>";
+                        });
+                        $('#StoreId').html(Ditems);
+                    });
+                });
+
+                $("#aDistributorId").on("change", function () {
+                    $list = $("#StoreId");
+                    $list2 = $("#DeatilStoreId");
+                    console.log($("#DistributorId").val());
+                    $.ajax({
+                        type: "POST",//id of the state which is used to extract cities
+                        url: '/OrderIncentive/OnChangeAutoWarehouses/',
+                        data: { "DistributorId": $("#DistributorId").val() },
+                        traditional: true,
+                        success: function (result) {
+                            $list.empty();
+                            $list2.empty();
+                            var items = "<option value='0'>*Seleccione un Almacen*</option>";
+                            var items2 = "<option value='0'>*Seleccione un Producto*</option>";
+                            $list.html(items);
+                            $list2.html(items2);
+                            $.each(result, function (i, item) {
+                                console.log(item);
+                                console.log(item.StoreId);
+                                console.log(item.ShippingBranchName);
+                                $list.append('<option value="' + item.value + '">' + item.text + '</option>');
+                            });
+                        },
+                        error: function () {
+                            alert("Something went wrong call the police");
+                        }
+                    });
+                });
+
+                $('#ADistributorId').change(function () {
+                    var url = '@Url.Content("~/")' + "OrderIncentive/GetSubStores";
+                    var ddlsource = "#DistributorId";
+                    $.getJSON(url, { DistributorId: $(ddlsource).val() }, function (data) {
+                        var items = '';
+                        $('#StoreId').empty();
+                        $('#StoreId').html("<option value='0'>*Seleccione un Almacen*</option>");
+                        $.each(data, function (i, Store) {
+                            items += "<option value='" + Store["StoreId"] + "'>" + Store["ShippingBranchName"] + "</option>";
+                        });
+                        $('#StoreId').html(items);
+                    });
+                });
+
+                $('#StoreId').change(function () {
+                    $("#Price").val("0.1");
+                    var url = '@Url.Content("~/")' + "OrderIncentive/GetSubProduct";
+                    var ddlsource = "#StoreId";
+                    $.getJSON(url, { StoreId: $(ddlsource).val() }, function (data) {
+                        var items = '';
+                        $('#DeatilStoreId').empty();
+                        $.each(data, function (i, product) {
+                            items += "<option value='" + product.value + "'>" + product.text + "</option>";
+                        });
+                        $('#DeatilStoreId').html(items);
+                    });
+                });
+
+                $("#Quantity").change(function () {
+                    // Print entered value in a div box
+                    var Quantity = document.getElementById("Quantity").value;
+                    if (Quantity >= 50) {
+                        var rest = Quantity % 10;
+                        if (rest == 0) {
+                            alert("the amount is valid");
+                            $(this).css("background-color", "#EBEDEF");
+                            return true;
+                        }
+                        else {
+                            alert("the amount is not valid && Something went wrong call the police");
+                            document.getElementById("Quantity").focus();
+                            document.getElementById("Quantity").value = 50;
+                            $(this).css("background-color", "#CD6155");
+                            return false;
+                        }
+                    }
+                    else {
+                        alert('Data not Validation Quantity && Something went wrong call the police');
+                        document.getElementById("Quantity").focus();
+                        document.getElementById("Quantity").value = 50;
+                        $(this).css("background-color", "#F2D7D5");
+                        return false;
+                    }
+                });
+
+                $("#Price").change(function () {
+                    var price = document.getElementById("Price").value;
+                    if (price >= 0.01) {
+                        alert("the amount is valid");
+                        $(this).css("background-color", "#EBEDEF");
+                        return true;
+                    } else {
+                        alert('Data not Validation Price && Something went wrong call the police');
+                        document.getElementById("Price").focus();
+                        document.getElementById("Price").value = 0.01;
+                        $(this).css("background-color", "#F2D7D5");
+                        return false;
+                    }
+                });
+
+                $('#example').DataTable({
+                    "language": {
+                        "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Spanish.json"
+                    },
+                    "order": [[2, "desc"]],
+                    "lengthMenu": [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]]
+                });
+
+                $("#DeatilStoreId").on("change", function () {
+                    $("#Price").empty();
+                    $.ajax({
+                        type: "POST",//id of the state which is used to extract cities
+                        url: '/OrderIncentive/OnChangeAutoPriceComplete/',
+                        data: { "DeatilStoreId": $("#DeatilStoreId").val() },
+                        traditional: true,
+                        success: function (result) {
+                            console.log(result.price);
+                            $("#Price").val(result.price);
+                        },
+                        error: function () {
+                            alert("Something went wrong call the police");
+                        }
+                    });
+                });
+        });
+    </script>
+}

@@ -39,6 +39,15 @@ namespace OnlineOrderCart.Web.Models
         [Required(ErrorMessage = "El campo {0} es obligatorio.")]
         [Display(Name = "Tipo de Pago")]
         public int TypeofPaymentId { get; set; }
+        [Required(ErrorMessage = "El campo {0} es obligatorio.")]
+        public long UserId { get; set; }
+        [Display(Name = "Kams")]
+        [Required(ErrorMessage = "El campo {0} es obligatorio.")]
+        public long KamId { get; set; }
+
+        [Required(ErrorMessage = "The field {0} is mandatory.")]
+        public int GenerateDistributor { get; set; }
+        public string EmployeeNumber { get; set; }
 
         public IEnumerable<SelectListItem> CombosWarehouses { get; set; }
         public IEnumerable<SelectListItem> CombosDWProducts { get; set; }

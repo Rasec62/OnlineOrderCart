@@ -4,11 +4,14 @@
 }
 <link rel="stylesheet" href="https://cdn.datatables.net/1.10.25/css/jquery.dataTables.min.css" />
 
-<form asp-action="Create" method="post">
+<form asp-action="NewOrder" method="post">
     <div asp-validation-summary="All" class="text-danger"></div>
     <flash dismissable="true" />
     <input type="hidden" asp-for="UserId" />
+    <input type="hidden" asp-for="BusinessName" />
+    <input type="hidden" asp-for="Debtor" />
     <input type="hidden" asp-for="DistributorId" />
+    <input type="hidden" asp-for="GenerateDistributor" />
     <div class="card text-center border-danger mb-3" style="max-width: 70rem;">
         <div class="card-header bg-transparent border-secondary">
             <div class="alert alert-secondary">
@@ -35,7 +38,7 @@
                 <div class="col">
                     <div class="form-group">
                         <label asp-for="OrderCode" class="control-label"></label>
-                        <input asp-for="OrderCode" class="form-control" placeholder="Order Code" style="border-radius: 60px;" disabled/>
+                        <input asp-for="OrderCode" class="form-control" placeholder="Order Code" style="border-radius: 60px;" disabled />
                         <span asp-validation-for="OrderCode" class="text-danger"></span>
                     </div>
                 </div>
@@ -63,10 +66,14 @@
         <div class="card-footer bg-transparent border-danger text-muted">
             <div class="form-group">
                 <div class="col-md-offset-2 col-md-10">
-                    <input type="submit" value="Save Orders" class="btn btn-outline-primary" style="border-radius: 60px;" />
-                    @*@Html.ActionLink("Add Product", "AddProduct", "Orders", new { }, new { @class = "btn btn-outline-warning  popup" })*@
-                    <a class="btn btn-outline-warning" style="border-radius: 60px;" asp-action="AddProduct" asp-controller="Orders">Add New Order <i class="fa fa-plus"></i></a>
-                    <a asp-action="IndexOrders" class="btn btn-outline-secondary" style="border-radius: 60px;"><i class="fas fa-paper-plane"></i> Back to List</a>
+                    <button type="submit" class="btn btn-outline-primary" style="border-radius: 60px;">
+                        <span class="glyphicon glyphicon-edit"></span> Save Orders
+                    </button>
+
+                    @*<input type="submit" value="Save Orders" class="btn btn-outline-primary" style="border-radius: 60px;" />
+        @Html.ActionLink("Add Product", "AddProduct", "Orders", new { }, new { @class = "btn btn-outline-warning  popup" })*@
+                <a class="btn btn-outline-warning" style="border-radius: 60px;" asp-action="AddProduct" asp-controller="Orders"><i class="glyphicon glyphicon-saved"></i> Add New Order</a>
+                    <a asp-action="IndexOrders" class="btn btn-outline-secondary" style="border-radius: 60px;"><i class="glyphicon glyphicon-arrow-left"></i> Back to List</a>
                     @*@Html.ActionLink("Back to Orders", "IndexOrders", new { }, new { @class = "btn btn-outline-dark" })*@
                 </div>
             </div>
@@ -88,9 +95,12 @@
                     <th>
                         @Html.DisplayNameFor(model => model.Details[0].OrderCode)
                     </th>
-                    @*<th>
-                        @Html.DisplayNameFor(model => model.Details[0].TaxRate)
-                    </th>*@
+                    <th>
+                        @Html.DisplayNameFor(model => model.Details[0].OrderDate)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Details[0].ShortDescription)
+                    </th>
                     <th>
                         @Html.DisplayNameFor(model => model.Details[0].Price)
                     </th>
@@ -106,33 +116,37 @@
             <tbody>
                 @foreach (var item in Model.Details)
                 {
-                    <tr>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.OrderCode)
-                        </td>
-                        @*<td align="right">
-                            @Html.DisplayFor(modelItem => item.TaxRate)
-                        </td>*@
-                        <td align="right">
-                            @Html.DisplayFor(modelItem => item.Price)
-                        </td>
-                        <td align="right">
-                            @Html.DisplayFor(modelItem => item.Quantity)
-                        </td>
-                        <td align="right">
-                            @Html.DisplayFor(modelItem => item.Value)
-                        </td>
-                        <td>
-                            <a asp-action="Increase" asp-route-id="@item.OrderDetailTmpId" class="btn btn-outline-warning"  style="border-radius: 60px;"><i class="fa fa-plus"></i></a>
-                            <a asp-action="Decrease" asp-route-id="@item.OrderDetailTmpId" class="btn btn-outline-dark" style="border-radius: 60px;"><i class="fa fa-minus"></i></a>
-                            <a asp-action="DeletedTmp" asp-route-id="@item.OrderDetailTmpId" class="btn btn-outline-danger"  style="border-radius: 60px;" onclick="return confirm('Are you sure you wish to delete this post?');">Delete</a>
-                            @*@Html.ActionLink("Delete", "DeleteProduct", new { id = item.OrderDetailTmpId }, new { @class = "btn btn-outline-danger", onclick = "return confirm('¿ Are you sure to delete this records?');" })*@
-                        </td>
-                    </tr>
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.OrderCode)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.OrderDate)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.ShortDescription)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Price)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Quantity)
+                    </td>
+                    <td align="right">
+                        @Html.DisplayFor(modelItem => item.Value)
+                    </td>
+                    
+                    <td>
+                        <a asp-action="Increase" asp-route-id="@item.OrderDetailTmpId" class="btn btn-outline-warning" style="border-radius: 60px;"><i class="glyphicon glyphicon-plus"></i></a>
+                        <a asp-action="Decrease" asp-route-id="@item.OrderDetailTmpId" class="btn btn-outline-dark" style="border-radius: 60px;"><i class="glyphicon glyphicon-minus"></i></a>
+                        <a asp-action="DeletedTmp" asp-route-id="@item.OrderDetailTmpId" class="btn btn-outline-danger" style="border-radius: 60px;" onclick="return confirm('Are you sure you wish to delete this post?');"><i class="glyphicon glyphicon-off"></i> Delete</a>
+                        @*@Html.ActionLink("Delete", "DeleteProduct", new { id = item.OrderDetailTmpId }, new { @class = "btn btn-outline-danger", onclick = "return confirm('¿ Are you sure to delete this records?');" })*@
+                    </td>
+                </tr>
                 }
             </tbody>
             <tr>
-                <td colspan="2" align="right">
+                <td colspan="4" align="right">
                     <strong>Total</strong>
                 </td>
                 <td align="right">

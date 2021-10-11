@@ -7,11 +7,11 @@ namespace OnlineOrderCart.Web.Models
     public class TmpOrdersVerificViewModel
     {
         [Display(Name = "Fecha de Pedido")]
-        [DisplayFormat(DataFormatString = "{0:yyyy/MM/dd hh:mm}")]
+        [DisplayFormat(DataFormatString = "{0:yyyy/MM/dd HH:mm}")]
         public DateTime OrderDate { get; set; }
 
         [Display(Name = "Fecha de Pedido")]
-        [DisplayFormat(DataFormatString = "{0:yyyy/MM/dd hh:mm}")]
+        [DisplayFormat(DataFormatString = "{0:yyyy/MM/dd HH:mm}")]
         public DateTime DateLocal => OrderDate.ToLocalTime();
 
         public int OrderDetailTmpId { get; set; }
@@ -72,6 +72,11 @@ namespace OnlineOrderCart.Web.Models
         public string ShippingBranchName { get; set; }
         [Display(Name = "SKU")]
         public string OraclepId { get; set; }
+        [Display(Name = "Descripción Corta")]
+        [MaxLength(50, ErrorMessage = "El campo {0} no puede tener más de {1} caracteres.")]
+        [Required(ErrorMessage = "El campo {0} es obligatorio.")]
+        public string ShortDescription { get; set; }
+
         [Display(Name = "METODO DE PAGO")]
         public string PaymentMethod { get; set; } = "99";
         [Display(Name = "USO CFDI")]

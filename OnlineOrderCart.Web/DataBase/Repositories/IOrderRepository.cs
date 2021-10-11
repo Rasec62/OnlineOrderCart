@@ -33,5 +33,6 @@ namespace OnlineOrderCart.Web.DataBase.Repositories
         Task<List<OnlyOrderDetails>> GetOnlyOrdersAsync(long Distributorid);
         Task<List<OnlyOrderDetails>> GetCKOnlyOrdersAsync();
         Task<Response<object>> AddToOrderGenerateNormalAsync(OrderVerificationViewModel model, string userName);
+        Task<Response<object>> AddItemToDNormalOrderAsync(AddItemViewModel model, string userName);
     }
 }

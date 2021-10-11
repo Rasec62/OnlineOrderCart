@@ -22,12 +22,13 @@ namespace OnlineOrderCart.Web.Helpers
     {
         private readonly DataContext _dataContext;
         private readonly IConfiguration _configuration;
-       
+        private readonly ICombosHelper _combosHelper;
 
-        public ConverterHelper(DataContext dataContext, IConfiguration configuration)
+        public ConverterHelper(DataContext dataContext, IConfiguration configuration, ICombosHelper combosHelper)
         {
             _dataContext = dataContext;
             _configuration = configuration;
+            _combosHelper = combosHelper;
         }
 
         public Response<object> CreateSHA256(string Pass)
@@ -162,9 +163,9 @@ namespace OnlineOrderCart.Web.Helpers
                 return new Users
                 {
                     UserId = isNew ? 0 : model.UserId,
-                    FirstName = model.FirstName,
-                    LastName1 = model.LastName1,
-                    LastName2 = model.LastName2,
+                    FirstName = string.IsNullOrEmpty(model.FirstName)?"S/D": model.FirstName,
+                    LastName1 = string.IsNullOrEmpty(model.LastName1) ? "S/D" : model.LastName1,
+                    LastName2 = string.IsNullOrEmpty(model.LastName2) ? "S/D" : model.LastName2,
                     GenderId = model.GenderId.ToString(),
                     Email = model.Email,
                     UserName = $"D{model.Debtor.ToString()}",
@@ -248,11 +249,22 @@ namespace OnlineOrderCart.Web.Helpers
                 TypeofPaymentId = model.TypeofPaymentId,
                 OrderStatus = "0",
                 OrderDetailTmpId = isNew ? 0 : model.OrderDetailTmpId,
+                DistributorId = model.DistributorId,
+                GenerateUserId = model.UserId,
+                EmployeeNumber = model.EmployeeNumber,
+                KamId = model.KamId,
+                GenerateDistributor = model.GenerateDistributor,
+                OrderDate = DateTime.Now.ToUniversalTime(),
             };
         }
 
         public async Task<PrOrderDetailTmps> ToGenerateaNormalOrdersTmpEntity(GenerateaNormalOrderViewModel model, bool isNew)
         {
+            var _combo = _combosHelper
+                    .GetOrderStatuses()
+                    .Where(s => s.Value == "0")
+                    .FirstOrDefault();
+
             var _pprice = await _dataContext.DeatilWarehouses
                     .Include(dw => dw.Products)
                     .Where(dw => dw.DeatilStoreId == model.DeatilStoreId).FirstOrDefaultAsync();
@@ -272,6 +284,25 @@ namespace OnlineOrderCart.Web.Helpers
                 GenerateUserId = model.GenerateUserId,
                 OrderCode = "",
                 KamId = model.KamId,
+                GenerateDistributor = model.GenerateDistributor,
+            };
+        }
+
+        public IncentiveOrderDetailTmp ToIncentiveOrdersTmpEntity(NOrderIncentiveViewModel model, bool isNew)
+        {
+            return new IncentiveOrderDetailTmp
+            {
+                Debtor = model.Debtor.ToString(),
+                Quantity = model.Quantity,
+                Observations = " ",
+                DeatilStoreId = model.DeatilStoreId,
+                Price = Convert.ToDecimal(model.Price),
+                TaxPrice = model.TaxPrice,
+                OrderStatus = "0",
+                TypeofPaymentId = model.TypeofPaymentId,
+                IncentiveId = isNew ? 0 : model.IncentiveId,
+                IODTDate = DateTime.Now.ToUniversalTime(),
+                DistributorId = model.DistributorId,
             };
         }
         #endregion

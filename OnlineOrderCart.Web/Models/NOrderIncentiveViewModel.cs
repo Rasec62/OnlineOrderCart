@@ -8,40 +8,40 @@ namespace OnlineOrderCart.Web.Models
 {
     public class NOrderIncentiveViewModel
     {
-        [Required(ErrorMessage = "The field {0} is mandatory.")]
-        [Range(1, int.MaxValue, ErrorMessage = "The {0} field can not have more than {1} characters.")]
-        [Display(Name = "Quantity")]
+        [Required(ErrorMessage = "El campo {0} es obligatorio.")]
+        [Range(1, int.MaxValue, ErrorMessage = "El campo {0} no puede tener más de {1} caracteres.")]
+        [Display(Name = "Cantidad")]
         public int Quantity { get; set; }
-        [Required(ErrorMessage = "The field {0} is mandatory.")]
+        [Required(ErrorMessage = "El campo {0} es obligatorio.")]
         //[Range(0.01, double.MaxValue, ErrorMessage = "The {0} field can not have more than {1} characters.")]
-        [Display(Name = "Price")]
+        [Display(Name = "Precio")]
         [Column(TypeName = "decimal(10,2)")]
         public double Price { get; set; }
 
-        [Display(Name = "Value With Out Tax")]
+        [Display(Name = "Valor sin impuestos")]
         [Column(TypeName = "decimal(10,2)")]
         public decimal TaxPrice { get; set; }
 
-        [Required(ErrorMessage = "The field {0} is mandatory.")]
-        [Range(1, int.MaxValue, ErrorMessage = "The {0} field can not have more than {1} characters.")]
-        [Display(Name = "Distributors")]
+        [Required(ErrorMessage = "El campo {0} es obligatorio.")]
+        [Range(1, int.MaxValue, ErrorMessage = "El campo {0} no puede tener más de {1} caracteres.")]
+        [Display(Name = "Distribuidor")]
         public long DistributorId { get; set; }
 
-        [Required(ErrorMessage = "The field {0} is mandatory.")]
-        [Range(0, int.MaxValue, ErrorMessage = "The {0} field can not have more than {1} characters.")]
-        [Display(Name = "Order Status")]
+        [Required(ErrorMessage = "El campo {0} es obligatorio.")]
+        [Range(0, int.MaxValue, ErrorMessage = "El campo {0} no puede tener más de {1} caracteres.")]
+        [Display(Name = "Status Pedido")]
         public int OrderStatusId { get; set; }
-        [Required(ErrorMessage = "The field {0} is mandatory.")]
-        [Range(1, int.MaxValue, ErrorMessage = "You must select a warehouse")]
-        [Display(Name = "Warehouses")]
+        [Required(ErrorMessage = "El campo {0} es obligatorio.")]
+        [Range(1, int.MaxValue, ErrorMessage = "Debes seleccionar un almacén")]
+        [Display(Name = "Almacen")]
         public int StoreId { get; set; }
-        [Display(Name = "Products")]
-        [Range(1, long.MaxValue, ErrorMessage = "You must select a product.")]
+        [Display(Name = "Producto")]
+        [Range(1, long.MaxValue, ErrorMessage = "Debes seleccionar un Producto")]
         public long DeatilStoreId { get; set; }
 
-        [Range(1, long.MaxValue, ErrorMessage = "You must select a Type of Payment.")]
-        [Required(ErrorMessage = "The field {0} is required")]
-        [Display(Name = "Type of Payments")]
+        [Range(1, long.MaxValue, ErrorMessage = "Debes seleccionar un Tipo de Pago.")]
+        [Required(ErrorMessage = "El campo {0} es obligatorio.")]
+        [Display(Name = "Tipo de Pago")]
         public int TypeofPaymentId { get; set; }
 
         public string Debtor { get; set; }

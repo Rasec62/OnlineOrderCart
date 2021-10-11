@@ -27,6 +27,6 @@ namespace OnlineOrderCart.Web.Helpers
 
         Task<PrOrderDetailTmps> ToOrdersTmpEntity(AddItemViewModel model, bool isNew);
         Task<PrOrderDetailTmps> ToGenerateaNormalOrdersTmpEntity(GenerateaNormalOrderViewModel model, bool isNew);
-
+        IncentiveOrderDetailTmp ToIncentiveOrdersTmpEntity(NOrderIncentiveViewModel model, bool isNew);
     }
 }

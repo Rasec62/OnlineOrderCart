@@ -19,10 +19,10 @@ namespace OnlineOrderCart.Common.Entities
         [DataType(DataType.MultilineText)]
         public string Observations { get; set; }
         public string OrderStatus { get; set; }
-        [DisplayFormat(DataFormatString = "{0:yyyy/MM/dd hh:mm}")]
+        [DisplayFormat(DataFormatString = "{0:yyyy/MM/dd HH:mm}")]
         public DateTime OrderDate { get; set; }
         [Display(Name = "Fecha de Orden")]
-        [DisplayFormat(DataFormatString = "{0:yyyy/MM/dd hh:mm tt}")]
+        [DisplayFormat(DataFormatString = "{0:yyyy/MM/dd HH:mm}")]
         public DateTime DateLocal => OrderDate.ToLocalTime();
 
         [Display(Name = "Usuario")]
@@ -32,7 +32,7 @@ namespace OnlineOrderCart.Common.Entities
         public long DistributorId { get; set; }
 
         public int IsDeleted { get; set; }
-        [DisplayFormat(DataFormatString = "{0:yyyy/MM/dd hh:mm}")]
+        [DisplayFormat(DataFormatString = "{0:yyyy/MM/dd hh:mm tt}")]
         public DateTime? RegistrationDate { get; set; }
 
         [Display(Name = "Delivery date")]
@@ -44,7 +44,7 @@ namespace OnlineOrderCart.Common.Entities
         public DateTime DDateLocal => DeliveryDate.ToLocalTime();
 
         public long? CKamManagerId { get; set; }
-        public int? GenerateUserId { get; set; }
+        public long? GenerateUserId { get; set; }
         [JsonIgnore]
         [ForeignKey("UserId")]
         public virtual Users Users { get; set; }

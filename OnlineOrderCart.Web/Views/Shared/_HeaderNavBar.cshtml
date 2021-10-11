@@ -22,19 +22,19 @@
                                 @localizer["Catalogs"]
                             </a>
                             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                <a class="nav-link text-dark dropdown-item" asp-area="" asp-controller="Roles" asp-action="Index"><i class="fas fa-bezier-curve"></i> @localizer["Roles"]</a>
-                                <a class="nav-link text-dark dropdown-item" asp-area="" asp-controller="Trademark" asp-action="Index"><i class="fas fa-burn"></i> @localizer["Trademarks"]</a>
-                                <a class="nav-link text-dark  dropdown-item" asp-area="" asp-controller="SimTypes" asp-action="Index"><i class="fab fa-cloudflare"></i> @localizer["SimTypes"]</a>
+                                <a class="nav-link text-dark dropdown-item" asp-area="" asp-controller="Roles" asp-action="Index"><span class="fas fa-bezier-curve"></span> @localizer["Roles"]</a>
+                                <a class="nav-link text-dark dropdown-item" asp-area="" asp-controller="Trademark" asp-action="Index"><span class="fas fa-burn"></span> @localizer["Trademarks"]</a>
+                                <a class="nav-link text-dark  dropdown-item" asp-area="" asp-controller="SimTypes" asp-action="Index"><span class="fab fa-cloudflare"></span> @localizer["SimTypes"]</a>
                                 <div class="dropdown-divider"></div>
-                                <a class="nav-link text-dark  dropdown-item" asp-area="" asp-controller="ActivationsForm" asp-action="Index"><i class="fab fa-cloudflare"></i> @localizer["ActivationsForms"]</a>
-                                <a class="nav-link text-dark  dropdown-item" asp-area="" asp-controller="Purpose" asp-action="Index"><i class="fab fa-cloudflare"></i> @localizer["Purpose"]</a>
-                                <a class="nav-link text-dark  dropdown-item" asp-area="" asp-controller="ActivationsType" asp-action="Index"><i class="fab fa-cloudflare"></i> @localizer["ActivationsType"]</a>
+                                <a class="nav-link text-dark  dropdown-item" asp-area="" asp-controller="ActivationsForm" asp-action="Index"><span class="glyphicon glyphicon-certificate"></span> @localizer["ActivationsForms"]</a>
+                                <a class="nav-link text-dark  dropdown-item" asp-area="" asp-controller="Purpose" asp-action="Index"><span class="glyphicon glyphicon-folder-close"></span> @localizer["Purpose"]</a>
+                                <a class="nav-link text-dark  dropdown-item" asp-area="" asp-controller="ActivationsType" asp-action="Index"><span class="glyphicon glyphicon-retweet"></span> @localizer["ActivationsType"]</a>
                                 <div class="dropdown-divider"></div>
-                                <a class="nav-link text-dark  dropdown-item" asp-area="" asp-controller="ProductsType" asp-action="Index"><i class="fab fa-cloudflare"></i> @localizer["ProductsType"]</a>
+                                <a class="nav-link text-dark  dropdown-item" asp-area="" asp-controller="ProductsType" asp-action="Index"><span class="glyphicon glyphicon-comment"></span> @localizer["ProductsType"]</a>
                                 <div class="dropdown-divider"></div>
-                                <a class="nav-link text-dark  dropdown-item" asp-area="" asp-controller="Products" asp-action="Index"><i class="fab fa-cloudflare"></i> @localizer["Products"]</a>
+                                <a class="nav-link text-dark  dropdown-item" asp-area="" asp-controller="Products" asp-action="Index"><span class="glyphicon glyphicon-gift"></span> @localizer["Products"]</a>
                                 <div class="dropdown-divider"></div>
-                                <a class="nav-link text-dark  dropdown-item" asp-area="" asp-controller="TypeofPayments" asp-action="Index"><i class="fab fa-cloudflare"></i> @localizer["TypeofPayments"]</a>
+                                <a class="nav-link text-dark  dropdown-item" asp-area="" asp-controller="TypeofPayments" asp-action="Index"><span class="glyphicon glyphicon-tint"></span> @localizer["TypeofPayments"]</a>
                             </div>
                         </li>
                     }
@@ -45,27 +45,52 @@
                                 @localizer["Users"]
                             </a>
                             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                <a class="nav-link text-dark dropdown-item" asp-area="" asp-controller="Account" asp-action="IndexRegister"><i class="fas fa-bezier-curve"></i> @localizer["Kams"]</a>
+                                <a class="nav-link text-dark dropdown-item" asp-area="" asp-controller="Account" asp-action="IndexRegister"><span class="glyphicon glyphicon-asterisk"></span> @localizer["Kams"]</a>
                                 <div class="dropdown-divider"></div>
-                                <a class="nav-link text-dark dropdown-item" asp-area="" asp-controller="Coordinator" asp-action="Index"><i class="fas fa-bezier-curve"></i> @localizer["Coordinator"]</a>
+                                <a class="nav-link text-dark dropdown-item" asp-area="" asp-controller="Coordinator" asp-action="Index"><span class="glyphicon glyphicon-user"></span> @localizer["Coordinator"]</a>
                                 <div class="dropdown-divider"></div>
-                                <a class="nav-link text-dark dropdown-item" asp-area="" asp-controller="Distributors" asp-action="IndexDistributor"><i class="fas fa-bezier-curve"></i> @localizer["Distributors"]</a>
+                                <a class="nav-link text-dark dropdown-item" asp-area="" asp-controller="Distributors" asp-action="IndexDistributor"><span class="glyphicon glyphicon-link"></span> @localizer["Distributors"]</a>
                                 <div class="dropdown-divider"></div>
-                                <a class="nav-link text-dark dropdown-item" asp-area="" asp-controller="Distributors" asp-action="Emailforwarding"><i class="fas fa-bezier-curve"></i> @localizer["Emailforwarding"]</a>
+                                <a class="nav-link text-dark dropdown-item" asp-area="" asp-controller="Distributors" asp-action="Emailforwarding"><span class="glyphicon glyphicon-compressed"></span> @localizer["Emailforwarding"]</a>
                                 <div class="dropdown-divider"></div>
                             </div>
                         </li>
                     }
-                    @if (User.Identity.IsAuthenticated && User.IsInRole("PowerfulUser") || User.IsInRole("KamAdmin") || User.IsInRole("KamAdCoordinator") || User.IsInRole("Distributor"))
+                    @if (User.Identity.IsAuthenticated && User.IsInRole("PowerfulUser") || User.IsInRole("KamAdmin") || User.IsInRole("KamAdCoordinator"))
+                    {
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                @localizer["Kams"]
+                            </a>
+                            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <div class="dropdown-divider"></div>
+                                <a class="nav-link text-dark dropdown-item" asp-area="" asp-controller="GenerateaNormalOrder" asp-action="Index"><span class="glyphicon glyphicon-cog"></span>  @localizer["GenerateNormalOrder"]</a>
+                                <div class="dropdown-divider"></div>
+                            </div>
+                        </li>
+                    }
+                    @if (User.Identity.IsAuthenticated && User.IsInRole("PowerfulUser") || User.IsInRole("Distributor"))
                     {
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 @localizer["DistributorOrders"]
                             </a>
                             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                <a class="nav-link text-dark dropdown-item" asp-area="" asp-controller="Orders" asp-action="IndexOrders"><i class="fas fa-bezier-curve"></i>  @localizer["DealerOrders"]</a>
+                                <a class="nav-link text-dark dropdown-item" asp-area="" asp-controller="Orders" asp-action="IndexOrders"><span class="glyphicon glyphicon-shopping-cart"></span>  @localizer["DealerOrders"]</a>
                                 <div class="dropdown-divider"></div>
-                                <a class="nav-link text-dark dropdown-item" asp-area="" asp-controller="GenerateaNormalOrder" asp-action="Index"><i class="fas fa-bezier-curve"></i>  @localizer["GenerateNormalOrder"]</a>
+                                <a class="nav-link text-dark  dropdown-item" asp-area="" asp-controller="Orders" asp-action="Histories"><span class="glyphicon glyphicon-th-list"></span> @localizer["Histories"]</a>
+                                <div class="dropdown-divider"></div>
+                            </div>
+                        </li>
+                    }
+                    @if (User.Identity.IsAuthenticated && User.IsInRole("PowerfulUser") || User.IsInRole("KamAdCoordinator") || User.IsInRole("KamAdmin") || User.IsInRole("KamCoordinator") || User.IsInRole("Kam"))
+                    {
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                @localizer["OrderIncentive"]
+                            </a>
+                            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <a class="nav-link text-dark dropdown-item" asp-area="" asp-controller="OrderIncentive" asp-action="Index"><span class="glyphicon glyphicon-tags"></span>  @localizer["Incentive"]</a>
                                 <div class="dropdown-divider"></div>
                             </div>
                         </li>

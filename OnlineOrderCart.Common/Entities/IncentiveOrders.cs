@@ -23,7 +23,7 @@ namespace OnlineOrderCart.Common.Entities
         [Display(Name = "Distribuidor")]
         [ForeignKey("Distributors")]
         public long DistributorId { get; set; }
-        [DisplayFormat(DataFormatString = "{0:yyyy/MM/dd hh:mm}")]
+        [DisplayFormat(DataFormatString = "{0:yyyy/MM/dd HH:mm}")]
         [Display(Name = "Incentive Date")]
         public DateTime OrderDate { get; set; }
         [Required(ErrorMessage = "The field {0} is mandatory.")]
@@ -34,8 +34,12 @@ namespace OnlineOrderCart.Common.Entities
         [Required(ErrorMessage = "The field {0} is mandatory.")]
         [Display(Name = "Order Status")]
         public string OrderStatus { get; set; }
-        public int IsDelete { get; set; }
+        public int IsDeleted { get; set; }
         public DateTime RegistrationDate { get; set; }
+
+        [DisplayFormat(DataFormatString = "{0:yyyy/MM/dd HH:mm}")]
+        [Display(Name = "Send Date")]
+        public DateTime? SendDate { get; set; }
 
         public Users Users { get; set; }
         public Distributors Distributors { get; set; }

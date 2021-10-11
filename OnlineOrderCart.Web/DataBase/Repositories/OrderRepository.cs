@@ -126,16 +126,16 @@ namespace OnlineOrderCart.Web.DataBase.Repositories
                         OrderStatus = _combo.Text,
                         UserId = user.Result.UserId,
                         IsDeleted = 0,
-                        CKamManagerId = 0,
-                        GenerateUserId = 0,
+                        DeliveryDate = Convert.ToDateTime("01/01/1900"),
+                        CKamManagerId = user.Result.KamId,
+                        GenerateUserId = user.Result.UserId,
                         RegistrationDate = DateTime.UtcNow,
                     };
 
                     _dataContext.PrOrders.Add(order);
                     await _dataContext.SaveChangesAsync();
 
-                    var details = orderTmps.Select(o => new PrOrderDetails
-                    {
+                    var details = orderTmps.Select(o => new PrOrderDetails{
                         Price = o.Price,
                         Quantity = o.Quantity,
                         OrderId = order.OrderId,
@@ -145,6 +145,9 @@ namespace OnlineOrderCart.Web.DataBase.Repositories
                         TaxRate = o.TaxRate,
                         OrderStatus = _combo.Text,
                         TypeofPaymentId = o.TypeofPaymentId,
+                        GenerateDistributor = model.GenerateDistributor,
+                        IsDeleted = 0,
+                        RegistrationDate = DateTime.Now.ToUniversalTime(),
                     }).ToList();
 
                     _dataContext.PrOrderDetails.AddRange(details);
@@ -260,30 +263,55 @@ namespace OnlineOrderCart.Web.DataBase.Repositories
         {
             try
             {
-                List<OnlyOrderDetails> ListIndexOrder = await(from p in _dataContext.PrOrders
-                                                              join u in _dataContext.Users on p.UserId equals u.UserId
-                                                              join d in _dataContext.Distributors on p.DistributorId equals d.DistributorId
-                                                              join k in _dataContext.Kams on d.KamId equals k.KamId
-                                                              where p.GenerateUserId == 1
-                                                              select new OnlyOrderDetails
-                                                              {
-                                                                  Debtor = d.Debtor,
-                                                                  BusinessName = d.BusinessName,
-                                                                  Observations = p.Observations,
-                                                                  OrderId = p.OrderId,
-                                                                  FullName = $"{k.Users.FullName}",
-                                                                  OrderDate = p.DateLocal,
-                                                                  OrderStatus = p.OrderStatus,
-                                                              }).ToListAsync();
+                List<OnlyOrderDetails> ListIndexOrder = await (from p in _dataContext.PrOrders 
+                                                               join u in _dataContext.Users on p.UserId equals u.UserId
+                                                               join d in _dataContext.Distributors on p.DistributorId equals d.DistributorId
+                                                               join k in _dataContext.Kams on d.KamId equals k.KamId
+                                                               where p.GenerateUserId == 1
+                                                               select new OnlyOrderDetails
+                                                               {
+                                                                   Debtor = d.Debtor,
+                                                                   BusinessName = d.BusinessName,
+                                                                   Observations = p.Observations,
+                                                                   OrderId = p.OrderId,
+                                                                   FullName = $"{k.Users.FullName}",
+                                                                   OrderDate = p.DateLocal,
+                                                                   OrderStatus = p.OrderStatus,
+                                                               }).ToListAsync();
 
 
 
                 return ListIndexOrder.OrderBy(t => t.OrderId).ToList();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
 
                 throw;
+            }
+        }
+
+        private async Task<string> OlnyDetailOrder(long id) {
+            try
+            {
+                var _detail = await (from d in _dataContext.PrOrderDetails
+                               join dw in _dataContext.DeatilWarehouses
+                               on d.DeatilStoreId equals dw.DeatilStoreId
+                               join p in _dataContext.Products
+                               on dw.ProductId equals p.ProductId
+                               where d.OrderId.Equals(id)
+                               select new {
+                                   ShortDescription = p.ShortDescription,
+                                   Description = p.Description,
+                               }).FirstOrDefaultAsync();
+                if (_detail == null)
+                {
+                    return "sin datos";
+                }
+                return _detail.ShortDescription;
+            }
+            catch (Exception ex)
+            {
+                return ex.Message;
             }
         }
 
@@ -432,9 +460,62 @@ namespace OnlineOrderCart.Web.DataBase.Repositories
             }
         }
 
-        public Task<Response<object>> AddItemToOrderAsync(AddItemViewModel model, string userName)
+        public async Task<Response<object>> AddItemToOrderAsync(AddItemViewModel model, string userName)
         {
-            throw new NotImplementedException();
+            try{
+                var _combo = _combosHelper
+                    .GetOrderStatuses()
+                    .Where(s => s.Value == "0")
+                    .FirstOrDefault();
+
+                var tmp = _dataContext.prOrderDetailTmps
+                   .Where(odt => odt.Debtor == model.Debtor.ToString()
+                   && odt.DeatilStoreId == model.DeatilStoreId && odt.TypeofPaymentId.Equals(model.TypeofPaymentId))
+                   .FirstOrDefault();
+
+                if (tmp == null)
+                {
+                    var _model = await _converterHelper.ToOrdersTmpEntity(model, true);
+                    _model.OrderStatus = _combo.Text;
+                    _dataContext.prOrderDetailTmps.Add(_model);
+                    await _dataContext.SaveChangesAsync();
+                }
+                else
+                {
+                    tmp.Quantity += model.Quantity;
+                    _dataContext.prOrderDetailTmps.Update(tmp);
+                    await _dataContext.SaveChangesAsync();
+                }
+                return new Response<object>
+                {
+                    IsSuccess = true,
+                    Message = "Win",
+                };
+            }
+            catch (SqlException sqlEx)
+            {
+                string message = string.Format("<b>Message:</b> {0}<br /><br />", sqlEx.Message);
+                message += string.Format("<b>StackTrace:</b> {0}<br /><br />", sqlEx.StackTrace.Replace(Environment.NewLine, string.Empty));
+                message += string.Format("<b>Source:</b> {0}<br /><br />", sqlEx.Source.Replace(Environment.NewLine, string.Empty));
+                message += string.Format("<b>TargetSite:</b> {0}", sqlEx.TargetSite.ToString().Replace(Environment.NewLine, string.Empty));
+                return new Response<object>
+                {
+                    IsSuccess = false,
+                    Message = message,
+                };
+            }
+            catch (Exception ex)
+            {
+                string message = string.Format("<b>Message:</b> {0}<br /><br />", ex.Message);
+                message += string.Format("<b>StackTrace:</b> {0}<br /><br />", ex.StackTrace.Replace(Environment.NewLine, string.Empty));
+                message += string.Format("<b>Source:</b> {0}<br /><br />", ex.Source.Replace(Environment.NewLine, string.Empty));
+                message += string.Format("<b>TargetSite:</b> {0}", ex.TargetSite.ToString().Replace(Environment.NewLine, string.Empty));
+                return new Response<object>
+                {
+                    IsSuccess = false,
+                    Message = message,
+                };
+            }
         }
 
         public async Task<Response<object>> AddItemToGenerateaNormalOrderAsync(AddGenerateNormalOrderModel model, string userName)
@@ -595,6 +676,65 @@ namespace OnlineOrderCart.Web.DataBase.Repositories
                         Message = message,
                     };
                 }
+            }
+        }
+
+        public async Task<Response<object>> AddItemToDNormalOrderAsync(AddItemViewModel model, string userName)
+        {
+            try
+            {
+                var _combo = _combosHelper
+                    .GetOrderStatuses()
+                    .Where(s => s.Value == "0")
+                    .FirstOrDefault();
+
+                var tmp = _dataContext.prOrderDetailTmps
+                   .Where(odt => odt.Debtor == model.Debtor.ToString()
+                   && odt.DeatilStoreId == model.DeatilStoreId && odt.TypeofPaymentId.Equals(model.TypeofPaymentId))
+                   .FirstOrDefault();
+
+                if (tmp == null)
+                {
+                    var _model = await _converterHelper.ToOrdersTmpEntity(model, true);
+                    _model.OrderStatus = _combo.Text;
+                    _dataContext.prOrderDetailTmps.Add(_model);
+                    await _dataContext.SaveChangesAsync();
+                }
+                else
+                {
+                    tmp.Quantity += model.Quantity;
+                    _dataContext.prOrderDetailTmps.Update(tmp);
+                    await _dataContext.SaveChangesAsync();
+                }
+                return new Response<object>
+                {
+                    IsSuccess = true,
+                    Message = "Win",
+                };
+            }
+            catch (SqlException sqlEx)
+            {
+                string message = string.Format("<b>Message:</b> {0}<br /><br />", sqlEx.Message);
+                message += string.Format("<b>StackTrace:</b> {0}<br /><br />", sqlEx.StackTrace.Replace(Environment.NewLine, string.Empty));
+                message += string.Format("<b>Source:</b> {0}<br /><br />", sqlEx.Source.Replace(Environment.NewLine, string.Empty));
+                message += string.Format("<b>TargetSite:</b> {0}", sqlEx.TargetSite.ToString().Replace(Environment.NewLine, string.Empty));
+                return new Response<object>
+                {
+                    IsSuccess = false,
+                    Message = message,
+                };
+            }
+            catch (Exception ex)
+            {
+                string message = string.Format("<b>Message:</b> {0}<br /><br />", ex.Message);
+                message += string.Format("<b>StackTrace:</b> {0}<br /><br />", ex.StackTrace.Replace(Environment.NewLine, string.Empty));
+                message += string.Format("<b>Source:</b> {0}<br /><br />", ex.Source.Replace(Environment.NewLine, string.Empty));
+                message += string.Format("<b>TargetSite:</b> {0}", ex.TargetSite.ToString().Replace(Environment.NewLine, string.Empty));
+                return new Response<object>
+                {
+                    IsSuccess = false,
+                    Message = message,
+                };
             }
         }
     }

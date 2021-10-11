@@ -7,11 +7,11 @@ namespace OnlineOrderCart.Web.Models
     public class TmpIncentiveDViewModel
     {
         [Display(Name = "Fecha de Pedido")]
-        [DisplayFormat(DataFormatString = "{0:yyyy/MM/dd hh:mm}")]
+        [DisplayFormat(DataFormatString = "{0:yyyy/MM/dd HH:mm}")]
         public DateTime OrderDate { get; set; }
 
         [Display(Name = "Fecha de Pedido")]
-        [DisplayFormat(DataFormatString = "{0:yyyy/MM/dd hh:mm}")]
+        [DisplayFormat(DataFormatString = "{0:yyyy/MM/dd HH:mm}")]
         public DateTime DateLocal => OrderDate.ToLocalTime();
 
         public int IncentiveId { get; set; }
@@ -76,6 +76,9 @@ namespace OnlineOrderCart.Web.Models
         public string PaymentMethod { get; set; } = "99";
         [Display(Name = "USO CFDI")]
         public string UseCfdi { get; set; } = "G01";
+        [Display(Name = "Descripcion Corta")]
+        public string ShortDescription { get; set; }
+
         [DisplayFormat(DataFormatString = "{0:C2}", ApplyFormatInEditMode = false)]
         public decimal Value { get { return Price * (decimal)Quantity; } }
     }

@@ -37,5 +37,10 @@ namespace OnlineOrderCart.Web.Models
         public string LastName2 { get; set; }
 
         public string KamName { get; set; }
+
+        [Display(Name = "First Name")]
+        [MaxLength(50)]
+        [Required(ErrorMessage = "The field {0} is mandatory.")]
+        public string EmployeeNumber { get; set; }
     }
 }

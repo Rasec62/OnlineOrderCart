@@ -8,7 +8,7 @@ namespace OnlineOrderCart.Web.Models
     public class ObjectAvatarViewModel
     {
         [Display(Name = "Fecha de Pedido")]
-        [DisplayFormat(DataFormatString = "{0:yyyy/MM/dd hh:mm}")]
+        [DisplayFormat(DataFormatString = "{0:yyyy/MM/dd HH:mm}")]
         public DateTime OrderDate { get; set; }
         [Display(Name = "No. de Deudor")]
         public string Debtor { get; set; }
@@ -46,10 +46,16 @@ namespace OnlineOrderCart.Web.Models
         [Column(TypeName = "decimal(10,2)")]
         public decimal TaxPrice { get; set; }
 
+        [Display(Name = "Descripción Corta")]
+        [MaxLength(50, ErrorMessage = "El campo {0} no puede tener más de {1} caracteres.")]
+        [Required(ErrorMessage = "El campo {0} es obligatorio.")]
+        public string ShortDescription { get; set; }
+
         [Display(Name = "METODO DE PAGO")]
         public string PaymentMethod { get; set; } = "99";
         [Display(Name = "USO CFDI")]
         public string UseCfdi { get; set; } = "G01";
         public List<DKCEmailDetails> EmailDetails { get; set; }
+        public DKCEmailDetails OptionalEmailDetails { get; set; }
     }
 }

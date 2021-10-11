@@ -6,9 +6,16 @@
 <link rel="stylesheet" href="https://cdn.datatables.net/1.10.25/css/jquery.dataTables.min.css" />
 <link rel="stylesheet" href="https://cdn.datatables.net/buttons/1.7.1/css/buttons.dataTables.min.css" />
 <br />
-<p>
-    <a asp-action="Create" class="btn btn-outline-primary" style="border-radius: 60px;"><i class="fas fa-feather"></i> @localizer["AddNew"]</a>
-</p>
+<div class="row">
+    <div class="col">
+        <h1></h1>
+    </div>
+    <div class="col text-right">
+        <p>
+            <a asp-action="Create" class="btn btn-outline-primary text-uppercase" style="border-radius: 60px;"><i class="glyphicon glyphicon-plus"></i> New</a>
+        </p>
+    </div>
+</div>
 <flash dismissable="true" />
 <div class="row">
     <div class="col-md-12">
@@ -47,34 +54,34 @@
                     <tbody>
                         @foreach (var item in Model)
                         {
-                        <tr>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.Description)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.ShortDescription)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.ProductsType.Description)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.Trademarks.Description)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.ActivationsForm.Description)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.ActivationsType.Description)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.SimTypes.Description)
-                            </td>
-                            <td>
-                                <a asp-action="Edit" asp-route-id="@item.ProductId" class="btn btn-outline-warning" style="border-radius: 60px;"><i class="fas fa-snowplow"></i></a>
-                                <a asp-action="Details" asp-route-id="@item.ProductId" class="btn btn-outline-info" style="border-radius: 60px;"><i class="fas fa-space-shuttle"></i></a>
-                                <button data-id="@item.ProductId" class="btn btn-outline-danger deleteItem" data-toggle="modal" data-target="#deleteDialog" style="border-radius: 60px;"><i class="fas fa-skull-crossbones"></i></button>
-                            </td>
-                        </tr>
+                            <tr>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Description)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.ShortDescription)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.ProductsType.Description)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Trademarks.Description)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.ActivationsForm.Description)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.ActivationsType.Description)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.SimTypes.Description)
+                                </td>
+                                <td>
+                                    <a asp-action="Edit" asp-route-id="@item.ProductId" class="btn btn-outline-warning" style="border-radius: 60px;"><i class="glyphicon glyphicon-pencil"></i></a>
+                                    <a asp-action="Details" asp-route-id="@item.ProductId" class="btn btn-outline-info" style="border-radius: 60px;"><i class="glyphicon glyphicon glyphicon-align-justify"></i></a>
+                                    <button data-id="@item.ProductId" class="btn btn-outline-danger deleteItem" data-toggle="modal" data-target="#deleteDialog" style="border-radius: 60px;"><i class="glyphicon glyphicon-trash" style="border-radius: 60px;"></i></button>
+                                </td>
+                            </tr>
                         }
                     </tbody>
                 </table>
@@ -96,14 +103,14 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
     <script src="https://cdn.datatables.net/buttons/1.7.1/js/buttons.html5.min.js"></script>
     <script src="https://cdn.datatables.net/buttons/1.7.1/js/buttons.print.min.js"></script>
-    
+
     <script src="/js/deleteDialog.js"></script>
 
     <script type="text/javascript">
         $(document).ready(function () {
             $('#example').DataTable({
                 "scrollX": true,
-               /* dom: 'Bfrtip',*/
+                /* dom: 'Bfrtip',*/
                 //buttons: [
                 //    'copy', 'csv', 'excel', 'pdf'
                 //],

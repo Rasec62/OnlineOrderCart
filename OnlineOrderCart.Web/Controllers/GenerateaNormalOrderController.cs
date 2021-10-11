@@ -29,7 +29,8 @@ namespace OnlineOrderCart.Web.Controllers
         private readonly ICombosHelper _combosHelper;
         private readonly IOrderRepository _orderRepository;
         private readonly IConfiguration _configuration;
-
+        private List<TmpOrdersVerificViewModel> ObjSpecialist = new List<TmpOrdersVerificViewModel>();
+        private List<TmpOrdersVerificViewModel> ListObjSpecialistIncentiveOrders = new List<TmpOrdersVerificViewModel>();
         // GET: GenerateaNormalOrderController
         public GenerateaNormalOrderController(IUserHelper userHelper,
             IFlashMessage flashMessage, DataContext dataContext,
@@ -110,6 +111,7 @@ namespace OnlineOrderCart.Web.Controllers
                 EmployeeNumber = _users.Result.EmployeeNumber,
                 Quantity = 150,
                 KamManagerId = _users.Result.KamManagerId,
+                GenerateDistributor = 0,
             };
             model.Details = await _developmentHelper.GetSqlDataTmpCKOrders(_users.Result.UserId);
 
@@ -251,65 +253,53 @@ namespace OnlineOrderCart.Web.Controllers
             return this.RedirectToAction("Create");
         }
 
-        [HttpPost]
-        public JsonResult SpecialistDetails(string Iddistributor) {
-            //Creating List
-            List<TmpOrdersVerificViewModel> ObjSpecialist = new List<TmpOrdersVerificViewModel>();
-
-            if (Iddistributor == null){
-                return Json(ObjSpecialist);
-            }
-
-            if (User.Identity.Name == null){
-                return Json(ObjSpecialist);
-            }
-
-           
+        private List<TmpOrdersVerificViewModel> TblSpecialistDetails(long Id) {
             try
             {
-                long _distributorId = Convert.ToInt64(Iddistributor);
-
                 var _UseAvatar = _dataContext.Kams
-                                    .Include(k => k.Users)
-                                    .Where(u => u.Users.UserName == User.Identity.Name)
-                                    .FirstOrDefault();
+                                   .Include(k => k.Users)
+                                   .Where(u => u.Users.UserName == User.Identity.Name)
+                                   .FirstOrDefault();
 
                 if (_UseAvatar == null)
                 {
-                    return Json(null);
+                    return ListObjSpecialistIncentiveOrders;
                 }
                 ObjSpecialist = (from t in _dataContext.prOrderDetailTmps
-                                join dw in _dataContext.DeatilWarehouses on t.DeatilStoreId equals dw.DeatilStoreId
-                                join wr in _dataContext.Warehouses on dw.StoreId equals wr.StoreId
-                                join p in _dataContext.Products on dw.ProductId equals p.ProductId
-                                join ma in _dataContext.Trademarks on p.TrademarkId equals ma.TrademarkId
-                                join d in _dataContext.Distributors on t.DistributorId equals d.DistributorId
-                                join pay in _dataContext.TypeofPayments on t.TypeofPaymentId equals pay.TypeofPaymentId
-                                where t.GenerateUserId == _UseAvatar.Users.UserId && d.DistributorId == _distributorId
-                                select new TmpOrdersVerificViewModel{
-                                    Debtor = t.Debtor,
-                                    BusinessName = d.BusinessName,
-                                    Observations = t.Observations,
-                                    DeatilStoreId = t.DeatilStoreId,
-                                    OrderDetailTmpId = t.OrderDetailTmpId,
-                                    Price = t.Price,
-                                    Quantity = t.Quantity,
-                                    TaxPrice = t.TaxRate,
-                                    OrderCode = p.ShortDescription,
-                                    OrderStatus = t.OrderStatus,
-                                    DeatilProducts = p.Description,
-                                    ShippingBranchNo = wr.ShippingBranchNo,
-                                    MD = d.MD.ToUpper(),
-                                    PayofType = pay.PaymentName,
-                                    OraclepId = p.OraclepId,
-                                    ShippingBranchName = wr.ShippingBranchName,
-                                }).ToList();
+                                 join dw in _dataContext.DeatilWarehouses on t.DeatilStoreId equals dw.DeatilStoreId
+                                 join wr in _dataContext.Warehouses on dw.StoreId equals wr.StoreId
+                                 join p in _dataContext.Products on dw.ProductId equals p.ProductId
+                                 join ma in _dataContext.Trademarks on p.TrademarkId equals ma.TrademarkId
+                                 join d in _dataContext.Distributors on t.DistributorId equals d.DistributorId
+                                 join pay in _dataContext.TypeofPayments on t.TypeofPaymentId equals pay.TypeofPaymentId
+                                 where t.GenerateUserId == _UseAvatar.Users.UserId && d.DistributorId == Id
+                                 select new TmpOrdersVerificViewModel
+                                 {
+                                     Debtor = t.Debtor,
+                                     BusinessName = d.BusinessName,
+                                     Observations = t.Observations,
+                                     DeatilStoreId = t.DeatilStoreId,
+                                     OrderDetailTmpId = t.OrderDetailTmpId,
+                                     Price = t.Price,
+                                     Quantity = t.Quantity,
+                                     TaxPrice = t.TaxRate,
+                                     OrderCode = p.ShortDescription,
+                                     OrderStatus = t.OrderStatus,
+                                     DeatilProducts = p.Description,
+                                     ShippingBranchNo = wr.ShippingBranchNo,
+                                     MD = d.MD.ToUpper(),
+                                     PayofType = pay.PaymentName,
+                                     OraclepId = p.OraclepId,
+                                     ShippingBranchName = wr.ShippingBranchName,
+                                 }).ToList();
 
                 int recordsTotal = ObjSpecialist.Count;
                 int count = 1;
-                List<TmpOrdersVerificViewModel> ListObjSpecialistIncentiveOrders = new List<TmpOrdersVerificViewModel>();
-                foreach (var itemIncen in ObjSpecialist){
-                    var tmpo = new TmpOrdersVerificViewModel{
+                
+                foreach (var itemIncen in ObjSpecialist)
+                {
+                    var tmpo = new TmpOrdersVerificViewModel
+                    {
                         Debtor = itemIncen.Debtor,
                         BusinessName = itemIncen.BusinessName,
                         Observations = itemIncen.Observations,
@@ -335,18 +325,39 @@ namespace OnlineOrderCart.Web.Controllers
                     ListObjSpecialistIncentiveOrders.Add(tmpo);
                     count++;
                 }
+                return ListObjSpecialistIncentiveOrders;
+            }
+            catch (Exception)
+            {
+                return ListObjSpecialistIncentiveOrders;
+            }
+        }
 
-                if (ListObjSpecialistIncentiveOrders.Count == 0)
-                {
-                    return Json(ObjSpecialist);
-                }
+        [HttpPost]
+        public JsonResult SpecialistDetails([FromBody]string DistributorId) {
+            //Creating List
+            
+            if (DistributorId == null){
+                return new JsonResult(ObjSpecialist);
+            }
+
+            if (User.Identity.Name == null){
+                return new JsonResult(ObjSpecialist);
+            }
+
+            try
+            {
+                long _distributorId = Convert.ToInt64(DistributorId);
+
+                ListObjSpecialistIncentiveOrders = TblSpecialistDetails(_distributorId);
                 //return list as Json    
-                return Json(ListObjSpecialistIncentiveOrders);
+                //return Json(ListObjSpecialistIncentiveOrders.ToList()) ;
+                return new JsonResult(ListObjSpecialistIncentiveOrders.ToList());
             }
             catch (Exception)
             {
 
-                return Json(ObjSpecialist);
+                return new JsonResult(ObjSpecialist.ToList());
             }
 
         }
@@ -497,6 +508,30 @@ namespace OnlineOrderCart.Web.Controllers
                 //_createFileOrFolder.WriteExcelFile(OrdersLayout);
             }
             return RedirectToAction(nameof(Index), "GenerateaNormalOrder");
+        }
+
+        [HttpPost]
+        public IActionResult AjaxMethod(string DistributorId){
+            if (DistributorId == null)
+            {
+                return Json(new { result = false, error = "no data" });
+            }
+
+            if (User.Identity.Name == null)
+            {
+                return Json(new { result = false, error = "no data" });
+            }
+
+            long _distributorId = Convert.ToInt64(DistributorId);
+
+            ListObjSpecialistIncentiveOrders = TblSpecialistDetails(_distributorId);
+            try{
+             
+                return Json(new { result = true, ListObjSpecialistIncentiveOrders });
+            }
+            catch (Exception ex){
+                return Json(new { result = false, error = ex.Message });
+            }
         }
     }
 }

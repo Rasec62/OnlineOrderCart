@@ -445,7 +445,6 @@ namespace OnlineOrderCart.Web.Helpers
 
             return list;
         }
-
         public IEnumerable<SelectListItem> GetComboKamCoords()
         {
             string[] marks = new string[2] { "KD", "K" };
@@ -493,38 +492,52 @@ namespace OnlineOrderCart.Web.Helpers
 
             Listfruits.Insert(0, new SelectListItem
             {
-                Text = "(Select a Kam...)",
+                Text = "(Seleccione un Kam...)",
                 Value = "0"
             });
             return Listfruits;
         }
-
         public IEnumerable<SelectListItem> GetComboKDistributors(string UserName)
         {
+            List<SelectListItem> list = new List<SelectListItem>();
             var _UserK = _dataContext.Kams
                 .Include(u => u.Users)
                 .Where(k => k.IsDeleted == 0 && k.Users.UserName == UserName && k.Users.IsDistributor == 0)
                 .FirstOrDefault();
 
-            var list = _dataContext
-              .Distributors
-              .Where(t => t.IsDeleted == 0 && t.KamId.Equals(_UserK.KamId))
-                .Select(pt => new SelectListItem
-                {
-                    Text = pt.BusinessName,
-                    Value = $"{pt.DistributorId}"
-                })
-                 .OrderBy(pt => pt.Text)
-                 .ToList();
+
+            if (_UserK.IsCoordinator == 1){
+                list = _dataContext
+             .Distributors
+             .Where(t => t.IsDeleted == 0 && t.KamId.Equals(_UserK.KamManagerId))
+               .Select(pt => new SelectListItem
+               {
+                   Text = pt.BusinessName,
+                   Value = $"{pt.DistributorId}"
+               })
+                .OrderBy(pt => pt.Text)
+                .ToList();
+            }
+            else {
+                list = _dataContext
+             .Distributors
+             .Where(t => t.IsDeleted == 0 && t.KamId.Equals(_UserK.KamId))
+               .Select(pt => new SelectListItem
+               {
+                   Text = pt.BusinessName,
+                   Value = $"{pt.DistributorId}"
+               })
+                .OrderBy(pt => pt.Text)
+                .ToList();
+            }
 
             list.Insert(0, new SelectListItem
             {
-                Text = "(Select a Distributor...)",
+                Text = "(Seleccione un Distribuidor...)",
                 Value = "0"
             });
             return list;
         }
-
         public IEnumerable<SelectListItem> GetComboAllKDistributors()
         {
             var list = _dataContext
@@ -541,6 +554,26 @@ namespace OnlineOrderCart.Web.Helpers
             list.Insert(0, new SelectListItem
             {
                 Text = "(Selecciona un  Distribuidor...)",
+                Value = "0"
+            });
+            return list;
+        }
+        public IEnumerable<SelectListItem> GetComboIncTypeofPayments()
+        {
+            var list = _dataContext
+                .TypeofPayments
+                .Where(t => t.IsDeleted == 0 && t.CodeKey == "PNCI")
+                  .Select(pt => new SelectListItem
+                  {
+                      Text = pt.PaymentName,
+                      Value = $"{pt.TypeofPaymentId}"
+                  })
+                   .OrderBy(pt => pt.Text)
+                   .ToList();
+
+            list.Insert(0, new SelectListItem
+            {
+                Text = "(Seleccione un tipo de Pago...)",
                 Value = "0"
             });
             return list;

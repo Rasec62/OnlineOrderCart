@@ -4,12 +4,13 @@
     ViewData["Title"] = "Type of Payments";
 }
 <link rel="stylesheet" href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.min.css" />
+<br />
 <div class="row">
     <div class="col">
         <h1>Type of Payments</h1>
     </div>
     <div class="col text-right">
-        <a asp-action="Create" class="btn btn-outline-success" style="border-radius: 60px;"><i class="fas fa-feather"></i> New Type of Payment</a>
+        <a asp-action="Create" class="btn btn-outline-success" style="border-radius: 60px;"><i class="glyphicon glyphicon-plus"></i> New</a>
     </div>
 </div>
 <br />
@@ -36,9 +37,9 @@
                     @Html.DisplayFor(modelItem => item.CodeKey)
                 </td>
                 <td>
-                    <a asp-action="Edit" asp-route-id="@item.TypeofPaymentId" class="btn btn-outline-warning" style="border-radius: 60px;"><i class="fas fa-snowplow"></i></a> 
-                    <a asp-action="Details" asp-route-id="@item.TypeofPaymentId" class="btn btn-outline-secondary" style="border-radius: 60px;"><i class="fas fa-space-shuttle"></i></a> 
-                    <button data-id="@item.TypeofPaymentId" class="btn btn-outline-danger deleteItem" data-toggle="modal" data-target="#deleteDialog" style="border-radius: 60px;"><i class="fas fa-skull-crossbones"></i></button>
+                    <a asp-action="Edit" asp-route-id="@item.TypeofPaymentId" class="btn btn-outline-warning" style="border-radius: 60px;"><i class="glyphicon glyphicon-pencil"></i></a> 
+                    <a asp-action="Details" asp-route-id="@item.TypeofPaymentId" class="btn btn-outline-secondary" style="border-radius: 60px;"><i class="glyphicon glyphicon glyphicon-align-justify"></i></a> 
+                    <button data-id="@item.TypeofPaymentId" class="btn btn-outline-danger deleteItem" data-toggle="modal" data-target="#deleteDialog" style="border-radius: 60px;"><i class="glyphicon glyphicon-trash" style="border-radius: 60px;"></i></button>
                 </td>
             </tr>
         }

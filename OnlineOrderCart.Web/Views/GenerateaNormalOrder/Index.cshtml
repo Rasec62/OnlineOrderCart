@@ -10,7 +10,7 @@
         <h1></h1>
     </div>
     <div class="col text-right">
-        <a asp-action="Create" class="btn btn-outline-success" style="border-radius: 60px;">New Order</a>
+        <a asp-action="Create" class="btn btn-outline-success" style="border-radius: 60px;"><i class="glyphicon glyphicon-plus"></i> New Order</a>
     </div>
 </div>
 <br />
@@ -26,7 +26,7 @@
                 <div class="table-responsive-xl">
                     <table class="display table-hover" id="example" style="width:100%">
                         <caption>List of Index Orders</caption>
-                        <thead class="thead-dark">
+                        <thead class="thead-dark"  align="Center">
                             <tr>
                                 <th scope="col">
                                     @Html.DisplayNameFor(model => model.OrderDate)
@@ -52,30 +52,31 @@
                         <tbody>
                             @foreach (var item in Model)
                             {
-                                <tr>
-                                    <td>
-                                        @Html.DisplayFor(modelItem => item.OrderDate)
-                                    </td>
-                                    <td>
-                                        @Html.DisplayFor(modelItem => item.Debtor)
-                                    </td>
-                                    <td>
-                                        @Html.DisplayFor(modelItem => item.BusinessName)
-                                    </td>
-                                    <td>
-                                        @Html.DisplayFor(modelItem => item.FullName)
-                                    </td>
-                                    <td>
-                                        @Html.DisplayFor(modelItem => item.Observations)
-                                    </td>
-                                    <td>
-                                        @Html.DisplayFor(modelItem => item.OrderStatus)
-                                    </td>
-                                    <td>
-                                        <a asp-action="OrderConfirmation" asp-route-id="@item.OrderId" class="btn btn-outline-warning" style="border-radius: 60px;"><i class="fas fa-fighter-jet"></i></a>
-                                        <a asp-action="Details" asp-route-id="@item.OrderId" class="btn btn-outline-info" style="border-radius: 60px;"><i class="fab fa-leanpub"></i></a>
-                                    </td>
-                                </tr>
+                            <tr>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.OrderDate)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Debtor)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.BusinessName)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.FullName)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Observations)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.OrderStatus)
+                                </td>
+                               
+                                <td>
+                                    <a asp-action="OrderConfirmation" asp-route-id="@item.OrderId" class="btn btn-outline-warning" style="border-radius: 60px;"><i class="glyphicon glyphicon-share"></i> Confirm the order</a>
+                                    <a asp-action="Details" asp-route-id="@item.OrderId" class="btn btn-outline-info" style="border-radius: 60px;"><i class="glyphicon glyphicon-tasks"></i> Order detail</a>
+                                </td>
+                            </tr>
                             }
                         </tbody>
                     </table>

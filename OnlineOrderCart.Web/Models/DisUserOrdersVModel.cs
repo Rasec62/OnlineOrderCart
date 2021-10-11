@@ -7,10 +7,10 @@ namespace OnlineOrderCart.Web.Models
     public class DisUserOrdersVModel
     {
         [Display(Name = "Fecha de Pedido")]
-        [DisplayFormat(DataFormatString = "{0:MM/dd/yyyy hh:mm}")]
+        [DisplayFormat(DataFormatString = "{0:MM/dd/yyyy HH:mm}")]
         public DateTime OrderDate { get; set; }
 
-        [DisplayFormat(DataFormatString = "{0:MM/dd/yyyy hh:mm}")]
+        [DisplayFormat(DataFormatString = "{0:MM/dd/yyyy HH:mm}")]
         [Display(Name = "Order Date")]
         public DateTime DateLocal => OrderDate.ToLocalTime();
         public long OrderId { get; set; }

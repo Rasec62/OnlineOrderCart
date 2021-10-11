@@ -23,10 +23,10 @@
                         <partial name="_Warehouse" />
                     </div>
                     <div class="card-footer bg-transparent border-warning text-muted">
-                        <button type="submit" class="btn btn-outline-secondary btn-sm"  style="border-radius: 60px;">
-                            <img src="~/Image/Nuevo.png" class="rounded mx-auto d-block" />
+                        <button type="submit" class="btn btn-outline-secondary btn-sm" style="border-radius: 60px;">
+                            <span class="glyphicon glyphicon-plus"></span> Plus
                         </button>
-                        <a asp-action="DetailDistributor" asp-route-id="@Model.DistributorId" class="btn btn-outline-warning"  style="border-radius: 60px;"> Warehouse</a>
+                        <a asp-action="DetailDistributor" asp-route-id="@Model.DistributorId" class="btn btn-outline-warning"  style="border-radius: 60px;"><i class="glyphicon glyphicon-inbox"></i> Warehouse</a>
                     </div>
                 </div>
             </form>
@@ -68,11 +68,11 @@
                                         <td>
                                             @if (item.IsDeleted == 0)
                                             {
-                                                <a asp-action="EditofDetailWarehouses" class="btn btn-outline-warning" asp-route-id="@item.StoreId" title="Edit of Detail Warehouses"> <img src="~/Image/editar.png" /></a>
-                                                <a asp-action="GuardiansofDetailWarehouses" class="btn btn-outline-success" asp-route-id="@item.StoreId" title="Detail of Warehouse"> <img src="~/Image/Detalles.png" /></a>
-                                                <a asp-action="OtherProduct" class="btn btn-outline-secondary" asp-route-id="@item.StoreId" title="Other Product"> <i class="fa fa-book fa-fw" aria-hidden="true"></i></a>
+                                                <a asp-action="EditofDetailWarehouses" class="btn btn-outline-warning" asp-route-id="@item.StoreId" title="Edit of Detail Warehouses"><i class="glyphicon glyphicon-pencil"></i></a>
+                                                <a asp-action="GuardiansofDetailWarehouses" class="btn btn-outline-success" asp-route-id="@item.StoreId" title="Detail of Warehouse"><i class="glyphicon glyphicon glyphicon-align-justify"></i></a>
+                                                <a asp-action="OtherProduct" class="btn btn-outline-secondary" asp-route-id="@item.StoreId" title="Other Product"><i class="glyphicon glyphicon-new-window"></i></a>
                                                 @*<button data-id="@item.StoreId" class="btn btn-outline-secondary StoreItem"><i class="fa fa-book fa-fw" aria-hidden="true"></i>Other Product</button>*@
-                                                <button data-id="@item.StoreId" class="btn btn-outline-danger deleteItem" data-toggle="modal" data-target="#deleteDialog"> <img src="~/Image/Eliminar.png" /></button>
+                                                <button data-id="@item.StoreId" class="btn btn-outline-danger deleteItem" data-toggle="modal" data-target="#deleteDialog"><i class="glyphicon glyphicon-trash" style="border-radius: 60px;"></i></button>
                                             }
                                             else
                                             {

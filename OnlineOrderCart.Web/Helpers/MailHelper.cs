@@ -166,5 +166,63 @@ namespace OnlineOrderCart.Web.Helpers
                 };
             }
         }
+        public Response<object> SendMailToOnlyCAttachments(string to, DKCEmailDetails toC, string subject, string body, string FilePath)
+        {
+            try
+            {
+                string from = _configuration["Mail:From"];
+                string smtp = _configuration["Mail:Smtp"];
+                string port = _configuration["Mail:Port"];
+                string sSLPort = _configuration["Mail:SSLPort"];
+                string password = _configuration["Mail:Password"];
+                string MailOrders = _configuration["Mail:MailOrders"];
+
+
+
+                MimeMessage message = new MimeMessage();
+                message.From.Add(new MailboxAddress(from));
+                message.To.Add(new MailboxAddress(MailOrders, to));
+
+                if (!string.IsNullOrEmpty(toC.EmailC))
+                {
+                    message.Cc.Add(new MailboxAddress(toC.EmailK, toC.EmailC));
+                }
+                else {
+                    message.Cc.Add(new MailboxAddress(toC.EmailK));
+                }
+
+                if (toC.OptionalEmailDetails.Count > 0){
+                    foreach (var item in toC.OptionalEmailDetails){
+                        message.Cc.Add(new MailboxAddress(item.OptionalEmail));
+                    }
+                }
+                message.Subject = subject;
+
+                BodyBuilder bodyBuilder = new BodyBuilder{
+                    HtmlBody = body
+                };
+                bodyBuilder.Attachments.Add(@FilePath, new ContentType("application", "xlsx"));
+
+                message.Body = bodyBuilder.ToMessageBody();
+
+                using (SmtpClient client = new SmtpClient()){
+                    client.Connect(smtp, int.Parse(port), SecureSocketOptions.None);
+                    client.Authenticate(from, password);
+                    client.Send(message);
+                    client.Disconnect(true);
+                }
+                return new Response<object> { IsSuccess = true };
+            }
+            catch (Exception exMail)
+            {
+
+                return new Response<object>
+                {
+                    IsSuccess = false,
+                    Message = exMail.Message,
+                    Result = exMail
+                };
+            }
+        }
     }
 }

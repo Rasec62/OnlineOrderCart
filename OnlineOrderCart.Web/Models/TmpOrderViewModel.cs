@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace OnlineOrderCart.Web.Models
@@ -23,6 +24,13 @@ namespace OnlineOrderCart.Web.Models
         public string MD { get; set; }
         public string ShippingBranchNo { get; set; }
         public string PayofType { get; set; }
+        [DisplayFormat(DataFormatString = "{0:yyyy/MM/dd HH:mm}")]
+        public DateTime OrderDate { get; set; }
+
+        [Display(Name = "Descripción Corta")]
+        [MaxLength(50, ErrorMessage = "El campo {0} no puede tener más de {1} caracteres.")]
+        [Required(ErrorMessage = "El campo {0} es obligatorio.")]
+        public string ShortDescription { get; set; }
         [DisplayFormat(DataFormatString = "{0:C2}", ApplyFormatInEditMode = false)]
         public decimal Value { get { return Price * (decimal)Quantity; } }
     }

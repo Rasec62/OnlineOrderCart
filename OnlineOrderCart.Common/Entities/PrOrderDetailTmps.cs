@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -40,6 +41,9 @@ namespace OnlineOrderCart.Common.Entities
         public long? KamId { get; set; }
         public long? GenerateUserId { get; set; }
 
+        [Required(ErrorMessage = "The field {0} is required")]
+        public int GenerateDistributor { get; set; }
+
         [Display(Name = "Employee Number")]
         [Required(ErrorMessage = "The field {0} is mandatory.")]
         [MaxLength(10, ErrorMessage = "The {0} field can not have more than {1} characters.")]
@@ -49,6 +53,12 @@ namespace OnlineOrderCart.Common.Entities
         [ForeignKey("DeatilWarehouses")]
         [NotMapped]
         public virtual DeatilWarehouses DeatilWarehouses { get; set; }
+
+        [DisplayFormat(DataFormatString = "{0:yyyy/MM/dd HH:mm}")]
+        public DateTime OrderDate { get; set; }
+        [Display(Name = "Fecha de Orden")]
+        [DisplayFormat(DataFormatString = "{0:yyyy/MM/dd HH:mm}")]
+        public DateTime DateLocal => OrderDate.ToLocalTime();
 
         [DataType(DataType.Currency), DisplayFormat(DataFormatString = "{0:C2}", ApplyFormatInEditMode = false)]
         public decimal Value { get { return Price * (decimal)Quantity; } }

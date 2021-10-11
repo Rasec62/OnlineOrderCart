@@ -100,8 +100,9 @@ namespace OnlineOrderCart.Web.Helpers
                     _dataContext.Users.Add(_users);
                     await _dataContext.SaveChangesAsync();
 
-                    Distributors _Dist = new Distributors
-                    {
+                    
+                    Distributors _Dist = new Distributors();
+                    _Dist = new Distributors{
                         UserId = _users.UserId,
                         BusinessName = model.BusinessName,
                         Debtor = model.Debtor.ToString(),
@@ -110,7 +111,6 @@ namespace OnlineOrderCart.Web.Helpers
                         IsDeleted = 100,
                         RegistrationDate = DateTime.Now.ToUniversalTime(),
                     };
-
                     _dataContext.Distributors.Add(_Dist);
 
                     RoleGroups UsersRols = await _dataContext
@@ -175,6 +175,7 @@ namespace OnlineOrderCart.Web.Helpers
                                    Username = u.UserName,
                                    GenderId = Convert.ToInt32(u.GenderId),
                                    Email = u.Email,
+                                   EmployeeNumber = k.EmployeeNumber,
                                    RoleId = r.RolId,
                                    KamId = k.KamId,
                                    KamName = $"{k.Users.FirstName}{" "}{k.Users.LastName1}{" "}{k.Users.LastName2}",

@@ -21,11 +21,11 @@ namespace OnlineOrderCart.Web.Models
         public IEnumerable<SelectListItem> CombosDistributors { get; set; }
 
         [Display(Name = "Fecha de Verificacion.")]
-        [DisplayFormat(DataFormatString = "{0:MM/dd/yyyy}", ApplyFormatInEditMode = true)]
+        [DisplayFormat(DataFormatString = "{0:MM/dd/yyyy HH:mm}", ApplyFormatInEditMode = true)]
         public DateTime DeliveryDate { get; set; }
 
         [Display(Name = "Fecha de Orden")]
-        [DisplayFormat(DataFormatString = "{0:yyyy/MM/dd hh:mm tt}")]
+        [DisplayFormat(DataFormatString = "{0:yyyy/MM/dd HH:mm}")]
         public DateTime DateLocal => DeliveryDate.ToLocalTime();
 
         [DataType(DataType.MultilineText)]

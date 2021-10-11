@@ -6,7 +6,7 @@ namespace OnlineOrderCart.Web.Models
     public class OnlyOrderDetails
     {
         [Display(Name = "Fecha de Pedido")]
-        [DisplayFormat(DataFormatString = "{0:yyyy/MM/dd hh:mm}")]
+        [DisplayFormat(DataFormatString = "{0:yyyy/MM/dd HH:mm}")]
         public DateTime? OrderDate { get; set; }
         [Display(Name = "No. de Deudor")]
         public string Debtor { get; set; }
@@ -21,5 +21,7 @@ namespace OnlineOrderCart.Web.Models
         public string Observations { get; set; }
         [Display(Name = "Status")]
         public string OrderStatus { get; set; }
+        [Display(Name = "Descripcion Corta")]
+        public string ShortDescription { get; set; }
     }
 }
