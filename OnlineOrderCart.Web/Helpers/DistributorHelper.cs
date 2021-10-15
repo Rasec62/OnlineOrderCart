@@ -181,6 +181,7 @@ namespace OnlineOrderCart.Web.Helpers
                                    KamName = $"{k.Users.FirstName}{" "}{k.Users.LastName1}{" "}{k.Users.LastName2}",
                                    ImageId = u.ImageId,
                                    PicturePath = u.ImageFullPath,
+                                   PictureFullPath = u.PictureFullPath,
 
                               }).FirstOrDefaultAsync();
                 if (_Distri == null){
@@ -229,8 +230,8 @@ namespace OnlineOrderCart.Web.Helpers
                                          RoleId = r.RolId,
                                          KamId = k.KamId,
                                          ImageId = u.ImageId,
-                                         PicturePath = u.ImageFullPath,
-                                         PictureFullPath = u.PictureFullPath
+                                         PicturePath = u.PictureFullPath,
+                                         PictureFullPath = u.ImageFullPath,
                                      }).FirstOrDefaultAsync();
                 if (_Distri == null)
                 {

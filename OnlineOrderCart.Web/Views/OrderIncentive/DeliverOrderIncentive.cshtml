@@ -43,70 +43,32 @@
 
 <div class="container-fluid">
     <br />
-    <div class="card text-center" style="width: 78rem;">
+    <div class="card text-center" style="width: 82rem;">
         <div class="card-header">
         </div>
         <div class="card-body">
             <h5 class="card-title">Send Order Incentive</h5>
             <div style="width:100%; margin:0 auto;">
-            <table class="table table-striped table-bordered display" id="example" style="width:100%">
-                <thead>
-                    <tr>
-                        <th>No. de Deudor</th>
-                        <th>Nombre del cliente</th>
-                        <th>No. de Sucursal de envío</th>
-                        <th>Nombre sucursal de envío</th>
-                        <th>SKU</th>
-                        <th>Descripción</th>
-                        <th>Cantidad</th>
-                        <th>METODO DE PAGO</th>
-                        <th>USO CFDI</th>
-                        <th>Clave Pedido</th>
-                        <th>Descripcion Corta</th>
-                        <th></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @*@foreach (var item in Model.DetailsTmp)
-                    {
-                    <tr>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Debtor)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.BusinessName)
-                        </td>
-                        <td align="right">
-                            @Html.DisplayFor(modelItem => item.ShippingBranchNo)
-                        </td>
-                        <td align="right">
-                            @Html.DisplayFor(modelItem => item.ShippingBranchName)
-                        </td>
-                        <td align="right">
-                            @Html.DisplayFor(modelItem => item.OraclepId)
-                        </td>
-                        <td align="right">
-                            @Html.DisplayFor(modelItem => item.DeatilProducts)
-                        </td>
-                        <td align="right">
-                            @Html.DisplayFor(modelItem => item.Quantity)
-                        </td>
-                        <td align="right">
-                            @Html.DisplayFor(modelItem => item.PaymentMethod)
-                        </td>
-                        <td align="right">
-                            @Html.DisplayFor(modelItem => item.UseCfdi)
-                        </td>
-                        <td align="right">
-                            @Html.DisplayFor(modelItem => item.ShortDescription)
-                        </td>
-                        <td align="center">
-                        </td>
-                    </tr>
-                    }*@
-                </tbody>
-            </table>   
-               
+                    <table class="table table-hover display" id="example" style="width: 100%">
+                        <thead>
+                            <tr>
+                                <th>No. de Deudor</th>
+                                <th>Nombre del cliente</th>
+                                <th>No. de Sucursal de envío</th>
+                                <th>Nombre sucursal de envío</th>
+                                <th>SKU</th>
+                                <th>Descripción</th>
+                                <th>Cantidad</th>
+                                <th>METODO DE PAGO</th>
+                                <th>USO CFDI</th>
+                                <th>Clave Pedido</th>
+                                <th>Descripcion Corta</th>
+                                @*<th></th>*@
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>   
             </div>
         </div>
         <div class="card-footer text-muted">
@@ -118,7 +80,6 @@
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
     <script src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.min.js"></script>
     <script src="/js/deleteDialog.js"></script>
-
     <script type="text/javascript">
         $(document).ready(function () {
             $('#example').DataTable({
@@ -128,12 +89,10 @@
 
             $("#DistributorId").on("change", function () {
                 $.ajax({
-                    type: "POST",//id of the state which is used to extract cities
+                    type: 'POST',//id of the state which is used to extract cities
                     url: '/OrderIncentive/SpecialistDetails/',
-                    //url: '/OrderIncentive/DeliverOrderIncentive/',
                     data: { "distributorId": $("#DistributorId").val() },
-                    //traditional: true,
-                    dataType: "Json",
+                    dataType: 'json',
                     success: function (datas) {
                         var tr;
                         var table = $("#example");
@@ -141,7 +100,9 @@
                         //Append each row to html table
                         if (datas.length != 0) {
                             console.log(datas);
+                            console.log(datas.length);
                             for (var i = 0; i < datas.length; i++) {
+                                console.log(i);
                                 tr = $('<tr/>');
                                 console.log(datas[i].Debtor);
                                 tr.append("<td>" + datas[i].Debtor + "</td>");
@@ -162,18 +123,6 @@
                             alert("Hello");
                             $('#example').append(tr);
                         }
-                        $.each(datas, function (i, item) {
-                            console.log(item.Debtor);
-                            //var rows = "<tr>" +
-                            //    "<td id='RegdNo'>" + item.regNo + "</td>" +
-                            //    "<td id='Name'>" + item.name + "</td>" +
-                            //    "<td id='Address'>" + item.address + "</td>" +
-                            //    "<td id='PhoneNo'>" + item.phoneNo + "</td>" +
-                            //    "<td id='AdmissionDate'>" + Date(item.admissionDate,
-                            //        "dd-MM-yyyy") + "</td>" +
-                            //    "</tr>";
-                            //$('#Table').append(rows);
-                        }); //End of foreach Loop   
                     },
                     error: function () {
                         alert("Something went wrong call the police");

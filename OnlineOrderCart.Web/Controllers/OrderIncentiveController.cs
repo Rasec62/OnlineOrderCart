@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -16,6 +17,7 @@ using Vereyon.Web;
 
 namespace OnlineOrderCart.Web.Controllers
 {
+    [Authorize(Roles = "PowerfulUser,KamAdmin,KamAdCoordinator,KamCoordinator,Kam")]
     public class OrderIncentiveController : Controller
     {
         private readonly DataContext _dataContext;
@@ -105,7 +107,6 @@ namespace OnlineOrderCart.Web.Controllers
             model.DetailsTmp = await _developmentHelper.GetSqlDataTmpOrdersIncentive(_users.Result.UserId);
             return View(model);
         }
-
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> NewOrderIncentive(NOrderIncentiveViewModel model)
@@ -209,7 +210,6 @@ namespace OnlineOrderCart.Web.Controllers
             var _Incentive = await _dataContext.IncentiveOrderDetailTmp.FindAsync(id);
             return _Incentive;
         }
-
         [HttpGet]
         public async Task<IActionResult> DeliverOrderIncentive(long distributorId)
         {
@@ -241,7 +241,7 @@ namespace OnlineOrderCart.Web.Controllers
             {
                 UserId = _UserK.Result.UserId,
                 KamId = _KAvatar.KamId,
-                CombosDistributors = _combosHelper.GetComboKDistributors(User.Identity.Name),
+                CombosDistributors = _combosHelper.GetComboIdKDistributors(_UserK.Result.MyUserKamId),
             };
 
             if (distributorId > 0)
@@ -254,7 +254,6 @@ namespace OnlineOrderCart.Web.Controllers
 
             return View(model);
         }
-
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeliverOrderIncentive(DeliverOrderIncentiveViewModel model)
@@ -291,7 +290,6 @@ namespace OnlineOrderCart.Web.Controllers
             model.CombosDistributors = _combosHelper.GetComboKDistributors(User.Identity.Name);
             return View(model);
         }
-
         [HttpGet]
         public async Task<IActionResult> OrderConfirmationI(long? id)
         {
@@ -363,7 +361,6 @@ namespace OnlineOrderCart.Web.Controllers
             }
             return RedirectToAction("Index", "OrderIncentive");
         }
-
         [HttpPost]
         public JsonResult OnChangeAutoComplete(string StoreId)
         {
@@ -542,7 +539,7 @@ namespace OnlineOrderCart.Web.Controllers
                 return Json(null);
             }
             //return list as Json    
-            return Json(ListObjSpecialistIncentiveOrders.ToList());
+            return Json(ListObjSpecialistIncentiveOrders.ToList(), new Newtonsoft.Json.JsonSerializerSettings());
         }
     }
 }

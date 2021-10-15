@@ -8,6 +8,7 @@ using OnlineOrderCart.Common.Entities;
 using OnlineOrderCart.Common.Responses;
 using OnlineOrderCart.Web.DataBase;
 using OnlineOrderCart.Web.DataBase.Repositories;
+using OnlineOrderCart.Web.Errors;
 using OnlineOrderCart.Web.Helpers;
 using OnlineOrderCart.Web.Models;
 using OnlineOrderCart.Web.Services;
@@ -20,6 +21,7 @@ using Vereyon.Web;
 
 namespace OnlineOrderCart.Web.Controllers
 {
+    [Authorize(Roles = "PowerfulUser,KamAdmin,KamAdCoordinator")]
     public class DistributorsController : Controller
     {
         private readonly IFlashMessage _flashMessage;
@@ -214,6 +216,8 @@ namespace OnlineOrderCart.Web.Controllers
         {
             if (id == null)
             {
+                var errorResponse = new CodeErrorResponse(401);
+                _flashMessage.Danger(string.Empty, $"{errorResponse.StatusCode}{" "}{errorResponse.Message}");
                 return new NotFoundViewResult("_ResourceNotFound");
             }
 
@@ -223,6 +227,8 @@ namespace OnlineOrderCart.Web.Controllers
 
                 if (dist == null)
                 {
+                    var errorResponse = new CodeErrorResponse(404);
+                    _flashMessage.Danger(string.Empty, $"{errorResponse.StatusCode}{" "}{errorResponse.Message}");
                     return new NotFoundViewResult("_ResourceNotFound");
                 }
 
@@ -241,6 +247,42 @@ namespace OnlineOrderCart.Web.Controllers
             catch (Exception ex)
             {
                 _flashMessage.Danger($"The Products can't be deleted because it has related records. {ex.Message}");
+            }
+            return RedirectToAction(nameof(IndexDistributor));
+        }
+        [HttpGet]
+        [Authorize(Roles = "PowerfulUser,KamAdmin,KamAdCoordinator")]
+        public async Task<IActionResult> DetailIsDistrubutor(long? id)
+        {
+            if (id == null)
+            {
+                return new NotFoundViewResult("_ResourceNotFound");
+            }
+
+            try
+            {
+                var dist = await DistributorsExists(id.Value);
+
+                if (dist == null)
+                {
+                    return new NotFoundViewResult("_ResourceNotFound");
+                }
+
+                dist.IsDeleted = 0;
+                _dataContext.Distributors.Update(dist);
+                await _dataContext.SaveChangesAsync();
+                var _user = await _dataContext.Users.FindAsync(dist.UserId);
+                if (_user == null)
+                {
+                    return new NotFoundViewResult("_ResourceNotFound");
+                }
+                _user.IsDeleted = 0;
+                await _dataContext.SaveChangesAsync();
+                _flashMessage.Confirmation("The Distributor was Active.");
+            }
+            catch (Exception ex)
+            {
+                _flashMessage.Danger($"The Distributor can't be deleted because it has related records. {ex.Message}");
             }
             return RedirectToAction(nameof(IndexDistributor));
         }
@@ -280,6 +322,8 @@ namespace OnlineOrderCart.Web.Controllers
         {
             if (User.Identity.Name == null)
             {
+                var errorResponse = new CodeErrorResponse(401);
+                _flashMessage.Danger(string.Empty, $"{errorResponse.StatusCode}{" "}{errorResponse.Message}");
                 return new NotFoundViewResult("_ResourceNotFound");
             }
 
@@ -291,12 +335,15 @@ namespace OnlineOrderCart.Web.Controllers
 
             if (id == null)
             {
+
                 return new NotFoundViewResult("_ResourceNotFound");
             }
             long _Id = Convert.ToInt64(id);
             var _Dis = await _distributorHelper.GetDistrByIdAsync(_Id);
-            if (_Dis == null)
+            if (!_Dis.IsSuccess)
             {
+                var errorResponse = new CodeErrorResponse(404);
+                _flashMessage.Danger(string.Empty, $"{errorResponse.StatusCode}{" "}{errorResponse.Message}");
                 return new NotFoundViewResult("_ResourceNotFound");
             }
             
@@ -316,6 +363,7 @@ namespace OnlineOrderCart.Web.Controllers
                 Debtor = _Dis.Result.Debtor,
                 ImageId = _Dis.Result.ImageId,
                 PictureFullPath = _Dis.Result.PictureFullPath,
+                EmployeeNumber = _users.Result.EmployeeNumber,
                 MD = _Dis.Result.MD,
                 Password = "D*12345678",
                 PasswordConfirm = "D*12345678",
@@ -344,8 +392,7 @@ namespace OnlineOrderCart.Web.Controllers
                     try
                     {
 
-                        Users _users = await _dataContext
-                           .Users
+                        Users _users = await _dataContext.Users
                            .Where(u => u.UserId == model.UserId && u.UserName == model.Username)
                            .FirstOrDefaultAsync();
 
@@ -415,8 +462,10 @@ namespace OnlineOrderCart.Web.Controllers
             }
             long _Id = Convert.ToInt64(id);
             var model = await _distributorHelper.GetDistrByIdAsync(_Id);
-            if (model.Result ==  null)
+            if (!model.IsSuccess)
             {
+                var errorResponse = new CodeErrorResponse(404);
+                _flashMessage.Danger(string.Empty, $"{errorResponse.StatusCode}{" "}{errorResponse.Message}");
                 return new NotFoundViewResult("_ResourceNotFound");
             }
 
@@ -435,6 +484,8 @@ namespace OnlineOrderCart.Web.Controllers
             var _users = await _userHelper.GetUserByEmailAsync(User.Identity.Name);
             if (!_users.IsSuccess || _users.Result == null)
             {
+                var errorResponse = new CodeErrorResponse(404);
+                _flashMessage.Danger(string.Empty, $"{errorResponse.StatusCode}{" "}{errorResponse.Message}");
                 return new NotFoundViewResult("_ResourceNotFound");
             }
 
@@ -444,7 +495,7 @@ namespace OnlineOrderCart.Web.Controllers
             }
             long _Id = Convert.ToInt64(id);
             var _Dis = await _distributorHelper.GetDistrByIdAsync(_Id);
-            if (_Dis == null)
+            if (!_Dis.IsSuccess)
             {
                 return new NotFoundViewResult("_ResourceNotFound");
             }
@@ -531,6 +582,8 @@ namespace OnlineOrderCart.Web.Controllers
             var _ware = await _dataContext.Warehouses.FindAsync(_id);
             if (_ware == null)
             {
+                var errorResponse = new CodeErrorResponse(404);
+                _flashMessage.Danger(string.Empty, $"{errorResponse.StatusCode}{" "}{errorResponse.Message}");
                 return new NotFoundViewResult("_ResourceNotFound");
             }
             try
@@ -560,6 +613,8 @@ namespace OnlineOrderCart.Web.Controllers
             var _ware = await _dataContext.Warehouses.FindAsync(_id);
             if (_ware == null)
             {
+                var errorResponse = new CodeErrorResponse(404);
+                _flashMessage.Danger(string.Empty, $"{errorResponse.StatusCode}{" "}{errorResponse.Message}");
                 return new NotFoundViewResult("_ResourceNotFound");
             }
             try
@@ -665,6 +720,8 @@ namespace OnlineOrderCart.Web.Controllers
 
             if (_Store == null)
             {
+                var errorResponse = new CodeErrorResponse(404);
+                _flashMessage.Danger(string.Empty, $"{errorResponse.StatusCode}{" "}{errorResponse.Message}");
                 return new NotFoundViewResult("_ResourceNotFound");
             }
 
@@ -689,11 +746,15 @@ namespace OnlineOrderCart.Web.Controllers
         {
             if (User.Identity.Name == null)
             {
+                var errorResponse = new CodeErrorResponse(401);
+                _flashMessage.Danger(string.Empty, $"{errorResponse.StatusCode}{" "}{errorResponse.Message}");
                 return new NotFoundViewResult("_ResourceNotFound");
             }
             var _users = await _userHelper.GetUserByEmailAsync(User.Identity.Name);
             if (!_users.IsSuccess || _users.Result == null)
             {
+                var errorResponse = new CodeErrorResponse(404);
+                _flashMessage.Danger(string.Empty, $"{errorResponse.StatusCode}{" "}{errorResponse.Message}");
                 return new NotFoundViewResult("_ResourceNotFound");
             }
 
@@ -708,6 +769,8 @@ namespace OnlineOrderCart.Web.Controllers
 
             if (warehouse == null)
             {
+                var errorResponse = new CodeErrorResponse(404);
+                _flashMessage.Danger(string.Empty, $"{errorResponse.StatusCode}{" "}{errorResponse.Message}");
                 return new NotFoundViewResult("_ResourceNotFound");
             }
 

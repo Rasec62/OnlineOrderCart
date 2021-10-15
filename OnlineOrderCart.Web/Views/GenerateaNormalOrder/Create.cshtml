@@ -3,12 +3,12 @@
 @{
     ViewData["Title"] = "New Order";
     var _KamManagerId = Model.KamManagerId;
-    string _KamName = Model.KamManagerId == 0 ? $"{"Kam   :"}{Model.KamName}" : $"{"Coordinad@r   :"}{Model.KamName}";
+    string _KamName = Model.KamManagerId == null ? $"{"Kam   :"}{Model.KamName}" : $"{"Coordinad@r   :"}{Model.KamName}";
 }
 <link rel="stylesheet" href="https://cdn.datatables.net/1.10.25/css/jquery.dataTables.min.css" />
 <div class="container">
     <div class="row">
-        <div class="col-md-7">
+        <div class="col-md-6">
             <form asp-action="Create" method="post">
                 <div asp-validation-summary="All" class="text-danger"></div>
                 <flash dismissable="true" />
@@ -96,7 +96,7 @@
                 </div>
             </form>
         </div>
-        <div class="col-md-5">
+        <div class="col-md-6">
             <fieldset>
                 <legend>Pending Order Detail</legend>
                 @if (Model.Details.Count == 0)
@@ -144,7 +144,7 @@
                                         <a asp-action="Decrease" asp-route-id="@item.OrderDetailTmpId" class="btn btn-outline-dark" style="border-radius: 60px;"><i class="glyphicon glyphicon-minus"></i></a>
                                         @*<a asp-action="DeletedTmp"  asp-route-id="@item.OrderDetailTmpId" class="btn btn-outline-danger" style="border-radius: 60px;" onclick="return confirm('Are you sure you wish to delete this post?');">Delete</a>*@
                                         @*@Html.ActionLink("Delete", "", new { id = item.OrderDetailTmpId }, new { @class = "btn btn-outline-danger", onclick = "return confirm('¿ Are you sure to delete this records?');" })*@
-                                    <button data-id="@item.OrderDetailTmpId" class="btn btn-outline-danger text-uppercase deleteItem" data-toggle="modal" data-target="#deleteDialog" style="border-radius: 60px;"><i class="fab fa-opencart"></i><span class="glyphicon glyphicon-remove"></span> Remove</button>
+                                    <button data-id="@item.OrderDetailTmpId" class="btn btn-outline-danger text-uppercase deleteItem" data-toggle="modal" data-target="#deleteDialog" style="border-radius: 60px;"><span class="glyphicon glyphicon-remove"></span> Remove</button>
                                     </td>
                                 </tr>
                             }
@@ -175,7 +175,7 @@
     <script src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.min.js"></script>
     <script type="text/javascript">
         $(function () {
-            $('#datepicker').datetimepicker({ format: 'YYYY/MM/DD' });
+           // $('#datepicker').datetimepicker({ format: 'YYYY/MM/DD' });
         });
         $(document).ready(function () {
 

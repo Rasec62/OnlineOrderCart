@@ -11,6 +11,7 @@ using Vereyon.Web;
 
 namespace OnlineOrderCart.Web.Controllers
 {
+    [Authorize(Roles = "PowerfulUser,KamAdmin,KamAdCoordinator")]
     public class TrademarkController : Controller
     {
         private readonly ITrademarkRolRepository _repository;
@@ -21,8 +22,13 @@ namespace OnlineOrderCart.Web.Controllers
            _repository = repository;
            _flashMessage = flashMessage;
         }
+        
         public async Task<IActionResult> Index()
         {
+            if (User.Identity.Name == null)
+            {
+                return new NotFoundViewResult("_ResourceNotFound");
+            }
             var data = await _repository.GetAllRecordsAsync();
             ViewBag.dataSource = data;
             return View(data);

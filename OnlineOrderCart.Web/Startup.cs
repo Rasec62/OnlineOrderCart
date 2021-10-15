@@ -18,6 +18,7 @@ using Newtonsoft.Json;
 using OnlineOrderCart.Web.DataBase;
 using OnlineOrderCart.Web.DataBase.Repositories;
 using OnlineOrderCart.Web.Helpers;
+using OnlineOrderCart.Web.Middleware;
 using OnlineOrderCart.Web.Services;
 using System;
 using System.Collections.Generic;
@@ -137,6 +138,7 @@ namespace OnlineOrderCart.Web
             services.AddLocalization(opt => { opt.ResourcesPath = "Resources"; });
 
             services.AddMvcCore().AddNewtonsoftJson();
+            //services.AddControllers(options => options.SuppressImplicitRequiredAttributeForNonNullableReferenceTypes = true);
             //services.AddMvc()
             //    .AddNewtonsoftJson(options => {
             //        options.SerializerSettings.ContractResolver = new Newtonsoft.Json.Serialization.DefaultContractResolver();
@@ -188,17 +190,42 @@ namespace OnlineOrderCart.Web
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+            //app.UseMiddleware<ExceptionMiddleware>();
+
             app.Use(async (context, next) =>
             {
-
-                if (context.Response.StatusCode == 404)
+                switch (context.Response.StatusCode)
                 {
-                    context.Request.Path = "/Home/StatusCode404";
-                    await next();
+                    case 400:
+                        context.Request.Path = "/Home/StatusCode404";
+                        await next();
+                        break;
+                    case 401:
+                        context.Request.Path = "/Home/StatusCode404";
+                        await next();
+                        break;
+                    case 404:
+                        context.Request.Path = "/Home/StatusCode404";
+                        await next();
+                        break;
+                    case 500:
+                        context.Request.Path = "/Home/StatusCode500";
+                        await next();
+                        break;
+                    //default:
+                    //    context.Request.Path = "/Home/StatusCode502";
+                    //    await next();
+                    //    break;
                 }
+                //if (context.Response.StatusCode == 404)
+                //{
+                //    context.Request.Path = "/Home/StatusCode404";
+                //    await next();
+                //}
                 await next();
             });
             app.UseStatusCodePagesWithReExecute("/error/{0}");
+            //app.UseStatusCodePagesWithReExecute("/errors", "?code={0}");
             app.UseHttpsRedirection();
             app.UseDefaultFiles();
             app.UseStaticFiles();

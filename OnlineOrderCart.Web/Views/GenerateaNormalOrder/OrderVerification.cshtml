@@ -2,8 +2,8 @@
 @{
     ViewData["Title"] = "OrderVerificationViewModel";
 }
-@*<link rel="stylesheet" href="https://cdn.datatables.net/1.10.25/css/jquery.dataTables.min.css" />*@
-<link href="https://cdn.datatables.net/1.10.20/css/jquery.dataTables.css" rel="stylesheet" type="text/css" />
+<link rel="stylesheet" href="https://cdn.datatables.net/1.10.25/css/jquery.dataTables.min.css" />
+
 <br />
 
 <div class="container">
@@ -43,18 +43,18 @@
                 </div>
             </div>
 
-</form>
+    </form>
 </div>
 
 <div class="container-fluid">
     <br />
-    <div class="card text-center" style="width: 78rem;">
+    <div class="card text-center" style="width: 82rem;">
         <div class="card-header">
         </div>
         <div class="card-body">
             <h5 class="card-title">Order generation and shipping</h5>
             <div style="width:100%; margin:0 auto;">
-                <table class="display table-bordered table-condensed table-hover table-striped" id="example" style="width:100%">
+                <table class="display  table-bordered table-condensed table-hover table-striped" id="example" style="width:100%">
                     <thead>
                         <tr>
                             <th>No. de Deudor</th>
@@ -67,6 +67,7 @@
                             <th>METODO DE PAGO</th>
                             <th>USO CFDI</th>
                             <th>Clave Pedido</th>
+                            <th>Descripcion Corta</th>
                         </tr>
                     </thead>
                     <tbody></tbody>
@@ -81,20 +82,20 @@
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
-    @*<script src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.min.js"></script>*@
-<script type="text/javascript" src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.min.js"></script>
+
     <script src="/js/deleteDialog.js"></script>
 
     <script type="text/javascript">
         $(document).ready(function () {
-            //$('#example').DataTable({
-            //    //"order": [[2, "desc"]],
-            //    //"lengthMenu": [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]],
-            //});
+            $('#example').DataTable({
+                //"order": [[2, "desc"]],
+                //"lengthMenu": [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]],
+            });
             var item = "<option value='0'>Seleccionar un Distribuidor</option>";
             $("#DistributorId").html(item);
-            $('#KamId').change(function () {
+            $("#KamId").on("change", function () {
+                console.log($("#KamId").val());
                 var url = '@Url.Content("~/")' + "GenerateaNormalOrder/GetSubOnDist";
                 var ddlsource = "#KamId";
                 $.getJSON(url, { KamId: $(ddlsource).val() }, function (data) {
@@ -107,91 +108,50 @@
                 });
             });
 
-            
             $("#DistributorId").on("change", function () {
                 var distributorId = $("#DistributorId").val();
                 console.log(distributorId);
-                 GetSpecialistDetails();
-             });
-        });
-
-
-        function GetSpecialistDetails() {
-            //var DDistributorId = $.trim($("#DistributorId").val());https://www.aspsnippets.com/Articles/Bind-JSON-data-to-View-in-ASPNet-MVC.aspx
-
-            var distributorId = $("#DistributorId").val();
-
-            var jsonInput = { DistributorId: $("#DistributorId").val() };
-
-            console.log(distributorId);
-            var parameters = "{'DistributorId':'" + $("#DistributorId").val() + "'}";
-            $.ajax({
-                type: "POST",
-                url: "/GenerateaNormalOrder/SpecialistDetails/",
-                /* data: "{distributorId:'" + distributorId + "'}",*/
-                /* data: parameters,*/
-                data: { jsonInput: JSON.stringify(jsonInput) },
-                traditional: true,
-               /* dataType: "json",*/
-                /*contentType: "application/json; charset=utf-8",*/
-                success: function (datas) {
-                    console.log(datas);
-                    var table = $("#example");
-                    table.find("tr:not(:first)").remove();
-                    if (datas.length != 0) {
-                        $.each(datas, function (i, data) {
-                            var table = $("#example");
-                            var row = table[0].insertRow(-1);
-                            $(row).append("<td />");
-                            $(row).find("td").eq(0).html(data.Debtor);
-                            $(row).append("<td />");
-                            $(row).find("td").eq(1).html(data.BusinessName);
-                            $(row).append("<td />");
-                            $(row).find("td").eq(2).html(data.ShippingBranchNo);
-                            $(row).append("<td />");
-                            $(row).find("td").eq(3).html(data.ShippingBranchName);
-                            $(row).append("<td />");
-                            $(row).find("td").eq(4).html(data.OraclepId);
-                            $(row).append("<td />");
-                            $(row).find("td").eq(5).html(data.DeatilProducts);
-                            $(row).append("<td />");
-                            $(row).find("td").eq(6).html(data.Quantity);
-                            $(row).append("<td />");
-                            $(row).find("td").eq(7).html(data.PaymentMethod);
-                            $(row).append("<td />");
-                            $(row).find("td").eq(8).html(data.UseCfdi);
-                            $(row).append("<td />");
-                            $(row).find("td").eq(9).html(data.OrderCode);
-                        });
-                    } else {
-                        alert("No data requested   !");
+                //GetSpecialistDetails();
+                $.ajax({
+                    type: 'POST',//id of the state which is used to extract cities
+                    url: '@Url.Action("SpecialistDetails", "GenerateaNormalOrder")',
+                    data: { "distributorId": $("#DistributorId").val() },
+                    dataType: 'json',
+                    success: function (datas) {
+                        console.log(datas);
+                        var tr;
+                        var table = $("#example");
+                        table.find("tr:not(:first)").remove();
+                        //Append each row to html table
+                        if (datas.length != 0) {
+                            console.log(datas);
+                            for (var i = 0; i < datas.length; i++) {
+                                tr = $('<tr/>');
+                                console.log(datas[i].Debtor);
+                                tr.append("<td>" + datas[i].Debtor + "</td>");
+                                tr.append("<td>" + datas[i].BusinessName + "</td>");
+                                tr.append("<td>" + datas[i].ShippingBranchNo + "</td>");
+                                tr.append("<td>" + datas[i].ShippingBranchName + "</td>");
+                                tr.append("<td>" + datas[i].OraclepId + "</td>");
+                                tr.append("<td>" + datas[i].DeatilProducts + "</td>");
+                                tr.append("<td>" + datas[i].Quantity + "</td>");
+                                tr.append("<td>" + datas[i].PaymentMethod + "</td>");
+                                tr.append("<td>" + datas[i].UseCfdi + "</td>");
+                                tr.append("<td>" + datas[i].OrderCode + "</td>");
+                                tr.append("<td>" + datas[i].ShortDescription + "</td>");
+                                $('#example').append(tr);
+                            }
+                        }
+                        else {
+                            alert("Hello");
+                            $('#example').append(tr);
+                        }
+                    },
+                    error: function () {
+                        alert("Something went wrong call the police");
                     }
-                }
-            });
-        }
-        function OnSuccess(response) {
-            console.log(response);
-            $("#example").DataTable(
-                {
-                    bLengthChange: true,
-                    lengthMenu: [[3,5, 10, -1], [3,5, 10, "All"]],
-                    bFilter: true,
-                    bSort: true,
-                    bPaginate: true,
-                    data: response,
-                    columns: [{ 'data': 'OrderDetailTmpId' },
-                        { 'data': 'Debtor' },
-                        { 'data': 'BusinessName' },
-                        { 'data': 'ShippingBranchNo' },
-                        { 'data': 'ShippingBranchName' },
-                        { 'data': 'ContactName' },
-                        { 'data': 'OraclepId' },
-                        { 'data': 'DeatilProducts' },
-                        { 'data': 'Quantity' },
-                        { 'data': 'PaymentMethod' },
-                        { 'data': 'UseCfdi' },
-                        { 'data': 'OrderCode' }]
                 });
-        };
+            });
+        });
     </script>
 }

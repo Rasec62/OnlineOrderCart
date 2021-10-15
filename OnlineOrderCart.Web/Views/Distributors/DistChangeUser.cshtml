@@ -19,7 +19,7 @@
          
             <div class="card border-secondary text-center mb-3" style="max-width: 70rem;">
                 <div class="card-header  bg-transparent border-dark">
-                    <h2>Changed Distributor</h2>
+                    <h2>Distributor</h2>
                 </div>
                 <div class="card-body text-dark">
                     <div class="form-row">
@@ -76,7 +76,7 @@
                 <div class="card-footer  bg-transparent border-secondary text-muted">
                     <div class="form-group">
                         @*<button type="submit" class="btn btn-outline-primary btn-block text-uppercase" style="border-radius: 60px;" disabled> Guardar Registro</button>*@
-                        <a asp-controller="Distributors" asp-action="IndexDistributor" class="btn btn-outline-secondary btn-block text-uppercase" style="border-radius: 60px;"> Volver a la Lista</a>
+                        <a asp-controller="Home" asp-action="Index" class="btn btn-outline-secondary btn-block text-uppercase" style="border-radius: 60px;"> Volver a la Lista</a>
                     </div>
                 </div>
             </div>
@@ -89,7 +89,7 @@
             <div class="card-body text-dark">
                 <h5 class="card-title">Avatar</h5>
                 <div class="form-group">
-                    <img class="lazyload" src="@Model.PicturePath" style="width:250px; height:100px; max-width: 100%; height: auto;" id="imagePreview" />
+                    <img class="lazyload" src="@Url.Content(Model.PicturePath)" style="width:250px; height:100px; max-width: 100%; height: auto;" id="imagePreview" />
                 </div>
             </div>
             <div class="card-footer bg-transparent border-secondary"></div>

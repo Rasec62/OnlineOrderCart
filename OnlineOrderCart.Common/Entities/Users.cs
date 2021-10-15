@@ -56,23 +56,38 @@ namespace OnlineOrderCart.Common.Entities
                 if (ImageId == Guid.Empty)
                 {
                     //return $"https://onlinessales.azurewebsites.net/Image/noimage.png";
-                    return $"https://localhost:44366/Image/noimage.png";
+                    return $"https://localhost:44357/Image/noimage.png";
                 }
                 return $"https://onsalelayout.blob.core.windows.net/users/{ImageId}";
             }
         }
 
+        //public string PictureFullPath
+        //{
+        //    get
+        //    {
+        //        if (PicturePath == null)
+        //        {
+        //            //return $"https://onlinessales.azurewebsites.net/Image/noimage.png";
+        //            return $"https://localhost:44357/Image/noimage.png";
+        //        }
+        //        //return $"https://localhost:44357/Image/users/{ImageId}";
+        //        return PicturePath;
+        //    }
+        //}
+
         public string PictureFullPath
         {
             get
             {
-                if (PicturePath == null)
+                if (string.IsNullOrEmpty(PicturePath))
                 {
-                    //return $"https://onlinessales.azurewebsites.net/Image/noimage.png";
-                    return $"https://localhost:44366/Image/noimage.png";
+                    return "http://shoppingcartsystem.ddns.net:8083/images/noimage.png";
                 }
-                //return $"https://onsalelayout.blob.core.windows.net/users/{ImageId}";
-                return PicturePath;
+
+                return string.Format(
+                    "http://shoppingcartsystem.ddns.net:8083/{0}",
+                    PicturePath.Substring(1));
             }
         }
     }

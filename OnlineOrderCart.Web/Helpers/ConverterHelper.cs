@@ -277,7 +277,7 @@ namespace OnlineOrderCart.Web.Helpers
                 Price = _pprice.Products.Price,
                 TaxRate = _pprice.Products.ValueWithOutTax,
                 TypeofPaymentId = model.TypeofPaymentId,
-                OrderStatus = "0",
+                OrderStatus = _combo.Text,
                 OrderDetailTmpId = isNew ? 0 : model.OrderDetailTmpId,
                 DistributorId = model.DistributorId,
                 EmployeeNumber = model.EmployeeNumber,
@@ -285,6 +285,7 @@ namespace OnlineOrderCart.Web.Helpers
                 OrderCode = "",
                 KamId = model.KamId,
                 GenerateDistributor = model.GenerateDistributor,
+                OrderDate = DateTime.Now.ToUniversalTime(),
             };
         }
 

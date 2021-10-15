@@ -111,7 +111,8 @@ namespace OnlineOrderCart.Web.Helpers
             using (SqlConnection connection = new SqlConnection(_configuration.GetConnectionString("DefaultConnection"))) {
                 try
                 {
-                    string query = $"{" Select u.UserId,ka.KamId, u.PicturePath, u.Email,ka.EmployeeNumber,u.FirstName,u.LastName1,u.LastName2, u.FirstName +''+ u.LastName1+' '+u.LastName2 as 'KFullName', u.GenderId ,"}{"Case u.GenderId When 1 then 'Femenino'when 2 then 'Masculina' else 'Generico' end as'Gender',"}{" 'PicturePath', u.ImageId, u.Username, r.RolName,r.RolId, d.BusinessName,d.Debtor,d.DistributorId"}{" from dbo.Users u With(Nolock)  Inner Join dbo.Distributors d With(Nolock) On u.UserId = d.UserId Inner Join dbo.Kams ka With(Nolock) On ka.KamId = d.KamId Inner Join dbo.RoleGroups rg with(Nolock) On rg.UserId = u.UserId Inner Join dbo.Roles r With(Nolock) On rg.RolId = r.RolId Where u.IsDeleted = 0 and u.IsDistributor = 1 and d.IsDeleted = 0"}";
+                    //string query = $"{" Select u.UserId,ka.KamId, u.PicturePath, u.Email,ka.EmployeeNumber,u.FirstName,u.LastName1,u.LastName2, u.FirstName +''+ u.LastName1+' '+u.LastName2 as 'KFullName', u.GenderId ,"}{"Case u.GenderId When 1 then 'Femenino'when 2 then 'Masculina' else 'Generico' end as'Gender',"}{" 'PicturePath', u.ImageId, u.Username, r.RolName,r.RolId, d.BusinessName,d.Debtor,d.DistributorId, d.IsDeleted"}{" from dbo.Users u With(Nolock)  Inner Join dbo.Distributors d With(Nolock) On u.UserId = d.UserId Inner Join dbo.Kams ka With(Nolock) On ka.KamId = d.KamId Inner Join dbo.RoleGroups rg with(Nolock) On rg.UserId = u.UserId Inner Join dbo.Roles r With(Nolock) On rg.RolId = r.RolId Where u.IsDeleted = 0 and u.IsDistributor = 1 and d.IsDeleted = 0"}";
+                    string query = $"{" Select u.UserId,ka.KamId, u.PicturePath, u.Email,ka.EmployeeNumber,u.FirstName,u.LastName1,u.LastName2, u.FirstName +''+ u.LastName1+' '+u.LastName2 as 'KFullName', u.GenderId ,"}{"Case u.GenderId When 1 then 'Femenino'when 2 then 'Masculina' else 'Generico' end as'Gender',"}{" 'PicturePath', u.ImageId, u.Username, r.RolName,r.RolId, d.BusinessName,d.Debtor,d.DistributorId, d.IsDeleted"}{" from dbo.Users u With(Nolock)  Inner Join dbo.Distributors d With(Nolock) On u.UserId = d.UserId Inner Join dbo.Kams ka With(Nolock) On ka.KamId = d.KamId Inner Join dbo.RoleGroups rg with(Nolock) On rg.UserId = u.UserId Inner Join dbo.Roles r With(Nolock) On rg.RolId = r.RolId Where u.IsDeleted in(0,1) and u.IsDistributor = 1 and d.IsDeleted in(0,1)"}";
                     using (SqlCommand cmd = new SqlCommand(query))
                     {
                         
@@ -141,6 +142,7 @@ namespace OnlineOrderCart.Web.Helpers
                                     Debtor = sdr["Debtor"].ToString(),
                                     BusinessName = sdr["BusinessName"].ToString().ToUpper(),
                                     DistributorId = Convert.ToInt32(sdr["DistributorId"].ToString()),
+                                    IsActive = Convert.ToInt32(sdr["IsDeleted"].ToString()) == 0 ? true : false,
                                 }); 
                             }
                         }

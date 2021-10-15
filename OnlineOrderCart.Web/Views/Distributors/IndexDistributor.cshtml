@@ -7,7 +7,7 @@
 <br />
 <div class="row">
     <div class="col">
-        <h1>Distributor</h1>
+        <h1>Registro Distributor</h1>
         <flash dismissable="true" />
     </div>
     <div class="col text-right">
@@ -34,39 +34,53 @@
             <th>
                 @Html.DisplayNameFor(model => model.PicturePath)
             </th>
+            <th>
+                @Html.DisplayNameFor(model => model.IsActive)
+            </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
         @foreach (var item in Model)
         {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.RolName)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.KFullName)
-                </td>
-                <th>
-                    @Html.DisplayFor(modelItem => item.BusinessName)
-                </th>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Debtor)
-                </td>
-                <td>
-                    @if (item.PicturefullPath != null)
-                    {
-                        @*<img src="@item.PicturefullPath" style="width:80px;height:80px;max-width: 100%; height: auto; border-radius:50%" />*@
-                        <img src="@Url.Content(item.PicturefullPath)" alt="Image" style="width:100px;height:100px;max-width: 100%; height: auto; border-radius:50%" />
-                    }
-                </td>
-                <td>
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.RolName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.KFullName)
+            </td>
+            <th>
+                @Html.DisplayFor(modelItem => item.BusinessName)
+            </th>
+            <td>
+                @Html.DisplayFor(modelItem => item.Debtor)
+            </td>
+            <td>
+                @if (item.PicturefullPath != null)
+                {
+                    @*<img src="@item.PicturefullPath" style="width:80px;height:80px;max-width: 100%; height: auto; border-radius:50%" />*@
+                    <img src="@Url.Content(item.PicturefullPath)" alt="Image" style="width:100px;height:100px;max-width: 100%; height: auto; border-radius:50%" />
+                }
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IsActive)
+            </td>
+            <td>
+                @if (item.IsActive)
+                {
                     <a asp-action="EditDistributor" asp-route-id="@item.DistributorId" class="btn btn-outline-warning text-uppercase" style="border-radius: 60px;"><i class="glyphicon glyphicon-pencil"></i></a>
                     <a asp-action="DetailDistributor" asp-route-id="@item.DistributorId" class="btn btn-outline-info  text-uppercase" style="border-radius: 60px;"><i class="glyphicon glyphicon glyphicon-align-justify"></i></a>
                     <a asp-action="DetailOptionalEmail" asp-route-id="@item.DistributorId" class="btn btn-outline-secondary  text-uppercase" style="border-radius: 60px;"><i class="glyphicon glyphicon-envelope" style="border-radius: 60px;"></i></a>
                     <button data-id="@item.DistributorId" class="btn btn-outline-danger text-uppercase deleteItem" data-toggle="modal" data-target="#deleteDialog" style="border-radius: 60px;"><i class="glyphicon glyphicon-trash" style="border-radius: 60px;"></i></button>
-                </td>
-            </tr>
+                }
+                else
+                {
+                    <a asp-action="DetailIsDistrubutor" asp-route-id="@item.DistributorId" class="btn btn-outline-secondary  text-uppercase" style="border-radius: 60px;"><i class="glyphicon glyphicon-share" style="border-radius: 60px;"></i></a>
+                }
+
+            </td>
+        </tr>
         }
     </tbody>
 </table>

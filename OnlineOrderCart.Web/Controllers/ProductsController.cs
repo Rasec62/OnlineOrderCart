@@ -110,9 +110,23 @@ namespace OnlineOrderCart.Web.Controllers
                     await _repository.CreateAsync(prod);
                     return RedirectToAction(nameof(Index));
                 }
-                catch (Exception ex)
+                catch (DbUpdateException dbUpdateException)
                 {
-                    _flashMessage.Danger($"The Products can't be created because it has related records.  {ex.Message}");
+                    if (dbUpdateException.InnerException.Message.Contains("duplicate"))
+                    {
+                        ModelState.AddModelError(string.Empty, "Ya existe esta Producto.");
+                        _flashMessage.Danger($"The Products can't be created because it has related records. {"Ya Existe este Producto"}");
+                    }
+                    else
+                    {
+                        ModelState.AddModelError(string.Empty, dbUpdateException.InnerException.Message);
+                        _flashMessage.Danger($"Error .{dbUpdateException.Message}");
+                    }
+                }
+                catch (Exception exception)
+                {
+                    ModelState.AddModelError(string.Empty, exception.Message);
+                    _flashMessage.Danger($"The Products can't be created because it has related records.  {exception.Message}");
                 }
             }
             model.ComboTrademarks = _combosHelper.GetComboTrademarks();
@@ -183,9 +197,23 @@ namespace OnlineOrderCart.Web.Controllers
                     await _repository.UpdateAsync(_Prod);
                     return RedirectToAction(nameof(Index));
                 }
-                catch (Exception ex)
+                catch (DbUpdateException dbUpdateException)
                 {
-                    _flashMessage.Danger("The Products Type can't be deleted because it has related records.  {0}", ex.Message);
+                    if (dbUpdateException.InnerException.Message.Contains("duplicate"))
+                    {
+                        ModelState.AddModelError(string.Empty, "Ya existe este Producto.");
+                        _flashMessage.Danger("The Products Type can't be deleted because it has related records.  {0}", "Ya existe este Producto");
+                    }
+                    else
+                    {
+                        ModelState.AddModelError(string.Empty, dbUpdateException.InnerException.Message);
+                        _flashMessage.Danger("The Products Type can't be deleted because it has related records.  {0}", dbUpdateException.Message);
+                    }
+                }
+                catch (Exception exception)
+                {
+                    ModelState.AddModelError(string.Empty, exception.Message);
+                    _flashMessage.Danger("The Products Type can't be deleted because it has related records.  {0}", exception.Message);
                 }
             }
             model.ComboTrademarks = _combosHelper.GetComboTrademarks();

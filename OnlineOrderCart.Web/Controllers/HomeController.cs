@@ -40,6 +40,15 @@ namespace OnlineOrderCart.Web.Controllers
         {
             return View();
         }
+        public IActionResult StatusCode500()
+        {
+            return View();
+        }
+
+        public IActionResult StatusCode502()
+        {
+            return View();
+        }
 
         [Route("error/404")]
         public IActionResult Error404()

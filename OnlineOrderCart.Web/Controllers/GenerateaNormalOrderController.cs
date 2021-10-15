@@ -1,8 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using OnlineOrderCart.Common.Entities;
@@ -30,7 +28,7 @@ namespace OnlineOrderCart.Web.Controllers
         private readonly IOrderRepository _orderRepository;
         private readonly IConfiguration _configuration;
         private List<TmpOrdersVerificViewModel> ObjSpecialist = new List<TmpOrdersVerificViewModel>();
-        private List<TmpOrdersVerificViewModel> ListObjSpecialistIncentiveOrders = new List<TmpOrdersVerificViewModel>();
+        private readonly List<TmpOrdersVerificViewModel> ListObjSpecialistIncentiveOrders = new List<TmpOrdersVerificViewModel>();
         // GET: GenerateaNormalOrderController
         public GenerateaNormalOrderController(IUserHelper userHelper,
             IFlashMessage flashMessage, DataContext dataContext,
@@ -52,7 +50,7 @@ namespace OnlineOrderCart.Web.Controllers
                 return new NotFoundViewResult("_ResourceNotFound");
             }
 
-            var ListOrders = await _orderRepository.GetCKOnlyOrdersAsync();
+            List<OnlyOrderDetails> ListOrders = await _orderRepository.GetCKOnlyOrdersAsync();
 
             return View(ListOrders);
         }
@@ -68,13 +66,13 @@ namespace OnlineOrderCart.Web.Controllers
             {
                 return new NotFoundViewResult("_ResourceNotFound");
             }
-            var _users = await _userHelper.GetUserByEmailAsync(User.Identity.Name);
+            Response<UserManagerEntity> _users = await _userHelper.GetUserByEmailAsync(User.Identity.Name);
             if (!_users.IsSuccess || _users.Result == null)
             {
                 return new NotFoundViewResult("_ResourceNotFound");
             }
             DisUserOrdersVModel disUserOrders = new DisUserOrdersVModel();
-            var modelorder = await _developmentHelper
+            Response<DisUserOrdersVModel> modelorder = await _developmentHelper
                               .GetSqlOnlyOrderRecordsAsync(_users.Result.UserId, id.Value);
             disUserOrders = modelorder.Result;
 
@@ -90,7 +88,7 @@ namespace OnlineOrderCart.Web.Controllers
             {
                 return new NotFoundViewResult("_ResourceNotFound");
             }
-            var _users = await _userHelper.GetUserByEmailAsync(User.Identity.Name);
+            Response<UserManagerEntity> _users = await _userHelper.GetUserByEmailAsync(User.Identity.Name);
 
 
             if (!_users.IsSuccess || _users.Result == null)
@@ -98,7 +96,7 @@ namespace OnlineOrderCart.Web.Controllers
                 return new NotFoundViewResult("_ResourceNotFound");
             }
 
-            var model = new AddGenerateNormalOrderModel
+            AddGenerateNormalOrderModel model = new AddGenerateNormalOrderModel
             {
                 UserId = _users.Result.UserId,
                 KamName = $"{_users.Result.FirstName}{" "}{_users.Result.LastName1}{"  "}{_users.Result.LastName2}",
@@ -131,7 +129,7 @@ namespace OnlineOrderCart.Web.Controllers
 
                 try
                 {
-                    var _dist = await _dataContext
+                    Distributors _dist = await _dataContext
                          .Distributors
                          .FindAsync(collection.DistributorId);
 
@@ -140,7 +138,7 @@ namespace OnlineOrderCart.Web.Controllers
                         return new NotFoundViewResult("_ResourceNotFound");
                     }
                     collection.Debtor = Convert.ToInt32(_dist.Debtor);
-                    var _Result = await _orderRepository.AddItemToGenerateaNormalOrderAsync(collection, User.Identity.Name);
+                    Response<object> _Result = await _orderRepository.AddItemToGenerateaNormalOrderAsync(collection, User.Identity.Name);
                     if (!_Result.IsSuccess)
                     {
                         _flashMessage.Danger("Incorrect information Order Tmp check", _Result.Message);
@@ -155,7 +153,7 @@ namespace OnlineOrderCart.Web.Controllers
 
                     _flashMessage.Confirmation(string.Empty, "el pedido ya fue registrado se encuentra en status de verificacion.");
 
-                    return this.RedirectToAction("Create");
+                    return RedirectToAction("Create");
                 }
                 catch (Exception ex)
                 {
@@ -175,19 +173,23 @@ namespace OnlineOrderCart.Web.Controllers
         }
         // POST: GenerateaNormalOrderController/Create
         [HttpGet]
-        public async Task<IActionResult> OrderVerification() {
-            if (User.Identity.Name == null) {
+        public async Task<IActionResult> OrderVerification()
+        {
+            if (User.Identity.Name == null)
+            {
                 return new NotFoundViewResult("_ResourceNotFound");
             }
 
-            var _UserK = await _userHelper.GetUserByEmailAsync(User.Identity.Name);
-            if (_UserK.IsSuccess == false) {
+            Response<UserManagerEntity> _UserK = await _userHelper.GetUserByEmailAsync(User.Identity.Name);
+            if (_UserK.IsSuccess == false)
+            {
                 return new NotFoundViewResult("_ResourceNotFound");
             }
 
-            var model = new OrderVerificationViewModel {
+            OrderVerificationViewModel model = new OrderVerificationViewModel
+            {
                 UserId = _UserK.Result.UserId,
-                KamId = _UserK.Result.KamId,
+                //KamId = _UserK.Result.KamId,
                 //CombosDistributors = _combosHelper.GetComboAllKDistributors(),
                 CombosKams = _combosHelper.GetComboKamCoords(),
             };
@@ -195,22 +197,27 @@ namespace OnlineOrderCart.Web.Controllers
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> OrderVerification(OrderVerificationViewModel model) {
-            if (ModelState.IsValid) {
+        public async Task<IActionResult> OrderVerification(OrderVerificationViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
                 if (User.Identity.Name == null)
                 {
                     return new NotFoundViewResult("_ResourceNotFound");
                 }
-                try {
-                    var response = await _orderRepository.AddToOrderGenerateNormalAsync(model, User.Identity.Name);
-                    if (!response.IsSuccess) {
+                try
+                {
+                    Response<object> response = await _orderRepository.AddToOrderGenerateNormalAsync(model, User.Identity.Name);
+                    if (!response.IsSuccess)
+                    {
                         _flashMessage.Danger(string.Empty, response.Message);
                         model.CombosKams = _combosHelper.GetComboKamCoords();
                         return View(model);
                     }
                     return RedirectToAction(nameof(Index), "GenerateaNormalOrder");
                 }
-                catch (Exception exception) {
+                catch (Exception exception)
+                {
                     _flashMessage.Danger(string.Empty, exception.Message);
                     ModelState.AddModelError(string.Empty, exception.Message);
                 }
@@ -227,7 +234,7 @@ namespace OnlineOrderCart.Web.Controllers
             }
 
             await _orderRepository.ModifyOrderDetailTempQuantityAsync(id.Value, 10);
-            return this.RedirectToAction("Create");
+            return RedirectToAction("Create");
         }
 
         public async Task<IActionResult> Decrease(int? id)
@@ -238,7 +245,7 @@ namespace OnlineOrderCart.Web.Controllers
             }
 
             await _orderRepository.ModifyOrderDetailTempQuantityAsync(id.Value, -10);
-            return this.RedirectToAction("Create");
+            return RedirectToAction("Create");
         }
 
         public async Task<IActionResult> DeletedTmp(int? id)
@@ -247,16 +254,17 @@ namespace OnlineOrderCart.Web.Controllers
             {
                 return new NotFoundViewResult("_ResourceNotFound");
             }
-            var tmp = await _dataContext.prOrderDetailTmps.FindAsync(id);
+            PrOrderDetailTmps tmp = await _dataContext.prOrderDetailTmps.FindAsync(id);
             _dataContext.Remove(tmp);
             await _dataContext.SaveChangesAsync();
-            return this.RedirectToAction("Create");
+            return RedirectToAction("Create");
         }
 
-        private List<TmpOrdersVerificViewModel> TblSpecialistDetails(long Id) {
+        private IReadOnlyList<TmpOrdersVerificViewModel> TblSpecialistDetails(long Id)
+        {
             try
             {
-                var _UseAvatar = _dataContext.Kams
+                Kams _UseAvatar = _dataContext.Kams
                                    .Include(k => k.Users)
                                    .Where(u => u.Users.UserName == User.Identity.Name)
                                    .FirstOrDefault();
@@ -272,7 +280,7 @@ namespace OnlineOrderCart.Web.Controllers
                                  join ma in _dataContext.Trademarks on p.TrademarkId equals ma.TrademarkId
                                  join d in _dataContext.Distributors on t.DistributorId equals d.DistributorId
                                  join pay in _dataContext.TypeofPayments on t.TypeofPaymentId equals pay.TypeofPaymentId
-                                 where t.GenerateUserId == _UseAvatar.Users.UserId && d.DistributorId == Id
+                                 where t.GenerateUserId == _UseAvatar.Users.UserId || d.DistributorId == Id
                                  select new TmpOrdersVerificViewModel
                                  {
                                      Debtor = t.Debtor,
@@ -290,15 +298,18 @@ namespace OnlineOrderCart.Web.Controllers
                                      MD = d.MD.ToUpper(),
                                      PayofType = pay.PaymentName,
                                      OraclepId = p.OraclepId,
+                                     UserId = t.GenerateUserId.Value,
                                      ShippingBranchName = wr.ShippingBranchName,
+                                     ShortDescription = p.ShortDescription,
+                                     TypeofPaymentId = t.TypeofPaymentId,
                                  }).ToList();
 
-                int recordsTotal = ObjSpecialist.Count;
+                int recordsTotal = ObjSpecialist.ToList().Count;
                 int count = 1;
-                
-                foreach (var itemIncen in ObjSpecialist)
+
+                foreach (TmpOrdersVerificViewModel itemIncen in ObjSpecialist)
                 {
-                    var tmpo = new TmpOrdersVerificViewModel
+                    TmpOrdersVerificViewModel tmpo = new TmpOrdersVerificViewModel
                     {
                         Debtor = itemIncen.Debtor,
                         BusinessName = itemIncen.BusinessName,
@@ -313,9 +324,16 @@ namespace OnlineOrderCart.Web.Controllers
                         ShippingBranchNo = itemIncen.ShippingBranchNo,
                         ShippingBranchName = itemIncen.ShippingBranchName,
                         OraclepId = itemIncen.OraclepId,
+                        ShortDescription = itemIncen.ShortDescription,
+                        UserId = itemIncen.UserId,
+                        MD = itemIncen.MD,
+                        PayofType = itemIncen.PayofType,
+                        PaymentMethod = itemIncen.PaymentMethod,
+                        UseCfdi = itemIncen.UseCfdi,
+                        TypeofPaymentId = itemIncen.TypeofPaymentId,
                         OrderCode = $"{itemIncen.MD}{DateTime.Now.Day.ToString("D2")}{DateTime.Now.Month.ToString("D2")}{DateTime.Now.Year.ToString("D4")}{" - "}{itemIncen.ShippingBranchNo}{" - "}{itemIncen.OrderCode}{" - "}{itemIncen.PayofType}{" - "}{string.Format("{0:C2}", itemIncen.Quantity * itemIncen.Price)}{" - "}{count}{" de "}{ recordsTotal}",
                     };
-                    var _tmpi = _dataContext
+                    PrOrderDetailTmps _tmpi = _dataContext
                         .prOrderDetailTmps
                         .Where(i => i.OrderDetailTmpId == tmpo.OrderDetailTmpId)
                         .FirstOrDefault();
@@ -334,30 +352,33 @@ namespace OnlineOrderCart.Web.Controllers
         }
 
         [HttpPost]
-        public JsonResult SpecialistDetails([FromBody]string DistributorId) {
+        public JsonResult SpecialistDetails(long distributorId)
+        {
             //Creating List
-            
-            if (DistributorId == null){
-                return new JsonResult(ObjSpecialist);
+
+            if (distributorId == 0)
+            {
+                return new JsonResult(ObjSpecialist.ToList());
             }
 
-            if (User.Identity.Name == null){
-                return new JsonResult(ObjSpecialist);
+            if (User.Identity.Name == null)
+            {
+                return new JsonResult(ObjSpecialist.ToList());
             }
 
             try
             {
-                long _distributorId = Convert.ToInt64(DistributorId);
+                long _distributorId = Convert.ToInt64(distributorId);
 
-                ListObjSpecialistIncentiveOrders = TblSpecialistDetails(_distributorId);
+                IReadOnlyList<TmpOrdersVerificViewModel> ListObjSpecialistOrders = TblSpecialistDetails(_distributorId);
                 //return list as Json    
                 //return Json(ListObjSpecialistIncentiveOrders.ToList()) ;
-                return new JsonResult(ListObjSpecialistIncentiveOrders.ToList());
+                return new JsonResult(ListObjSpecialistOrders.ToList(), new Newtonsoft.Json.JsonSerializerSettings());
             }
             catch (Exception)
             {
 
-                return new JsonResult(ObjSpecialist.ToList());
+                return new JsonResult(ObjSpecialist.ToList(), new Newtonsoft.Json.JsonSerializerSettings());
             }
 
         }
@@ -366,13 +387,13 @@ namespace OnlineOrderCart.Web.Controllers
         {
             long kamid = Convert.ToInt64(KamId);
             var Dist = (from d in _dataContext.Distributors
-                         join k in _dataContext.Kams on d.KamId equals k.KamId
-                         where d.KamId.Equals(kamid)
-                         select new
-                         {
-                             DistributorId = d.DistributorId,
-                             Description = d.BusinessName,
-                         }).ToList();
+                        join k in _dataContext.Kams on d.KamId equals k.KamId
+                        where d.KamId.Equals(kamid)
+                        select new
+                        {
+                            DistributorId = d.DistributorId,
+                            Description = d.BusinessName,
+                        }).ToList();
 
             return new JsonResult(Dist);
         }
@@ -460,7 +481,7 @@ namespace OnlineOrderCart.Web.Controllers
         [HttpGet]
         public async Task<IActionResult> OrderConfirmation(long? id)
         {
-            List <ObjectAvatarViewModel> OrdersLayout = new List<ObjectAvatarViewModel>();
+            List<ObjectAvatarViewModel> OrdersLayout = new List<ObjectAvatarViewModel>();
             if (id == 0)
             {
                 return new NotFoundViewResult("_ResourceNotFound");
@@ -470,7 +491,7 @@ namespace OnlineOrderCart.Web.Controllers
                 return new NotFoundViewResult("_ResourceNotFound");
             }
 
-            var _UserK = await _userHelper.GetUserByEmailAsync(User.Identity.Name);
+            Response<UserManagerEntity> _UserK = await _userHelper.GetUserByEmailAsync(User.Identity.Name);
             if (_UserK.IsSuccess == false)
             {
                 return new NotFoundViewResult("_ResourceNotFound");
@@ -511,7 +532,8 @@ namespace OnlineOrderCart.Web.Controllers
         }
 
         [HttpPost]
-        public IActionResult AjaxMethod(string DistributorId){
+        public IActionResult AjaxMethod(string DistributorId)
+        {
             if (DistributorId == null)
             {
                 return Json(new { result = false, error = "no data" });
@@ -524,12 +546,14 @@ namespace OnlineOrderCart.Web.Controllers
 
             long _distributorId = Convert.ToInt64(DistributorId);
 
-            ListObjSpecialistIncentiveOrders = TblSpecialistDetails(_distributorId);
-            try{
-             
-                return Json(new { result = true, ListObjSpecialistIncentiveOrders });
+            IReadOnlyList<TmpOrdersVerificViewModel> ListObjSpecialistOrders = TblSpecialistDetails(_distributorId);
+            try
+            {
+
+                return Json(new { result = true, ListObjSpecialistOrders });
             }
-            catch (Exception ex){
+            catch (Exception ex)
+            {
                 return Json(new { result = false, error = ex.Message });
             }
         }

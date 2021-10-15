@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
@@ -7,6 +8,7 @@ using OnlineOrderCart.Common.Entities;
 using OnlineOrderCart.Common.Responses;
 using OnlineOrderCart.Web.DataBase;
 using OnlineOrderCart.Web.DataBase.Repositories;
+using OnlineOrderCart.Web.Errors;
 using OnlineOrderCart.Web.Helpers;
 using OnlineOrderCart.Web.Models;
 using System;
@@ -17,6 +19,7 @@ using Vereyon.Web;
 
 namespace OnlineOrderCart.Web.Controllers
 {
+    [Authorize(Roles = "PowerfulUser,Distributor")]
     public class OrdersController : Controller
     {
         private readonly DataContext _dataContext;
@@ -68,6 +71,8 @@ namespace OnlineOrderCart.Web.Controllers
         {
 
             if (User.Identity.Name == null){
+               var errorResponse = new CodeErrorResponse(401);
+                _flashMessage.Danger(string.Empty,$"{errorResponse.StatusCode}{" "}{errorResponse.Message}");
                 return new NotFoundViewResult("_ResourceNotFound");
             }
             var _users = await _distributorHelper.GetDistrByEmailAsync(User.Identity.Name);
@@ -153,6 +158,8 @@ namespace OnlineOrderCart.Web.Controllers
             var _users = await _distributorHelper.GetDistrByEmailAsync(User.Identity.Name);
             if (!_users.IsSuccess || _users.Result == null)
             {
+                var errorResponse = new CodeErrorResponse(401);
+                _flashMessage.Danger(string.Empty, $"{errorResponse.StatusCode}{" "}{errorResponse.Message}");
                 return new NotFoundViewResult("_ResourceNotFound");
             }
             var model = new AddItemViewModel
@@ -174,7 +181,10 @@ namespace OnlineOrderCart.Web.Controllers
         {
             if (id == null)
             {
-                return NotFound();
+                //return NotFound();
+                var errorResponse = new CodeErrorResponse(404);
+                _flashMessage.Danger(string.Empty, $"{errorResponse.StatusCode}{" "}{errorResponse.Message}");
+                return new NotFoundViewResult("_ResourceNotFound");
                 //return new StatusCodeResult(StatusCode.BadRequest);
             }
 
@@ -185,7 +195,10 @@ namespace OnlineOrderCart.Web.Controllers
         {
             if (id == null)
             {
-                return NotFound();
+                //return NotFound();
+                var errorResponse = new CodeErrorResponse(404);
+                _flashMessage.Danger(string.Empty, $"{errorResponse.StatusCode}{" "}{errorResponse.Message}");
+                return new NotFoundViewResult("_ResourceNotFound");
             }
 
             await _orderRepository.ModifyOrderDetailTempQuantityAsync(id.Value, -10);
@@ -228,11 +241,16 @@ namespace OnlineOrderCart.Web.Controllers
         {
             if (User.Identity.Name == null)
             {
+                var errorResponse = new CodeErrorResponse(401);
+                _flashMessage.Danger(string.Empty, $"{errorResponse.StatusCode}{" "}{errorResponse.Message}");
                 return new NotFoundViewResult("_ResourceNotFound");
             }
             var _users = await _distributorHelper.GetDistrByEmailAsync(User.Identity.Name);
             if (!_users.IsSuccess || _users.Result == null)
             {
+                var errorResponse = new CodeErrorResponse(404);
+                _flashMessage.Danger(string.Empty, $"{errorResponse.StatusCode}{" "}{errorResponse.Message}");
+                
                 return new NotFoundViewResult("_ResourceNotFound");
             }
 
@@ -247,15 +265,23 @@ namespace OnlineOrderCart.Web.Controllers
         {
             if (User.Identity.Name == null)
             {
+                var errorResponse = new CodeErrorResponse(401);
+                _flashMessage.Danger(string.Empty, $"{errorResponse.StatusCode}{" "}{errorResponse.Message}");
+                
                 return new NotFoundViewResult("_ResourceNotFound");
             }
             if (id == null)
             {
+                var errorResponse = new CodeErrorResponse(404);
+                _flashMessage.Danger(string.Empty, $"{errorResponse.StatusCode}{" "}{errorResponse.Message}");
+                
                 return new NotFoundViewResult("_ResourceNotFound");
             }
             var _Dusers = await _distributorHelper.GetDistrByEmailAsync(User.Identity.Name);
             if (!_Dusers.IsSuccess || _Dusers.Result == null)
             {
+                var errorResponse = new CodeErrorResponse(401);
+                _flashMessage.Danger(string.Empty, $"{errorResponse.StatusCode}{" "}{errorResponse.Message}");
                 return new NotFoundViewResult("_ResourceNotFound");
             }
             var EmailDetails = await _developmentHelper.GetOnlySqlEmailDistrs(_Dusers.Result.DistributorId);

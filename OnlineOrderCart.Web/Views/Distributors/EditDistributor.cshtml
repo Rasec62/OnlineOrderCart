@@ -15,7 +15,11 @@
             <input type="hidden" asp-for="DistributorId" />
             <input type="hidden" asp-for="Username" />
             <input type="hidden" asp-for="Password" />
+            <input type="hidden" asp-for="FirstName" />
+            <input type="hidden" asp-for="LastName1" />
+            <input type="hidden" asp-for="LastName2" />
             <input type="hidden" asp-for="PasswordConfirm" />
+            <input type="hidden" asp-for="EmployeeNumber" />
             <div class="card border-secondary text-center mb-3" style="max-width: 70rem;">
                 <div class="card-header  bg-transparent border-dark">
                     <h2>Edit Distributor</h2>
@@ -89,7 +93,7 @@
                 <h5 class="card-title">Avatar</h5>
                 <div class="form-group">
                     @*<img class="lazyload" src="@Model.PicturePath" style="width:250px; height:100px; max-width: 100%; height: auto;" id="imagePreview" />*@
-                    <img class="lazyload" src="@Url.Content(Model.PictureFullPath)" alt="Image" style="width:250px;height:100px;max-width: 100%; height: auto; border-radius:50%"  id="imagePreview" />
+                    <img class="lazyload" src="@Url.Content(Model.PicturePath)" alt="Image" style="width:250px;height:100px;max-width: 100%; height: auto; border-radius:50%"  id="imagePreview" />
                 </div>
             </div>
             <div class="card-footer bg-transparent border-secondary"></div>

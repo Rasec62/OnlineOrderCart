@@ -11,7 +11,7 @@ namespace OnlineOrderCart.Web.Models
         [Display(Name = "Estatus del Pedido")]
         public int OrderStatusId { get; set; }
 
-        public long UserId { get; set; }
+      //  public long UserId { get; set; }
 
         [Display(Name = "Kam")]
         public string KamName { get; set; }

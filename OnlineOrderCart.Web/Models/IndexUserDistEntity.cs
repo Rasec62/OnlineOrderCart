@@ -29,6 +29,7 @@ namespace OnlineOrderCart.Web.Models
         public string MD { get; set; }
         public string KFullName { get; set; }
         public int IsDistributor { get; set; }
+        public bool IsActive { get; set; }
         public string KFullNames => $"{FirstName} {LastName1} {LastName2}";
     }
 }

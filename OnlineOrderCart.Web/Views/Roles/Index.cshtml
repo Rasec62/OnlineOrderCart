@@ -4,9 +4,17 @@
 }
 <link rel="stylesheet" href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.min.css" />
 <br />
-<p>
-    <a asp-action="Create" class="btn btn-outline-primary"  style="border-radius: 60px;"><i class="glyphicon glyphicon-plus"></i> New</a>
-</p>
+<div class="row">
+    <div class="col">
+        <h1></h1>
+    </div>
+    <div class="col text-right">
+        <p>
+            <a asp-action="Create" class="btn btn-outline-primary" style="border-radius: 60px;"><i class="glyphicon glyphicon-plus"></i> New</a>
+        </p>
+    </div>
+</div>
+
 <flash dismissable="true" />
 <div class="row">
     <div class="col-md-12">
@@ -40,7 +48,8 @@
                                 <td>
                                     <a asp-action="Edit" asp-route-id="@item.RolId" class="btn btn-outline-warning"><i class="glyphicon glyphicon-pencil"></i></a>
                                     <a asp-action="Details" asp-route-id="@item.RolId" class="btn btn-outline-info"><i class="glyphicon glyphicon glyphicon-align-justify"></i></a>
-                                    <button data-id="@item.RolId" class="btn btn-outline-danger deleteItem" data-toggle="modal" data-target="#deleteDialog"><i class="glyphicon glyphicon-trash" style="border-radius: 60px;"></i></button>
+                                    <a asp-action="Delete" class="btn btn-danger" asp-route-id="@item.RolId" id="btnDelete" onclick="return confirm('¿ Are you sure to delete this Roles?');"><i class="glyphicon glyphicon-trash"></i> </a>
+                                    @*<button data-id="@item.RolId" class="btn btn-outline-danger deleteItem" data-toggle="modal" data-target="#deleteDialog"><i class="glyphicon glyphicon-trash" style="border-radius: 60px;"></i></button>*@
                                 </td>
                             </tr>
                         }

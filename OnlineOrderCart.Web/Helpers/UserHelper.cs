@@ -373,6 +373,8 @@ namespace OnlineOrderCart.Web.Helpers
                             _manager.CodeKey = _result.CodeKey;
                             _manager.KamManagerId = _result.KamManagerId == 0 ? 0 : _result.KamManagerId;
                             _manager.IsCoordinator = _result.IsCoordinator;
+                            _manager.MyUserKamId = _result.Users.UserId;
+
                             var _IsCoordinator = await _dataContext.Kams
                                                .Include(k => k.Users)
                                                .Where(k => k.UserId == _manager.UserId && k.IsCoordinator == 1).FirstOrDefaultAsync();
@@ -393,6 +395,13 @@ namespace OnlineOrderCart.Web.Helpers
                             _manager.CodeKey = _resultCoord.CodeKey;
                             _manager.KamManagerId = _resultCoord.KamManagerId == 0 ? 0 : _resultCoord.KamManagerId;
                             _manager.IsCoordinator = _resultCoord.IsCoordinator;
+
+                            var _KamIds = await _dataContext.Kams
+                                                .Include(k => k.Users)
+                                                .Where(k => k.KamId == _resultCoord.KamManagerId && k.IsCoordinator == 0)
+                                                .FirstOrDefaultAsync();
+
+                            _manager.MyUserKamId = _KamIds.Users.UserId;
 
                             var _IsKam = await _dataContext.Kams
                                               .Include(k => k.Users)

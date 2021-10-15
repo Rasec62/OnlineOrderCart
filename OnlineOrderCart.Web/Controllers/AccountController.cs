@@ -150,6 +150,7 @@ namespace OnlineOrderCart.Web.Controllers
                 LastName2 = user.LastName2,
                 ImageId = user.ImageId,
                 PicturePath = user.ImageFullPath,
+                PictureFPath = user.PictureFullPath,
                 UserId = user.UserId,
                 KamId = user.KamId,
                 KamManagerId = user.KamManagerId,
@@ -158,13 +159,12 @@ namespace OnlineOrderCart.Web.Controllers
                 Email = user.Email,
                 Username = user.Username,
                 EmployeeNumber = user.EmployeeNumber,
-                ComboGender = _combosHelper.GetComboGenders(),
-                ComboRoles = _combosHelper.GetComboRoles(),
+                //ComboGender = _combosHelper.GetComboGenders(),
+                //ComboRoles = _combosHelper.GetComboRoles(),
                 Password = "1234567890",
                 PasswordConfirm = "1234567890",
 
             };
-
             return View(model);
         }
 

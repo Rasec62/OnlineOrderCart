@@ -12,6 +12,7 @@ using Vereyon.Web;
 
 namespace OnlineOrderCart.Web.Controllers
 {
+    [Authorize(Roles = "PowerfulUser,KamAdmin,KamAdCoordinator")]
     public class SimTypesController : Controller
     {
         private readonly ISimTypesRepository _repository;

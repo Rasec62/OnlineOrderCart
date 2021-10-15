@@ -27,6 +27,8 @@ namespace OnlineOrderCart.Web.Models
         [Display(Name = "Es Admin?")]
         public bool IsAdmin { get; set; }
 
+        public long  MyUserKamId { get; set; }
+
         public int IsCoordinator { get; set; }
         [Display(Name = "Kam")]
         public string KFullName { get; set; }

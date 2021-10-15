@@ -11,14 +11,16 @@
             <input type="hidden" asp-for="UserId" />
             <input type="hidden" asp-for="Username" />
             <input type="hidden" asp-for="Password" />
+            <input type="hidden" asp-for="RolId" />
+            <input type="hidden" asp-for="GenderId" />
             <input type="hidden" asp-for="PasswordConfirm" />
             <flash dismissable="true" />
             <div class="card border-secondary text-center mb-3" style="max-width: 70rem;">
                 <div class="card-header  bg-transparent border-dark">
-                    <h2>Edit Register</h2>
+                    <h2>Register</h2>
                 </div>
                 <div class="card-body text-dark">
-                    <div class="form-row">
+                    @*<div class="form-row">
                         <div class="col-md-6 mb-6">
                             <div class="form-group">
                                 <label asp-for="RolId" class="control-label"></label>
@@ -34,15 +36,17 @@
                             </div>
                         </div>
 
-                    </div>
+                    </div>*@
                     <partial name="_Users" />
-                   
+
                     <hr />
+                   
                 </div>
                 <div class="card-footer  bg-transparent border-secondary text-muted">
                     <div class="form-group">
-                        <button type="submit" class="btn btn-outline-primary"> Guardar Registro</button>
-                        <a asp-controller="Account" asp-action="IndexRegister" class="btn btn-outline-secondary"> Volver a la Lista</a>
+                        <a asp-action="ChangePassword" class="btn btn-outline-warning" style="width: 250px; height: 100px; max-width: 100%; height: auto; border-radius: 60px;"> Cambiar Contraseña</a>
+                        @*<button type="submit" class="btn btn-outline-primary"> Guardar Registro</button>
+        <a asp-controller="Account" asp-action="IndexRegister" class="btn btn-outline-secondary"> Volver a la Lista</a>*@
                     </div>
                 </div>
             </div>
@@ -55,7 +59,7 @@
             <div class="card-body text-dark">
                 <h5 class="card-title">Avatar</h5>
                 <div class="form-group">
-                    <img class="lazyload" src="@Model.PicturePath" style="width:250px; height:100px; max-width: 100%; height: auto;" id="imagePreview" />
+                    <img class="lazyload" src="@Url.Content(Model.PicturePath)" style="width:250px; height:100px; max-width: 100%; height: auto;" id="imagePreview" />
                 </div>
             </div>
             <div class="card-footer bg-transparent border-secondary"></div>
