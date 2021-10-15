@@ -108,11 +108,11 @@
                             <li class="nav-item"><a asp-area="" class="nav-link text-dark" asp-controller="Account" asp-action="ChangeUser"><i class="fas fa-user-circle"></i> @User.Identity.Name</a></li>
                         }
                         else if (User.IsInRole("Distributor")) {
-                            <li class="nav-item"><a asp-area="" class="nav-link text-dark" asp-controller="Distributors" asp-action="DistChangeUser"><i class="fas fa-user-circle"></i> @User.Identity.Name</a></li>
+                            <li class="nav-item"><a asp-area="" class="nav-link text-dark" asp-controller="Distributors" asp-action="DistChangeUser"><i class="glyphicon glyphicon-user"></i> @User.Identity.Name</a></li>
                         }
                         else
                         {
-                            <li class="nav-item"><a asp-area="" class="nav-link text-dark" asp-controller="Distributors" asp-action="DistChangeUser"><i class="fas fa-user-circle"></i> @User.Identity.Name</a></li>
+                            <li class="nav-item"><a asp-area="" class="nav-link text-dark" asp-controller="Distributors" asp-action="DistChangeUser"><i class="glyphicon glyphicon-user"></i> @User.Identity.Name</a></li>
                         }
                         <li class="nav-item"><a asp-area="" class="nav-link text-dark" asp-controller="Account" asp-action="Logout"><i class="fas fa-power-off"></i> @localizer["Signoff"]</a></li>
                     }
