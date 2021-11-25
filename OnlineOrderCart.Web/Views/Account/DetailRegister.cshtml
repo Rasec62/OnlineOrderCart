@@ -52,8 +52,8 @@
             </div>
         </div>
         <div class="card-footer text-muted">
-            <a asp-action="EditRegister" asp-route-id="@Model.KamId" class="btn btn-outline-warning"  style="border-radius: 60px;"><i class="glyphicon glyphicon-floppy-saved"></i> Edit</a>
-            <a asp-action="IndexRegister" class="btn btn-outline-secondary"  style="border-radius: 60px;"><i class="glyphicon glyphicon-arrow-left"></i> Back to List</a>
+            <a asp-action="EditRegister" asp-route-id="@Model.KamId" class="btn btn-outline-warning"  style="border-radius: 60px;" onclick="return showPleaseWait();"><i class="glyphicon glyphicon-floppy-saved"></i> Edit</a>
+            <a asp-action="IndexRegister" class="btn btn-outline-secondary"  style="border-radius: 60px;" onclick="return showPleaseWait();"><i class="glyphicon glyphicon-arrow-left"></i> Back to List</a>
         </div>
     </div>
 </form>

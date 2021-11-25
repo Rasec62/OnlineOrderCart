@@ -4,9 +4,12 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using OnlineOrderCart.Common.DesignPatternsTools;
 using OnlineOrderCart.Common.Entities;
 using OnlineOrderCart.Common.Responses;
+using OnlineOrderCart.Web.Configurations;
 using OnlineOrderCart.Web.DataBase;
 using OnlineOrderCart.Web.Helpers;
 using OnlineOrderCart.Web.Models;
@@ -33,12 +36,13 @@ namespace OnlineOrderCart.Web.Controllers
         private readonly DataContext _dataContext;
         private readonly IMovementsHelper _movementsHelper;
         private readonly IImageHelper _imageHelper;
+        private readonly IOptions<MyConfiguration> _config;
 
         public AccountController(IConverterHelper converterHelper,
             IUserHelper userHelper, IFlashMessage flashMessage,
             IConfiguration configuration, ICombosHelper combosHelper
             , IMailHelper mailHelper, IBlobHelper blobHelper,
-            DataContext dataContext, IMovementsHelper movementsHelper, IImageHelper ImageHelper)
+            DataContext dataContext, IMovementsHelper movementsHelper, IImageHelper ImageHelper, IOptions<MyConfiguration> config)
         {
             _converterHelper = converterHelper;
             _userHelper = userHelper;
@@ -50,6 +54,7 @@ namespace OnlineOrderCart.Web.Controllers
             _dataContext = dataContext;
             _movementsHelper = movementsHelper;
             _imageHelper = ImageHelper;
+            _config = config;
         }
         [Authorize(Roles = "PowerfulUser,KamAdmin,KamAdCoordinator")]
         public async Task<IActionResult> IndexRegister()
@@ -98,6 +103,7 @@ namespace OnlineOrderCart.Web.Controllers
                     }
                     ModelState.AddModelError(string.Empty, $"{_result.Message}");
                     _flashMessage.Danger(_result.Message, "Incorrect information check");
+                    Log.GetInstance(_config.Value.PathLog).Save($" Incorrect information check -- Error Login   :{_result.Message} Date :{DateTime.Now.ToLocalTime()} - User Name :{model.Username}");
                     return View(model);
                 }
 
@@ -120,6 +126,7 @@ namespace OnlineOrderCart.Web.Controllers
                 return RedirectToAction("Index", "Home");
             }
             ModelState.AddModelError(string.Empty, "Failed to login.");
+            Log.GetInstance(_config.Value.PathLog).Save($"Entro a Login Date :{DateTime.Now.ToLocalTime()} -User Name :{model.Username}");
             return View(model);
         }
         [Authorize]
@@ -526,17 +533,20 @@ namespace OnlineOrderCart.Web.Controllers
                     {
                         ViewBag.Message = "The instructions to allow your user has been sent to email.";
                         _flashMessage.Confirmation("The instructions to allow your user has been sent to email.");
+                        
                         return RedirectToAction("IndexRegister", "Account");
                     }
 
                     ModelState.AddModelError(string.Empty, response.Message);
                     _flashMessage.Danger(string.Empty, response.Message);
+                    Log.GetInstance(_config.Value.PathLog).Save($" This Confirm Email is already used -- Response Error Add Register   :{response.Message} Date :{DateTime.Now.ToLocalTime()} - User Name :{User.Identity.Name}");
 
                 }
                 catch (Exception ex)
                 {
 
                     _flashMessage.Danger(ex.Message, "This Confirm Email is already used.");
+                    Log.GetInstance(_config.Value.PathLog).Save($" This Confirm Email is already used -- Exception Error Add Register   :{ex.Message} Date :{DateTime.Now.ToLocalTime()} - User Name :{User.Identity.Name}");
                     model.ComboGender = _combosHelper.GetComboGenders();
                     model.ComboRoles = _combosHelper.GetComboRoles();
                     //model.ComboKams = _combosHelper.GetComboKams();
@@ -673,11 +683,13 @@ namespace OnlineOrderCart.Web.Controllers
                         {
                             ModelState.AddModelError(string.Empty, "Ya existe un vehículo con esa placa.");
                             _flashMessage.Danger(string.Empty, "Ya existe un Usuario.");
+                            Log.GetInstance(_config.Value.PathLog).Save($" This Confirm Email is already used -- Exception Error Add Register   :{dbUpdateException.InnerException.Message} Date :{DateTime.Now.ToLocalTime()} - User Name :{User.Identity.Name}");
                         }
                         else
                         {
                             ModelState.AddModelError(string.Empty, dbUpdateException.InnerException.Message);
                             _flashMessage.Danger(string.Empty, dbUpdateException.InnerException.Message);
+                            Log.GetInstance(_config.Value.PathLog).Save($" This dbUpdateException InnerException Message is already used -- Exception Error Add Register   :{dbUpdateException.InnerException.Message} Date :{DateTime.Now.ToLocalTime()} - User Name :{User.Identity.Name}");
                         }
 
                         model.ComboGender = _combosHelper.GetComboGenders();
@@ -693,6 +705,7 @@ namespace OnlineOrderCart.Web.Controllers
                         model.ComboRoles = _combosHelper.GetComboRoles();
                         model.ComboKams = _movementsHelper.GetSqlDataKams();
                         _flashMessage.Danger(ex.Message, "This email is already used.");
+                        Log.GetInstance(_config.Value.PathLog).Save($" This Confirm Email is already used -- Exception Error Add Register   :{ex.Message} Date :{DateTime.Now.ToLocalTime()} - User Name :{User.Identity.Name}");
                         return View(model);
                     }
                 }

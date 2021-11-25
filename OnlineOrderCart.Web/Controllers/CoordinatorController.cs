@@ -13,6 +13,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Vereyon.Web;
 
@@ -88,6 +89,8 @@ namespace OnlineOrderCart.Web.Controllers
         {
             if (ModelState.IsValid)
             {
+                Thread.Sleep(3000);
+
                 try
                 {
                     if (User.Identity.Name == null)

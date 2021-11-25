@@ -23,7 +23,7 @@
         </dl>
     </div>
     <div class="card-footer bg-transparent border-warning">
-        <a asp-action="Edit" asp-route-id="@Model.PurposeId" class="btn btn-outline-warning"><i class="fas fa-snowplow"></i> Edit</a>
-        <a asp-action="Index" class="btn btn-outline-secondary"><i class="fas fa-paper-plane"></i> Back to List</a>
+        <a asp-action="Edit" asp-route-id="@Model.PurposeId" class="btn btn-outline-warning" onclick="showPleaseWait();"><i class="fas fa-snowplow"></i> Edit</a>
+        <a asp-action="Index" class="btn btn-outline-secondary"><i class="fas fa-paper-plane" onclick="showPleaseWait();"></i> Back to List</a>
     </div>
 </div>

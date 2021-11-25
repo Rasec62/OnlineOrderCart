@@ -8,7 +8,7 @@
 <hr />
 <div class="row">
     <div class="col-md-8">
-        <form asp-action="EditCoordinator" enctype="multipart/form-data" method="post">
+        <form asp-action="EditCoordinator" enctype="multipart/form-data" method="post" onsubmit="return showPleaseWait();">
             <div asp-validation-summary="All" class="text-danger"></div>
             <input type="hidden" asp-for="Password" />
             <input type="hidden" asp-for="PasswordConfirm" />
@@ -53,7 +53,7 @@
                 <div class="card-footer  bg-transparent border-secondary text-muted">
                     <div class="form-group">
                         <button type="submit" class="btn btn-outline-primary btn-block text-uppercase" style="border-radius: 60px;"><span class="glyphicon glyphicon-floppy-saved"></span> Guardar Registro</button>
-                        <a asp-controller="Coordinator" asp-action="Index" class="btn btn-outline-secondary btn-block text-uppercase" style="border-radius: 60px;"><i class="glyphicon glyphicon-arrow-left"></i> Volver a la Lista</a>
+                        <a asp-controller="Coordinator" asp-action="Index" class="btn btn-outline-secondary btn-block text-uppercase" style="border-radius: 60px;" onclick="return showPleaseWait();"><i class="glyphicon glyphicon-arrow-left"></i> Volver a la Lista</a>
                     </div>
                 </div>
             </div>

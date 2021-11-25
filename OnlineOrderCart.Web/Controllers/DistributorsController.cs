@@ -196,7 +196,8 @@ namespace OnlineOrderCart.Web.Controllers
                 {
                     ViewBag.Message = "The instructions to allow your user has been sent to email.";
                     _flashMessage.Confirmation("The instructions to allow your user has been sent to email.");
-                    return RedirectToAction("IndexDistributor", "Distributors");
+                    //return RedirectToAction("IndexDistributor", "Distributors");
+                    return RedirectToAction("CreateDistributor", "Distributors");
                 }
 
                 ModelState.AddModelError(string.Empty, response.Message);
@@ -362,7 +363,7 @@ namespace OnlineOrderCart.Web.Controllers
                 BusinessName = _Dis.Result.BusinessName,
                 Debtor = _Dis.Result.Debtor,
                 ImageId = _Dis.Result.ImageId,
-                PictureFullPath = _Dis.Result.PictureFullPath,
+                PictureFullPaths = _Dis.Result.PictureFullPaths,
                 EmployeeNumber = _users.Result.EmployeeNumber,
                 MD = _Dis.Result.MD,
                 Password = "D*12345678",

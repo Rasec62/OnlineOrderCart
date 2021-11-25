@@ -144,6 +144,9 @@
   <data name="ProductsType" xml:space="preserve">
     <value>Kind of Product</value>
   </data>
+  <data name="ShortDescription" xml:space="preserve">
+    <value>Short Description</value>
+  </data>
   <data name="SimTypes" xml:space="preserve">
     <value>Sim Type</value>
   </data>

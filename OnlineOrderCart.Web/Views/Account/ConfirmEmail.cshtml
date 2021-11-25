@@ -1,4 +1,4 @@
-﻿
+﻿@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer localizer
 @{
     ViewData["Title"] = "ConfirmEmail";
 }
@@ -7,7 +7,6 @@
 <div class="text-center">
     <img src="~/Image/1200px-AT&T_logo_2016.svg.png" class="rounded-circle mx-auto d-block" alt="Cinque Terre" />
     <p>
-        Thank you for confirming your email. Now you can login into system.
-        @*Gracias por confirmar su correo electrónico. Ahora puede iniciar sesión en el sistema.*@
+        @localizer["ConfirmEmail"]
     </p>
 </div>

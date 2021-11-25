@@ -80,13 +80,13 @@ namespace OnlineOrderCart.Common.Entities
         {
             get
             {
-                if (string.IsNullOrEmpty(PicturePath))
+                if (PicturePath == null)
                 {
-                    return "http://shoppingcartsystem.ddns.net:8083/images/noimage.png";
+                    return "http://shoppingcartsystems.ddns.net:8087/images/noimage.png";
                 }
 
                 return string.Format(
-                    "http://shoppingcartsystem.ddns.net:8083/{0}",
+                    "http://shoppingcartsystems.ddns.net:8087{0}",
                     PicturePath.Substring(1));
             }
         }

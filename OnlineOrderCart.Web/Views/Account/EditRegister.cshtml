@@ -1,11 +1,12 @@
 ﻿@model AddUserViewModel
+@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer localizer
 @{
-    ViewData["Title"] = "Edit Register";
+    ViewData["Title"] = @localizer["Register"];
 }
 <hr />
 <div class="row">
     <div class="col-md-8">
-        <form asp-action="EditRegister" enctype="multipart/form-data">
+        <form asp-action="EditRegister" enctype="multipart/form-data" onsubmit="return showPleaseWait()">
             <div asp-validation-summary="All" class="text-danger"></div>
             <input type="hidden" asp-for="KamId" />
             <input type="hidden" asp-for="ImageId" />
@@ -17,33 +18,33 @@
             <flash dismissable="true" />
             <div class="card border-secondary text-center mb-3" style="max-width: 70rem;">
                 <div class="card-header  bg-transparent border-dark">
-                    <h2> Edit Register</h2>
+                    <h2> @localizer["Register"]</h2>
                 </div>
                 <div class="card-body text-dark">
                     <div class="form-row">
                         <div class="col-md-6 mb-6">
                             <div class="form-group">
-                                <label asp-for="RolId" class="control-label"></label>
+                                <label class="control-label"> @localizer["RolId"]</label>
                                 <select asp-for="RolId" asp-items="Model.ComboRoles" class="form-control" style="float: left;text-align: center;"></select>
                                 <span asp-validation-for="RolId" class="text-danger"></span>
                             </div>
                         </div>
                         <div class="col-md-6 mb-6">
                             <div class="form-group">
-                                <label asp-for="GenderId" class="control-label"></label>
+                                <label  class="control-label">@localizer["GenderId"]</label>
                                 <select asp-for="GenderId" asp-items="Model.ComboGender" class="form-control" style="float: left;text-align: center;"></select>
                                 <span asp-validation-for="GenderId" class="text-danger"></span>
                             </div>
                         </div>
                     </div>
                     <partial name="_Users" />
-                   
+
                     <hr />
                 </div>
                 <div class="card-footer  bg-transparent border-secondary text-muted">
                     <div class="form-group">
-                        <button type="submit" class="btn btn-outline-primary"  style="border-radius: 60px;"><span class="glyphicon glyphicon-floppy-saved"></span> Guardar Registro</button>
-                        <a asp-controller="Account" asp-action="IndexRegister" class="btn btn-outline-secondary" style="border-radius: 60px;"><i class="glyphicon glyphicon-arrow-left"></i> Volver a la Lista</a>
+                        <button type="submit" class="btn btn-outline-primary" style="border-radius: 60px;"><span class="glyphicon glyphicon-floppy-saved"></span> @localizer["SaveRecord"]</button>
+                        <a asp-controller="Account" asp-action="IndexRegister" class="btn btn-outline-secondary" style="border-radius: 60px;" onclick="return showPleaseWait()"><i class="glyphicon glyphicon-arrow-left"></i> @localizer["BacktoList"]</a>
                     </div>
                 </div>
             </div>
@@ -54,10 +55,10 @@
         <div class="card border-secondary mb-3" style="max-width: 48rem;">
             <div class="card-header bg-transparent border-secondary"></div>
             <div class="card-body text-dark">
-                <h5 class="card-title">Avatar</h5>
+                <h5 class="card-title"> @localizer["Avatar"]</h5>
                 <div class="form-group">
                     @*<img class="lazyload" src="@Model.PicturePath" style="width:250px; height:100px; max-width: 100%; height: auto;" id="imagePreview" />*@
-                    <img class="lazyload" src="@Url.Content(Model.PictureFPath)" alt="Image" style="width:250px;height:100px;max-width: 100%; height: auto; border-radius:50%"  id="imagePreview" />
+                    <img class="lazyload" src="@Url.Content(Model.PictureFPath)" alt="Image" style="width:250px;height:100px;max-width: 100%; height: auto; border-radius:50%" id="imagePreview" />
                 </div>
             </div>
             <div class="card-footer bg-transparent border-secondary"></div>

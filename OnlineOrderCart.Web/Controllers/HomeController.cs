@@ -2,6 +2,9 @@
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+using OnlineOrderCart.Common.DesignPatternsTools;
+using OnlineOrderCart.Web.Configurations;
 using OnlineOrderCart.Web.Models;
 using System;
 using System.Collections.Generic;
@@ -13,20 +16,22 @@ namespace OnlineOrderCart.Web.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
+        private readonly IOptions<MyConfiguration> _config;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(IOptions<MyConfiguration> config)
         {
-            _logger = logger;
+            _config = config;
         }
 
         public IActionResult Index()
         {
+            Log.GetInstance(_config.Value.PathLog).Save($"Entro a Index Home   Date :{DateTime.Now.ToUniversalTime()}");
             return View();
         }
 
         public IActionResult Privacy()
         {
+            Log.GetInstance(_config.Value.PathLog).Save($"Entro a Privacy Home Date :{DateTime.Now.ToUniversalTime()}");
             return View();
         }
 

@@ -1,8 +1,9 @@
 ﻿
+@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer localizer
 @{
     ViewData["Title"] = "NotAuthorized";
 }
 <br />
 <br />
 <img src="~/image/gopher_head-min.png" />
-<h2>No estas autorizado para ejecutar esta acción!</h2>
+<h2> @localizer["NotAuthorized"]</h2>

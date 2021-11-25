@@ -1,15 +1,16 @@
 ﻿@model AddProductViewModel
+@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer localizer
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = @localizer["ProductsEdit"];
 }
 
 <hr />
 <div class="card text-center border-primary mb-3" style="max-width: 78rem;">
     <div class="card-header">
-        <h1>Products Edit</h1>
+        <h1> @localizer["ProductsEdit"]</h1>
         <flash dismissable="true" />
     </div>
-    <form asp-action="Edit" enctype="multipart/form-data">
+    <form asp-action="Edit" enctype="multipart/form-data" onsubmit="return showPleaseWait();">
         <div class="card-body text-primary">
             <h5 class="card-title"></h5>
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
@@ -66,7 +67,7 @@
         <div class="card-footer bg-transparent border-warning">
             <div class="form-group">
                 <button type="submit" class="btn btn-outline-primary"><i class="far fa-save"></i> Save Record</button>
-                <a asp-action="Index" class="btn btn-outline-secondary"><i class="fas fa-paper-plane"></i> Back to List</a>
+                <a asp-action="Index" class="btn btn-outline-secondary" onclick="showPleaseWait();"><i class="fas fa-paper-plane"></i> Back to List</a>
             </div>
         </div>
     </form>

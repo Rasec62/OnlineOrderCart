@@ -181,7 +181,7 @@ namespace OnlineOrderCart.Web.Helpers
                                    KamName = $"{k.Users.FirstName}{" "}{k.Users.LastName1}{" "}{k.Users.LastName2}",
                                    ImageId = u.ImageId,
                                    PicturePath = u.ImageFullPath,
-                                   PictureFullPath = u.PictureFullPath,
+                                   PictureFullPaths = u.PictureFullPath,
 
                               }).FirstOrDefaultAsync();
                 if (_Distri == null){
@@ -230,8 +230,8 @@ namespace OnlineOrderCart.Web.Helpers
                                          RoleId = r.RolId,
                                          KamId = k.KamId,
                                          ImageId = u.ImageId,
-                                         PicturePath = u.PictureFullPath,
-                                         PictureFullPath = u.ImageFullPath,
+                                         PicturePath = u.PicturePath,
+                                         PictureFullPaths = u.PictureFullPath,
                                      }).FirstOrDefaultAsync();
                 if (_Distri == null)
                 {
@@ -439,7 +439,7 @@ namespace OnlineOrderCart.Web.Helpers
                                          KamId = k.KamId,
                                          ImageId = u.ImageId,
                                          PicturePath = u.ImageFullPath,
-                                         PictureFullPath = u.PictureFullPath
+                                         PictureFullPaths = u.PictureFullPath
                                      }).FirstOrDefaultAsync();
                 if (_Distri == null)
                 {

@@ -16,11 +16,13 @@ namespace OnlineOrderCart.Web.Controllers
     {
         private readonly ITrademarkRolRepository _repository;
         private readonly IFlashMessage _flashMessage;
+        private readonly IRepository<Trademarks> _trademarkrepository;
 
-        public TrademarkController(ITrademarkRolRepository repository, IFlashMessage flashMessage)
+        public TrademarkController(ITrademarkRolRepository repository, IFlashMessage flashMessage, IRepository<Trademarks> Trademarkrepository)
         {
            _repository = repository;
            _flashMessage = flashMessage;
+           _trademarkrepository = Trademarkrepository;
         }
         
         public async Task<IActionResult> Index()
@@ -29,7 +31,8 @@ namespace OnlineOrderCart.Web.Controllers
             {
                 return new NotFoundViewResult("_ResourceNotFound");
             }
-            var data = await _repository.GetAllRecordsAsync();
+            //var data = await _repository.GetAllRecordsAsync();
+            var data = await _trademarkrepository.GetAllAsync();
             ViewBag.dataSource = data;
             return View(data);
         }
@@ -43,15 +46,16 @@ namespace OnlineOrderCart.Web.Controllers
 
             try
             {
-                var rol = await TrademarsExists(id.Value);
+                var trademark = await TrademarsExists(id.Value);
 
-                if (rol == null)
+                if (trademark == null)
                 {
                     return new NotFoundViewResult("_ResourceNotFound");
                 }
 
-                rol.IsDeleted = 1;
-                await _repository.UpdateAsync(rol);
+                trademark.IsDeleted = 1;
+                //await _repository.UpdateAsync(trademark);
+                await _trademarkrepository.UpdateAsync(trademark);
                 _flashMessage.Confirmation("The Trademars was deleted.");
             }
             catch (Exception ex)
@@ -62,11 +66,14 @@ namespace OnlineOrderCart.Web.Controllers
         }
         private async Task<Trademarks> TrademarsExists(int id)
         {
-            var _area = await _repository
-                .GetAll()
-                .Where(s => s.TrademarkId == id)
-                .FirstOrDefaultAsync();
-            return _area;
+            //var _area = await _repository
+            //    .GetAll()
+            //    .Where(s => s.TrademarkId == id)
+            //    .FirstOrDefaultAsync();
+
+            Trademarks trademark = await _trademarkrepository.GetAsync(id);
+
+            return trademark;
         }
         public async Task<IActionResult> Details(int? id)
         {
@@ -75,7 +82,7 @@ namespace OnlineOrderCart.Web.Controllers
                 return new NotFoundViewResult("_ResourceNotFound");
             }
 
-            var model = await _repository.GetOnlyTrademarkAsync(id.Value);
+            var model = await _trademarkrepository.GetAsync(id.Value);//await _repository.GetOnlyTrademarkAsync(id.Value);
 
             if (model == null)
             {
@@ -100,12 +107,13 @@ namespace OnlineOrderCart.Web.Controllers
                 {
                     model.IsDeleted = 0;
                     model.RegistrationDate = DateTime.Now.ToUniversalTime();
-                    await _repository.CreateAsync(model);
+                    //await _repository.CreateAsync(model);
+                    await _trademarkrepository.CreateAsync(model);
                     return RedirectToAction(nameof(Index));
                 }
                 catch (Exception ex)
                 {
-                    _flashMessage.Danger($"The Role can't be created because it has related records.  {ex.Message}");
+                    _flashMessage.Danger($"The Trademark can't be created because it has related records.  {ex.Message}");
                 }
             }
 
@@ -141,7 +149,8 @@ namespace OnlineOrderCart.Web.Controllers
             {
                 try
                 {
-                    await _repository.UpdateAsync(model);
+                    //await _repository.UpdateAsync(model);
+                   await _trademarkrepository.UpdateAsync(model);
                     return RedirectToAction(nameof(Index));
                 }
                 catch (Exception ex)

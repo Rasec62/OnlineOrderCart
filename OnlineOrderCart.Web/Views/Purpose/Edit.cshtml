@@ -9,7 +9,7 @@
         <h1>Purposes Edit</h1>
         <flash dismissable="true" />
     </div>
-    <form asp-action="Edit">
+    <form asp-action="Edit" onsubmit="showPleaseWait();">
         <input type="hidden" asp-for="PurposeId" />
         <input type="hidden" asp-for="IsDeleted" />
         <input type="hidden" asp-for="RegistrationDate" />
@@ -22,7 +22,7 @@
         <div class="card-footer bg-transparent border-warning">
             <div class="form-group">
                 <button type="submit" class="btn btn-outline-primary"><i class="far fa-save"></i> Save Record</button>
-                <a asp-action="Index" class="btn btn-outline-secondary"><i class="fas fa-paper-plane"></i> Back to List</a>
+                <a asp-action="Index" class="btn btn-outline-secondary" onclick="showPleaseWait();"><i class="fas fa-paper-plane"></i> Back to List</a>
             </div>
         </div>
     </form>

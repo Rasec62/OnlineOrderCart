@@ -10,7 +10,7 @@
         <h1></h1>
     </div>
     <div class="col text-right">
-        <a asp-action="NewOrder" class="btn btn-outline-success" style="border-radius: 60px;"><i class="glyphicon glyphicon-plus"></i> New Order</a>
+        <a asp-action="NewOrder" class="btn btn-outline-success" style="border-radius: 60px;" onclick="showPleaseWait();"><i class="glyphicon glyphicon-plus"></i> New Order</a>
     </div>
 </div>
 <br />
@@ -23,7 +23,7 @@
             </div>
             <div class="panel-body">
                 <div class="table-responsive-xl">
-                    <table class="display table-hover nowrap" id="example" style="width:100%">
+                    <table class="display table-hover" id="example" style="width:100%">
                         <caption>List of Index Orders</caption>
                         <thead class="thead-dark">
                             <tr>
@@ -71,8 +71,8 @@
                                         @Html.DisplayFor(modelItem => item.OrderStatus)
                                     </td>
                                     <td>
-                                        <a asp-action="OrderConfirm" asp-route-id="@item.OrderId" class="btn btn-outline-warning" style="border-radius: 60px;"><i class="glyphicon glyphicon-share"></i> Confirm the order</a>
-                                        <a asp-action="OrderDetails" asp-route-id="@item.OrderId" class="btn btn-outline-info" style="border-radius: 60px;"><i class="glyphicon glyphicon-tasks"></i> Order detail</a>
+                                        <a asp-action="OrderConfirm" asp-route-id="@item.OrderId" class="btn btn-outline-warning" style="border-radius: 60px;"><i class="glyphicon glyphicon-share" onclick="showPleaseWait();"></i> Confirm the order</a>
+                                        <a asp-action="OrderDetails" asp-route-id="@item.OrderId" class="btn btn-outline-info" style="border-radius: 60px;"><i class="glyphicon glyphicon-tasks" onclick="showPleaseWait();"></i> Order detail</a>
                                     </td>
                                 </tr>
                             }

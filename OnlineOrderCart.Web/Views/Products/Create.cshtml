@@ -1,4 +1,5 @@
 ﻿@model AddProductViewModel
+@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer localizer
 @{
     ViewData["Title"] = "Create";
 }
@@ -6,10 +7,10 @@
 <hr />
 <div class="card text-center border-primary mb-3" style="max-width: 78rem;">
     <div class="card-header">
-        <h1>Products Creation</h1>
+        <h1> @localizer["ProductsCreation"]</h1>
         <flash dismissable="true" />
     </div>
-    <form asp-action="Create" enctype="multipart/form-data">
+    <form asp-action="Create" enctype="multipart/form-data" onsubmit="return showPleaseWait();">
         <div class="card-body text-primary">
             <h5 class="card-title"></h5>
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
@@ -17,41 +18,41 @@
                 <div class="row">
                     <div class="col">
                         <div class="form-group">
-                            <label asp-for="ProductTypeId" class="control-label"></label>
+                            <label class="control-label">@localizer["ProductTypeId"]</label>
                             <select asp-for="ProductTypeId" asp-items="Model.ComboProdTypes" class="form-control" style="border-radius: 60px;"></select>
                             <span asp-validation-for="ProductTypeId" class="text-danger"></span>
                         </div>
                         <br />
                         <div class="form-group">
-                            <label asp-for="TrademarkId" class="control-label"></label>
+                            <label class="control-label">@localizer["TrademarkId"]</label>
                             <select asp-for="TrademarkId" asp-items="Model.ComboTrademarks" class="form-control" style="border-radius: 60px;"></select>
                             <span asp-validation-for="TrademarkId" class="text-danger"></span>
                         </div>
                         <br />
                         <div class="form-group">
-                            <label asp-for="ActivationTypeId" class="control-label"></label>
+                            <label class="control-label">@localizer["ActivationTypeId"]</label>
                             <select asp-for="ActivationTypeId" asp-items="Model.ComboActivationTypes" class="form-control" style="border-radius: 60px;"></select>
                             <span asp-validation-for="ActivationTypeId" class="text-danger"></span>
                         </div>
                         <br />
                         <div class="form-group">
-                            <label asp-for="ActivationFormId" class="control-label"></label>
+                            <label class="control-label">@localizer["ActivationFormId"]</label>
                             <select asp-for="ActivationFormId" asp-items="Model.ComboActivationForms" class="form-control" style="border-radius: 60px;"></select>
                             <span asp-validation-for="ActivationFormId" class="text-danger"></span>
                         </div>
                         <br />
                         <div class="form-group">
-                            <label asp-for="SimTypeId" class="control-label"></label>
+                            <label class="control-label">@localizer["SimTypeId"]</label>
                             <select asp-for="SimTypeId" asp-items="Model.ComboSimTypes" class="form-control" style="border-radius: 60px;"></select>
                             <span asp-validation-for="SimTypeId" class="text-danger"></span>
                         </div>
-                       
+
                     </div>
                     <div class="col">
                         <partial name="_Product" />
                         <br />
                         <div class="form-group">
-                            <label asp-for="ImageFile" class="control-label"></label>
+                            <label class="control-label">@localizer["ImageFile"]</label>
                             <input asp-for="ImageFile" class="form-control" type="file" />
                             <span asp-validation-for="ImageFile" class="text-danger"></span>
                         </div>
@@ -61,8 +62,8 @@
         </div>
         <div class="card-footer bg-transparent border-warning">
             <div class="form-group">
-                <button type="submit" class="btn btn-outline-primary" style="border-radius: 60px;"><i class="far fa-save"></i> Save Record</button>
-                <a asp-action="Index" class="btn btn-outline-secondary" style="border-radius: 60px;"><i class="fas fa-paper-plane"></i> Back to List</a>
+                <button type="submit" class="btn btn-outline-primary" style="border-radius: 60px;"><i class="far fa-save"></i> @localizer["SaveRecord"]</button>
+                <a asp-action="Index" class="btn btn-outline-secondary" style="border-radius: 60px;"><i class="fas fa-paper-plane"></i> @localizer["BacktoList"]</a>
             </div>
         </div>
     </form>

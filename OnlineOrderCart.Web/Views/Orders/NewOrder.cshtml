@@ -4,7 +4,7 @@
 }
 <link rel="stylesheet" href="https://cdn.datatables.net/1.10.25/css/jquery.dataTables.min.css" />
 
-<form asp-action="NewOrder" method="post">
+<form asp-action="NewOrder" method="post" onsubmit="return showPleaseWait();">
     <div asp-validation-summary="All" class="text-danger"></div>
     <flash dismissable="true" />
     <input type="hidden" asp-for="UserId" />
@@ -72,8 +72,8 @@
 
                     @*<input type="submit" value="Save Orders" class="btn btn-outline-primary" style="border-radius: 60px;" />
         @Html.ActionLink("Add Product", "AddProduct", "Orders", new { }, new { @class = "btn btn-outline-warning  popup" })*@
-                <a class="btn btn-outline-warning" style="border-radius: 60px;" asp-action="AddProduct" asp-controller="Orders"><i class="glyphicon glyphicon-saved"></i> Add New Order</a>
-                    <a asp-action="IndexOrders" class="btn btn-outline-secondary" style="border-radius: 60px;"><i class="glyphicon glyphicon-arrow-left"></i> Back to List</a>
+                <a class="btn btn-outline-warning" style="border-radius: 60px;" asp-action="AddProduct" asp-controller="Orders" onclick="showPleaseWait();"><i class="glyphicon glyphicon-saved"></i> Add New Order</a>
+                    <a asp-action="IndexOrders" class="btn btn-outline-secondary" style="border-radius: 60px;"><i class="glyphicon glyphicon-arrow-left" onclick="showPleaseWait();"></i> Back to List</a>
                     @*@Html.ActionLink("Back to Orders", "IndexOrders", new { }, new { @class = "btn btn-outline-dark" })*@
                 </div>
             </div>

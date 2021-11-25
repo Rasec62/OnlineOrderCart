@@ -1,10 +1,11 @@
 ﻿@model Products
+@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer localizer
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = @localizer["DetailProducts"];
 }
 
 <div class="card text-center border-danger mb-3" style="max-width: 78rem;">
-    <div class="card-header bg-transparent border-secondary">Detail Products</div>
+    <div class="card-header bg-transparent border-secondary"> @localizer["DetailProducts"]</div>
     <div class="card-body text-dark">
         <h5 class="card-title"></h5>
         <div class="row">
@@ -12,32 +13,31 @@
                 <div class="form-group">
                     <dl class="dl-horizontal">
                         <dt>
-                            Product
-                            @Html.DisplayNameFor(model => model.Description)
+                            @localizer["Description"]
                         </dt>
                         <dd>
                             @Html.DisplayFor(model => model.Description)
                         </dd>
                         <dt>
-                            @Html.DisplayNameFor(model => model.ShortDescription)
+                            @localizer["ShortDescription"]
                         </dt>
                         <dd>
                             @Html.DisplayFor(model => model.ShortDescription)
                         </dd>
                         <dt>
-                            @Html.DisplayNameFor(model => model.ValueWithOutTax)
+                            @localizer["ValueWithOutTax"]
                         </dt>
                         <dd>
                             @Html.DisplayFor(model => model.ValueWithOutTax)
                         </dd>
                         <dt>
-                            @Html.DisplayNameFor(model => model.Price)
+                            @localizer["Price"]
                         </dt>
                         <dd>
                             @Html.DisplayFor(model => model.Price)
                         </dd>
                         <dt>
-                            @Html.DisplayNameFor(model => model.UnitsInStock)
+                            @localizer["UnitsInStock"]
                         </dt>
                         <dd>
                             @Html.DisplayFor(model => model.UnitsInStock)
@@ -48,36 +48,31 @@
             <div class="col-sm-6">
                 <dl class="dl-horizontal">
                     <dt>
-                        Products Type
-                        @Html.DisplayNameFor(model => model.ProductsType.Description)
+                        @localizer["ProductsType"]
                     </dt>
                     <dd>
                         @Html.DisplayFor(model => model.ProductsType.Description)
                     </dd>
-                    <dt>
-                        Trademarks
-                        @Html.DisplayNameFor(model => model.Trademarks.Description)
+                    <dt>                        
+                        @localizer["Trademarks"]
                     </dt>
                     <dd>
                         @Html.DisplayFor(model => model.Trademarks.Description)
                     </dd>
                     <dt>
-                        Activations Type
-                        @Html.DisplayNameFor(model => model.ActivationsType.Description)
+                        @localizer["ActivationsType"]
                     </dt>
                     <dd>
                         @Html.DisplayFor(model => model.ActivationsType.Description)
                     </dd>
                     <dt>
-                        Activations Form
-                        @Html.DisplayNameFor(model => model.ActivationsForm.Description)
+                        @localizer["ActivationsForm"]
                     </dt>
                     <dd>
                         @Html.DisplayFor(model => model.ActivationsForm.Description)
                     </dd>
                     <dt>
-                        SimTypes(*100)
-                        @Html.DisplayNameFor(model => model.SimTypes.Description)
+                        @localizer["SimTypes"]
                     </dt>
                     <dd>
                         @Html.DisplayFor(model => model.SimTypes.Description)
@@ -85,16 +80,16 @@
                 </dl>
             </div>
             @*<div class="col-sm-4">
-                <dl class="dl-horizontal">
-                    
-                </dl>
-            </div>*@
+                    <dl class="dl-horizontal">
+
+                    </dl>
+                </div>*@
         </div>
         @*<dl class="dl-horizontal">
-        </dl>*@
+            </dl>*@
     </div>
     <div class="card-footer bg-transparent border-warning">
-        <a asp-action="Edit" asp-route-id="@Model.ProductId" class="btn btn-outline-warning" style="border-radius: 60px;"><i class="fas fa-snowplow"></i> Edit</a>
-        <a asp-action="Index" class="btn btn-outline-secondary"  style="border-radius: 60px;"><i class="fas fa-paper-plane"></i> Back to List</a>
+        <a asp-action="Edit" asp-route-id="@Model.ProductId" class="btn btn-outline-warning" style="border-radius: 60px;"><i class="fas fa-snowplow"></i> @localizer["Edit"]</a>
+        <a asp-action="Index" class="btn btn-outline-secondary" style="border-radius: 60px;"><i class="fas fa-paper-plane"></i> @localizer["BacktoList"]</a>
     </div>
 </div>

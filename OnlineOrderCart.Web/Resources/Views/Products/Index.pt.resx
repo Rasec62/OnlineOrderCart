@@ -150,4 +150,7 @@
   <data name="Products" xml:space="preserve">
     <value>Produtos</value>
   </data>
+  <data name="ShortDescription" xml:space="preserve">
+    <value>Pequena descrição</value>
+  </data>
 </root>

@@ -23,10 +23,11 @@ namespace OnlineOrderCart.Web.Controllers
         private readonly ICombosHelper _combosHelper;
         private readonly IImageHelper _imageHelper;
         private readonly DataContext _dataContext;
+        private readonly IRepository<Products> _productrepository;
 
         public ProductsController(IProductRepository repository, IFlashMessage flashMessage,
             IConverterHelper converterHelper, ICombosHelper combosHelper, IImageHelper imageHelper,
-            DataContext dataContext)
+            DataContext dataContext, IRepository<Products> Productrepository)
         {
             _repository = repository;
             _flashMessage = flashMessage;
@@ -34,6 +35,7 @@ namespace OnlineOrderCart.Web.Controllers
             _combosHelper = combosHelper;
             _imageHelper = imageHelper;
             _dataContext = dataContext;
+            _productrepository = Productrepository;
         }
 
         public async Task<IActionResult> Index()
@@ -51,16 +53,17 @@ namespace OnlineOrderCart.Web.Controllers
 
             try
             {
-                var rol = await ProducsExists(id.Value);
+                var product = await ProducsExists(id.Value);
 
-                if (rol == null)
+                if (product == null)
                 {
                     return new NotFoundViewResult("_ResourceNotFound");
                 }
 
-                rol.IsDeleted = 1;
-                await _repository.UpdateAsync(rol);
-                _flashMessage.Confirmation("The Trademars was deleted.");
+                product.IsDeleted = 1;
+                //await _repository.UpdateAsync(rol);
+               await _productrepository.UpdateAsync(product);
+                _flashMessage.Confirmation($"The Product { product.Description } was deleted.");
             }
             catch (Exception ex)
             {
@@ -70,10 +73,12 @@ namespace OnlineOrderCart.Web.Controllers
         }
         private async Task<Products> ProducsExists(int id)
         {
-            var _prod = await _repository
-                .GetAll()
-                .Where(s => s.ProductId == id)
-                .FirstOrDefaultAsync();
+            //var _prod = await _repository
+            //    .GetAll()
+            //    .Where(s => s.ProductId == id)
+            //    .FirstOrDefaultAsync();
+
+            var _prod = await _productrepository.GetAsync(id);
             return _prod;
         }
 
@@ -107,7 +112,8 @@ namespace OnlineOrderCart.Web.Controllers
                     }
 
                     var prod = _converterHelper.ToProductEntity(model,true);
-                    await _repository.CreateAsync(prod);
+                    //await _repository.CreateAsync(prod);
+                    await _productrepository.CreateAsync(prod);
                     return RedirectToAction(nameof(Index));
                 }
                 catch (DbUpdateException dbUpdateException)
@@ -193,8 +199,9 @@ namespace OnlineOrderCart.Web.Controllers
                     _Prod.ShortDescription = model.ShortDescription.ToUpper() ?? _Prod.ShortDescription.ToUpper();
                     _Prod.IsDeleted = 0;
                     _Prod.RegistrationDate = DateTime.Now.ToUniversalTime();
-                   
-                    await _repository.UpdateAsync(_Prod);
+
+                    //await _repository.UpdateAsync(_Prod);
+                   await _productrepository.UpdateAsync(_Prod);
                     return RedirectToAction(nameof(Index));
                 }
                 catch (DbUpdateException dbUpdateException)

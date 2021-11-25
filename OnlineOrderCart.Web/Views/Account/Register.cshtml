@@ -1,11 +1,12 @@
 ﻿@model AddUserViewModel
+@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer localizer
 @{
-    ViewData["Title"] = "Register";
+    ViewData["Title"] = @localizer["Register"];
 }
 <hr />
 <div class="row">
     <div class="col-md-8">
-        <form asp-action="Register" enctype="multipart/form-data" method="post">
+        <form asp-action="Register" enctype="multipart/form-data" method="post"  onsubmit="return showPleaseWait()">
             <div asp-validation-summary="All" class="text-danger"></div>
             <input type="hidden" asp-for="Password" />
             <input type="hidden" asp-for="PasswordConfirm" />
@@ -13,20 +14,20 @@
             <flash dismissable="true" />
             <div class="card border-secondary text-center mb-3" style="max-width: 70rem;">
                 <div class="card-header  bg-transparent border-dark">
-                    <h2>Register</h2>
+                    <h2> @localizer["Register"]</h2>
                 </div>
                 <div class="card-body text-dark">
                     <div class="form-row">
                         <div class="col-md-6 mb-6">
                             <div class="form-group">
-                                <label asp-for="RolId" class="control-label"></label>
+                                <label class="control-label"> @localizer["RolId"]</label>
                                 <select asp-for="RolId" asp-items="Model.ComboRoles" class="form-control" style="float: left;text-align: center;border-radius: 60px;"></select>
                                 <span asp-validation-for="RolId" class="text-danger"></span>
                             </div>
                         </div>
                         <div class="col-md-6 mb-6">
                             <div class="form-group">
-                                <label asp-for="GenderId" class="control-label"></label>
+                                <label class="control-label"> @localizer["GenderId"]</label>
                                 <select asp-for="GenderId" asp-items="Model.ComboGender" class="form-control" style="float: left;text-align: center;border-radius: 60px;"></select>
                                 <span asp-validation-for="GenderId" class="text-danger"></span>
                             </div>
@@ -34,24 +35,24 @@
 
                     </div>
                     <partial name="_Users" />
-           
+
                     <hr />
                 </div>
                 <div class="card-footer  bg-transparent border-secondary text-muted">
                     <div class="form-group">
-                        <button type="submit" class="btn btn-outline-primary btn-block text-uppercase" style="border-radius: 60px;"><span class="glyphicon glyphicon-floppy-saved"></span> Guardar Registro</button>
-                        <a asp-controller="Account" asp-action="IndexRegister" class="btn btn-outline-secondary btn-block text-uppercase" style="border-radius: 60px;"><i class="glyphicon glyphicon-arrow-left"></i> Volver a la Lista</a>
+                        <button type="submit" class="btn btn-outline-primary btn-block text-uppercase" style="border-radius: 60px;"><span class="glyphicon glyphicon-floppy-saved"></span> @localizer["SaveRecord"]</button>
+                        <a asp-controller="Account" asp-action="IndexRegister" class="btn btn-outline-secondary btn-block text-uppercase" style="border-radius: 60px;" onclick="return showPleaseWait()"><i class="glyphicon glyphicon-arrow-left"></i> @localizer["BacktoList"]</a>
                     </div>
                 </div>
             </div>
         </form>
     </div>
     <hr />
-    <div class="col-md-4"  style="border-radius: 60px;">
+    <div class="col-md-4" style="border-radius: 60px;">
         <div class="card border-secondary mb-3" style="max-width: 48rem;">
             <div class="card-header bg-transparent border-secondary"></div>
             <div class="card-body text-dark">
-                <h5 class="card-title">Avatar</h5>
+                <h5 class="card-title"> @localizer["Avatar"]</h5>
                 <div class="form-group">
                     <img class="lazyload" src="~/image/img_avatar1.png" style="width:250px; height:100px; max-width: 100%; height: auto;" id="imagePreview" />
                 </div>
@@ -70,7 +71,8 @@
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-    <script>
+    <script src="~/js/pleaseWait.js"></script>
+    <script language="javascript" type="text/javascript">
         $('#verPassword').on('mousedown', function () {
             $('#Password').attr("type", "text");
         });
@@ -78,5 +80,9 @@
         $('#verPassword').on('mouseup mouseleave', function () {
             $('#Password').attr("type", "password");
         });
+        $(document).ready(function () {
+            hidePleaseWait();
+        });
     </script>
+
 }

@@ -7,6 +7,7 @@ using OnlineOrderCart.Common.Entities;
 using OnlineOrderCart.Common.Responses;
 using OnlineOrderCart.Web.DataBase;
 using OnlineOrderCart.Web.DataBase.Repositories;
+using OnlineOrderCart.Web.Errors;
 using OnlineOrderCart.Web.Helpers;
 using OnlineOrderCart.Web.Models;
 using System;
@@ -27,13 +28,15 @@ namespace OnlineOrderCart.Web.Controllers
         private readonly ICombosHelper _combosHelper;
         private readonly IOrderRepository _orderRepository;
         private readonly IConfiguration _configuration;
+        private readonly ICreateFileOrFolder _createFileOrFolder;
         private List<TmpOrdersVerificViewModel> ObjSpecialist = new List<TmpOrdersVerificViewModel>();
         private readonly List<TmpOrdersVerificViewModel> ListObjSpecialistIncentiveOrders = new List<TmpOrdersVerificViewModel>();
+        List<ObjectAvatarViewModel> OrdersObjecLayout = new List<ObjectAvatarViewModel>();
         // GET: GenerateaNormalOrderController
         public GenerateaNormalOrderController(IUserHelper userHelper,
             IFlashMessage flashMessage, DataContext dataContext,
             IDevelopmentHelper developmentHelper, ICombosHelper combosHelper
-            , IOrderRepository orderRepository, IConfiguration configuration)
+            , IOrderRepository orderRepository, IConfiguration configuration, ICreateFileOrFolder createFileOrFolder)
         {
             _userHelper = userHelper;
             _flashMessage = flashMessage;
@@ -42,6 +45,7 @@ namespace OnlineOrderCart.Web.Controllers
             _combosHelper = combosHelper;
             _orderRepository = orderRepository;
             _configuration = configuration;
+            _createFileOrFolder = createFileOrFolder;
         }
         public async Task<ActionResult> Index()
         {
@@ -225,6 +229,90 @@ namespace OnlineOrderCart.Web.Controllers
             model.CombosKams = _combosHelper.GetComboKamCoords();
             return View(model);
         }
+        [HttpGet]
+        public async Task<IActionResult> OrderConfirmation(long? id) {
+            if (id == 0)
+            {
+                var errorResponse = new CodeErrorResponse(404);
+                _flashMessage.Danger(string.Empty, $"{errorResponse.StatusCode}{" "}{errorResponse.Message}");
+                return new NotFoundViewResult("_ResourceNotFound");
+            }
+            if (User.Identity.Name == null)
+            {
+                var errorResponse = new CodeErrorResponse(401);
+                _flashMessage.Danger(string.Empty, $"{errorResponse.StatusCode}{" "}{errorResponse.Message}");
+                return new NotFoundViewResult("_ResourceNotFound");
+            }
+
+            PrOrders order = await _dataContext
+                .PrOrders
+                .Where(i => i.OrderId.Equals(id))
+                .FirstOrDefaultAsync();
+
+            if (order == null)
+            {
+                var errorResponse = new CodeErrorResponse(404);
+                _flashMessage.Danger(string.Empty, $"{errorResponse.StatusCode}{" "}{errorResponse.Message}");
+                return new NotFoundViewResult("_ResourceNotFound");
+            }
+
+            Distributors distributors = await _dataContext
+                .Distributors
+                .Include(u => u.Users)
+                .Where(d => d.DistributorId.Equals(order.DistributorId))
+                .FirstOrDefaultAsync();
+
+            if (distributors == null)
+            {
+                var errorResponse = new CodeErrorResponse(404);
+                _flashMessage.Danger(string.Empty, $"{errorResponse.StatusCode}{" "}{errorResponse.Message}");
+                return new NotFoundViewResult("_ResourceNotFound");
+            }
+
+            var EmailDetails = await _developmentHelper.GetOnlySqlEmailKamCoordDistrs(order.DistributorId);
+
+            OrdersObjecLayout = await (from pd in _dataContext.PrOrderDetails
+                                  join po in _dataContext.PrOrders on pd.OrderId equals po.OrderId
+                                  join dw in _dataContext.DeatilWarehouses on pd.DeatilStoreId equals dw.DeatilStoreId
+                                  join wr in _dataContext.Warehouses on dw.StoreId equals wr.StoreId
+                                  join p in _dataContext.Products on dw.ProductId equals p.ProductId
+                                  join ma in _dataContext.Trademarks on p.TrademarkId equals ma.TrademarkId
+                                  join d in _dataContext.Distributors on po.DistributorId equals d.DistributorId
+                                  join pay in _dataContext.TypeofPayments on pd.TypeofPaymentId equals pay.TypeofPaymentId
+                                  where po.OrderId == id && pd.OrderStatus == "Sent" && pd.GenerateDistributor == 0
+                                  select new ObjectAvatarViewModel
+                                  {
+                                      Debtor = po.Debtor,
+                                      OrderDate = po.OrderDate.ToLocalTime(),
+                                      BusinessName = d.BusinessName,
+                                      Quantity = pd.Quantity,
+                                      OraclepId = p.OraclepId,
+                                      Description = p.Description,
+                                      ShippingBranchNo = wr.ShippingBranchNo,
+                                      ShippingBranchName = wr.ShippingBranchName,
+                                      filePath = $"{_configuration["FilePath:SecretNormalFilePath"]}",
+                                      OrderCode = $"{pd.OrderCode.Replace("-", "_").Replace(" ", "")}{".xlsx"}",
+                                      To = distributors.Users.Email,
+                                      OrderId = po.OrderId,
+                                      DeatilStoreId = pd.DeatilStoreId,
+                                      OrderDetailId = pd.OrderDetailId,
+                                      OptionalEmailDetails = EmailDetails,
+                                  }).ToListAsync();
+
+            if (OrdersObjecLayout.Count > 0)
+            {
+                var _response = _createFileOrFolder.WriteExcelFileNormal(OrdersObjecLayout);
+
+                if (!_response.IsSuccess)
+                {
+                    _flashMessage.Danger($"{"Error Send  :"}{_response.Message}");
+                    return RedirectToAction(nameof(Index), new { });
+                }
+            }
+            _flashMessage.Danger($"{"Send  :"}{"Email OK."}");
+            return RedirectToAction("Index", "GenerateaNormalOrder");
+
+        }
 
         public async Task<IActionResult> Increase(int? id)
         {
@@ -280,7 +368,8 @@ namespace OnlineOrderCart.Web.Controllers
                                  join ma in _dataContext.Trademarks on p.TrademarkId equals ma.TrademarkId
                                  join d in _dataContext.Distributors on t.DistributorId equals d.DistributorId
                                  join pay in _dataContext.TypeofPayments on t.TypeofPaymentId equals pay.TypeofPaymentId
-                                 where t.GenerateUserId == _UseAvatar.Users.UserId || d.DistributorId == Id
+                                 // where t.GenerateUserId == _UseAvatar.Users.UserId || d.DistributorId == Id
+                                 where d.DistributorId == Id
                                  select new TmpOrdersVerificViewModel
                                  {
                                      Debtor = t.Debtor,
@@ -478,58 +567,59 @@ namespace OnlineOrderCart.Web.Controllers
 
             return new JsonResult(DWare);
         }
-        [HttpGet]
-        public async Task<IActionResult> OrderConfirmation(long? id)
-        {
-            List<ObjectAvatarViewModel> OrdersLayout = new List<ObjectAvatarViewModel>();
-            if (id == 0)
-            {
-                return new NotFoundViewResult("_ResourceNotFound");
-            }
-            if (User.Identity.Name == null)
-            {
-                return new NotFoundViewResult("_ResourceNotFound");
-            }
 
-            Response<UserManagerEntity> _UserK = await _userHelper.GetUserByEmailAsync(User.Identity.Name);
-            if (_UserK.IsSuccess == false)
-            {
-                return new NotFoundViewResult("_ResourceNotFound");
-            }
-            //var EmailDetails = await _developmentHelper.GetSqlEmailDistrs(_Dusers.Result.Debtor.ToString());
-            OrdersLayout = await (from t in _dataContext.PrOrderDetails
-                                  join io in _dataContext.PrOrders on t.OrderId equals io.OrderId
-                                  join dw in _dataContext.DeatilWarehouses on t.DeatilStoreId equals dw.DeatilStoreId
-                                  join wr in _dataContext.Warehouses on dw.StoreId equals wr.StoreId
-                                  join p in _dataContext.Products on dw.ProductId equals p.ProductId
-                                  join ma in _dataContext.Trademarks on p.TrademarkId equals ma.TrademarkId
-                                  join d in _dataContext.Distributors on io.DistributorId equals d.DistributorId
-                                  join pay in _dataContext.TypeofPayments on t.TypeofPaymentId equals pay.TypeofPaymentId
-                                  where io.OrderId == id && io.OrderStatus == "Sent"
-                                  select new ObjectAvatarViewModel
-                                  {
-                                      Debtor = io.Debtor,
-                                      OrderDate = io.OrderDate.ToLocalTime(),
-                                      BusinessName = d.BusinessName,
-                                      Quantity = t.Quantity,
-                                      OraclepId = p.OraclepId,
-                                      Description = p.Description,
-                                      ShippingBranchNo = wr.ShippingBranchNo,
-                                      ShippingBranchName = wr.ShippingBranchName,
-                                      filePath = $"{_configuration["FilePath:SecretFilePath"]}",
-                                      OrderCode = $"{t.OrderCode.Replace("-", "_").Replace(" ", "")}{".xlsx"}",
-                                      To = _UserK.Result.Email,
-                                      OrderId = io.OrderId,
-                                      DeatilStoreId = t.DeatilStoreId,
-                                      OrderDetailId = t.OrderDetailId,
-                                  }).ToListAsync();
+        //[HttpGet]
+        //public async Task<IActionResult> OrderConfirmation(long? id)
+        //{
+        //    List<ObjectAvatarViewModel> OrdersLayout = new List<ObjectAvatarViewModel>();
+        //    if (id == 0)
+        //    {
+        //        return new NotFoundViewResult("_ResourceNotFound");
+        //    }
+        //    if (User.Identity.Name == null)
+        //    {
+        //        return new NotFoundViewResult("_ResourceNotFound");
+        //    }
 
-            if (OrdersLayout.Count > 0 || OrdersLayout != null)
-            {
-                //_createFileOrFolder.WriteExcelFile(OrdersLayout);
-            }
-            return RedirectToAction(nameof(Index), "GenerateaNormalOrder");
-        }
+        //    Response<UserManagerEntity> _UserK = await _userHelper.GetUserByEmailAsync(User.Identity.Name);
+        //    if (_UserK.IsSuccess == false)
+        //    {
+        //        return new NotFoundViewResult("_ResourceNotFound");
+        //    }
+        //    //var EmailDetails = await _developmentHelper.GetSqlEmailDistrs(_Dusers.Result.Debtor.ToString());
+        //    OrdersLayout = await (from t in _dataContext.PrOrderDetails
+        //                          join io in _dataContext.PrOrders on t.OrderId equals io.OrderId
+        //                          join dw in _dataContext.DeatilWarehouses on t.DeatilStoreId equals dw.DeatilStoreId
+        //                          join wr in _dataContext.Warehouses on dw.StoreId equals wr.StoreId
+        //                          join p in _dataContext.Products on dw.ProductId equals p.ProductId
+        //                          join ma in _dataContext.Trademarks on p.TrademarkId equals ma.TrademarkId
+        //                          join d in _dataContext.Distributors on io.DistributorId equals d.DistributorId
+        //                          join pay in _dataContext.TypeofPayments on t.TypeofPaymentId equals pay.TypeofPaymentId
+        //                          where io.OrderId == id && io.OrderStatus == "Sent"
+        //                          select new ObjectAvatarViewModel
+        //                          {
+        //                              Debtor = io.Debtor,
+        //                              OrderDate = io.OrderDate.ToLocalTime(),
+        //                              BusinessName = d.BusinessName,
+        //                              Quantity = t.Quantity,
+        //                              OraclepId = p.OraclepId,
+        //                              Description = p.Description,
+        //                              ShippingBranchNo = wr.ShippingBranchNo,
+        //                              ShippingBranchName = wr.ShippingBranchName,
+        //                              filePath = $"{_configuration["FilePath:SecretNormalFilePath"]}",
+        //                              OrderCode = $"{t.OrderCode.Replace("-", "_").Replace(" ", "")}{".xlsx"}",
+        //                              To = _UserK.Result.Email,
+        //                              OrderId = io.OrderId,
+        //                              DeatilStoreId = t.DeatilStoreId,
+        //                              OrderDetailId = t.OrderDetailId,
+        //                          }).ToListAsync();
+
+        //    if (OrdersLayout.Count > 0 || OrdersLayout != null)
+        //    {
+        //        //_createFileOrFolder.WriteExcelFile(OrdersLayout);
+        //    }
+        //    return RedirectToAction(nameof(Index), "GenerateaNormalOrder");
+        //}
 
         [HttpPost]
         public IActionResult AjaxMethod(string DistributorId)

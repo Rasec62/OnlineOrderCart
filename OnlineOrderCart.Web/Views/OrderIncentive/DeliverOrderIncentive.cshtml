@@ -11,7 +11,7 @@
     <input type="hidden" asp-for="UserId" />
     <input type="hidden" asp-for="KamId" />
     <flash dismissable="true" />
-    <form asp-action="DeliverOrderIncentive" method="post">
+    <form asp-action="DeliverOrderIncentive" method="post" onsubmit="return showPleaseWait();">
         <div class="row">
             <div class="form-group col-md-12">
                 <label asp-for="Observations" class="control-label"></label>
@@ -33,7 +33,7 @@
                 <div class="form-group col-md-12">
                     <button type="submit" class="btn btn-outline-danger" style="float: left;text-align: center;border-radius: 60px;"><i class="far fa-save"></i> Save Record</button>
                     @*<a asp-action="DeliverOrderIncentive"  asp-route-id="@distributorId" class="btn btn-outline-warning" style="border-radius: 60px;"><i class="fas fa-check"></i> Verification of order information</a>*@
-                    <a asp-action="Index" class="btn btn-outline-secondary" style="border-radius: 60px;"><i class="fab fa-soundcloud"></i> Back to List</a>
+                    <a asp-action="Index" class="btn btn-outline-secondary" style="border-radius: 60px;"><i class="fab fa-soundcloud" onclick="showPleaseWait();"></i> Back to List</a>
                 </div>
             </div>
         </div>

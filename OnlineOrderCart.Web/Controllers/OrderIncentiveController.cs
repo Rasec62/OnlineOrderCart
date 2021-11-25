@@ -358,7 +358,14 @@ namespace OnlineOrderCart.Web.Controllers
             if (OrdersLayout.Count > 0)
             {
                 var _response = _createFileOrFolder.WriteExcelFile(OrdersLayout);
+
+                if (!_response.IsSuccess)
+                {
+                    _flashMessage.Danger($"{"Error Send  :"}{_response.Message}");
+                    return RedirectToAction(nameof(Index), new {});
+                }
             }
+            _flashMessage.Danger($"{"Send  :"}{"Email OK."}");
             return RedirectToAction("Index", "OrderIncentive");
         }
         [HttpPost]

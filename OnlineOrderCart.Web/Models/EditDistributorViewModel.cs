@@ -51,7 +51,7 @@ namespace OnlineOrderCart.Web.Models
         public Guid ImageId { get; set; }
 
         public string PicturePath { get; set; }
-        public string PictureFullPath { get; set; }
+        public string PictureFullPaths { get; set; }
 
         public IEnumerable<SelectListItem> ComboGenders { get; set; }
         public IEnumerable<SelectListItem> ComboDisRoles { get; set; }

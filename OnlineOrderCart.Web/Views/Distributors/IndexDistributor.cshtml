@@ -1,18 +1,19 @@
 ﻿@model IEnumerable<IndexUserDistEntity>
+@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer localizer
 @{
-    ViewData["Title"] = "Distributor";
+    ViewData["Title"] = @localizer["Distributor"];
 }
 
 <link rel="stylesheet" href="https://cdn.datatables.net/1.10.25/css/dataTables.bootstrap4.min.css" />
 <br />
 <div class="row">
     <div class="col">
-        <h1>Registro Distributor</h1>
+        <h1> @localizer["DistributorRegister"]</h1>
         <flash dismissable="true" />
     </div>
     <div class="col text-right">
         <p>
-            <a asp-action="CreateDistributor" class="btn btn-outline-primary text-uppercase" style="border-radius: 60px;"><i class="glyphicon glyphicon-plus"></i> New</a>
+            <a asp-action="CreateDistributor" class="btn btn-outline-primary text-uppercase" style="border-radius: 60px;" onclick="showPleaseWait();"><i class="glyphicon glyphicon-plus"></i> @localizer["AddNew"]</a>
         </p>
     </div>
 </div>
@@ -20,22 +21,22 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.RolName)
+                @localizer["RolName"]
             </th>
             <th>
                 Kam
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.BusinessName)
+                @localizer["BusinessName"]
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Debtor)
+                @localizer["Debtor"]
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.PicturePath)
+                @localizer["PicturePath"]
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.IsActive)
+                @localizer["IsActive"]
             </th>
             <th></th>
         </tr>
@@ -43,44 +44,44 @@
     <tbody>
         @foreach (var item in Model)
         {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.RolName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.KFullName)
-            </td>
-            <th>
-                @Html.DisplayFor(modelItem => item.BusinessName)
-            </th>
-            <td>
-                @Html.DisplayFor(modelItem => item.Debtor)
-            </td>
-            <td>
-                @if (item.PicturefullPath != null)
-                {
-                    @*<img src="@item.PicturefullPath" style="width:80px;height:80px;max-width: 100%; height: auto; border-radius:50%" />*@
-                    <img src="@Url.Content(item.PicturefullPath)" alt="Image" style="width:100px;height:100px;max-width: 100%; height: auto; border-radius:50%" />
-                }
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.IsActive)
-            </td>
-            <td>
-                @if (item.IsActive)
-                {
-                    <a asp-action="EditDistributor" asp-route-id="@item.DistributorId" class="btn btn-outline-warning text-uppercase" style="border-radius: 60px;"><i class="glyphicon glyphicon-pencil"></i></a>
-                    <a asp-action="DetailDistributor" asp-route-id="@item.DistributorId" class="btn btn-outline-info  text-uppercase" style="border-radius: 60px;"><i class="glyphicon glyphicon glyphicon-align-justify"></i></a>
-                    <a asp-action="DetailOptionalEmail" asp-route-id="@item.DistributorId" class="btn btn-outline-secondary  text-uppercase" style="border-radius: 60px;"><i class="glyphicon glyphicon-envelope" style="border-radius: 60px;"></i></a>
-                    <button data-id="@item.DistributorId" class="btn btn-outline-danger text-uppercase deleteItem" data-toggle="modal" data-target="#deleteDialog" style="border-radius: 60px;"><i class="glyphicon glyphicon-trash" style="border-radius: 60px;"></i></button>
-                }
-                else
-                {
-                    <a asp-action="DetailIsDistrubutor" asp-route-id="@item.DistributorId" class="btn btn-outline-secondary  text-uppercase" style="border-radius: 60px;"><i class="glyphicon glyphicon-share" style="border-radius: 60px;"></i></a>
-                }
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.RolName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.KFullName)
+                </td>
+                <th>
+                    @Html.DisplayFor(modelItem => item.BusinessName)
+                </th>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Debtor)
+                </td>
+                <td>
+                    @if (item.PicturefullPath != null)
+                    {
+                        @*<img src="@item.PicturefullPath" style="width:80px;height:80px;max-width: 100%; height: auto; border-radius:50%" />*@
+                        <img src="@Url.Content(item.PicturefullPath)" alt="Image" style="width:100px;height:100px;max-width: 100%; height: auto; border-radius:50%" />
+                    }
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.IsActive)
+                </td>
+                <td>
+                    @if (item.IsActive)
+                    {
+                        <a asp-action="EditDistributor" asp-route-id="@item.DistributorId" class="btn btn-outline-warning text-uppercase" style="border-radius: 60px;" onclick="showPleaseWait();"><i class="glyphicon glyphicon-pencil"></i></a>
+                        <a asp-action="DetailDistributor" asp-route-id="@item.DistributorId" class="btn btn-outline-info  text-uppercase" style="border-radius: 60px;" onclick="showPleaseWait();"><i class="glyphicon glyphicon glyphicon-align-justify"></i></a>
+                        <a asp-action="DetailOptionalEmail" asp-route-id="@item.DistributorId" class="btn btn-outline-secondary  text-uppercase" style="border-radius: 60px;" onclick="showPleaseWait();"><i class="glyphicon glyphicon-envelope" style="border-radius: 60px;"></i></a>
+                        <button data-id="@item.DistributorId" class="btn btn-outline-danger text-uppercase deleteItem" data-toggle="modal" data-target="#deleteDialog" style="border-radius: 60px;"><i class="glyphicon glyphicon-trash" style="border-radius: 60px;"></i></button>
+                    }
+                    else
+                    {
+                        <a asp-action="DetailIsDistrubutor" asp-route-id="@item.DistributorId" class="btn btn-outline-secondary  text-uppercase" style="border-radius: 60px;" onclick="showPleaseWait();"><i class="glyphicon glyphicon-share" style="border-radius: 60px;"></i></a>
+                    }
 
-            </td>
-        </tr>
+                </td>
+            </tr>
         }
     </tbody>
 </table>

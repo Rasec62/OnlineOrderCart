@@ -4,7 +4,44 @@
 }
 
 <h1>CreateCoordinator</h1>
+<style>
+    #please-wait {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+    }
 
+        #please-wait .modal {
+            z-index: 1999;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0.5;
+            -moz-opacity: 0.5;
+            background-color: black;
+            margin-left: 0;
+        }
+
+        #please-wait .spinner {
+            z-index: 2000;
+            position: absolute;
+            padding-top: 20px;
+            padding-left: 20px;
+            background: #E5E5E5 no-repeat 15px center;
+            width: 120px;
+            height: 40px;
+            border: 2px solid #666;
+            font-weight: bold;
+            text-align: center;
+            margin-left: auto;
+            margin-right: auto;
+            top: 35%;
+            display: block;
+        }
+</style>
 <hr />
 <div class="row">
     <div class="col-md-8">
@@ -13,6 +50,10 @@
             <input type="hidden" asp-for="Password" />
             <input type="hidden" asp-for="PasswordConfirm" />
             <flash dismissable="true" />
+            <div id="please-wait" style="display: none;">
+                <div class="modal"></div>
+                <div class="spinner">Loading...</div>
+            </div>
             <div class="card border-secondary text-center mb-3" style="max-width: 70rem;">
                 <div class="card-header  bg-transparent border-dark">
                     <h2>Register</h2>
@@ -22,21 +63,21 @@
                         <div class="col-md-4 mb-6">
                             <div class="form-group">
                                 <label asp-for="RolId" class="control-label"></label>
-                                <select asp-for="RolId" asp-items="Model.ComboRoles" class="form-control" style="float: left;text-align: center;border-radius: 60px;"></select>
+                                <select asp-for="RolId" asp-items="Model.ComboRoles" class="form-control" style="float: left;text-align: center;border-radius: 60px;" required></select>
                                 <span asp-validation-for="RolId" class="text-danger"></span>
                             </div>
                         </div>
                         <div class="col-md-4 mb-6">
                             <div class="form-group">
                                 <label asp-for="GenderId" class="control-label"></label>
-                                <select asp-for="GenderId" asp-items="Model.ComboGender" class="form-control" style="float: left;text-align: center;border-radius: 60px;"></select>
+                                <select asp-for="GenderId" asp-items="Model.ComboGender" class="form-control" style="float: left;text-align: center;border-radius: 60px;" required></select>
                                 <span asp-validation-for="GenderId" class="text-danger"></span>
                             </div>
                         </div>
                         <div class="col-md-4 mb-6">
                             <div class="form-group">
                                 <label asp-for="KamManagerId" class="control-label"></label>
-                                <select asp-for="KamManagerId" asp-items="Model.ComboKams" class="form-control" style="float: left;text-align: center;border-radius: 60px;"></select>
+                                <select asp-for="KamManagerId" asp-items="Model.ComboKams" class="form-control" style="float: left;text-align: center;border-radius: 60px;" required></select>
                                 <span asp-validation-for="KamManagerId" class="text-danger"></span>
                             </div>
                         </div>
@@ -48,7 +89,7 @@
                 </div>
                 <div class="card-footer  bg-transparent border-secondary text-muted">
                     <div class="form-group">
-                        <button type="submit" class="btn btn-outline-primary btn-block text-uppercase" style="border-radius: 60px;"><span class="glyphicon glyphicon-floppy-saved"></span> Guardar Registro</button>
+                        <button type="submit" class="btn btn-outline-primary btn-block text-uppercase" style="border-radius: 60px;" onclick="return showPleaseWait();"><span class="glyphicon glyphicon-floppy-saved"></span> Guardar Registro</button>
                         <a asp-controller="Account" asp-action="IndexRegister" class="btn btn-outline-secondary btn-block text-uppercase" style="border-radius: 60px;"><i class="glyphicon glyphicon-arrow-left"></i> Volver a la Lista</a>
                     </div>
                 </div>
@@ -76,16 +117,37 @@
     </p>
 </div>
 
+<div class="loading" align="center" style="display: none;">
+    Loading. Please wait.<br />
+    <br />
+    <img src="~/Image/loader.gif" alt="" />
+</div>
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-    <script>
+     <script src="~/js/pleaseWait.js"></script>
+    <script language="javascript" type="text/javascript">
         $('#verPassword').on('mousedown', function () {
             $('#Password').attr("type", "text");
         });
 
         $('#verPassword').on('mouseup mouseleave', function () {
             $('#Password').attr("type", "password");
+        });
+        function ShowProgress() {
+            setTimeout(function () {
+                var modal = $('<div />');
+                modal.addClass("modal");
+                $('body').append(modal);
+                var loading = $(".loading");
+                loading.show();
+                var top = Math.max($(window).height() / 2 - loading[0].offsetHeight / 2, 0);
+                var left = Math.max($(window).width() / 2 - loading[0].offsetWidth / 2, 0);
+                loading.css({ top: top, left: left });
+            }, 200);
+        }
+        $(document).ready(function () {
+            hidePleaseWait();
         });
     </script>
 }

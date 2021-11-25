@@ -9,7 +9,7 @@
         <h1>Activations Form Edit</h1>
         <flash dismissable="true" />
     </div>
-    <form asp-action="Edit">
+    <form asp-action="Edit" onsubmit="return showPleaseWait();">
         <div class="card-body text-primary">
             <h5 class="card-title"></h5>
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
@@ -22,7 +22,7 @@
         <div class="card-footer bg-transparent border-warning">
             <div class="form-group">
                 <button type="submit" class="btn btn-outline-primary"><i class="far fa-save"></i> Save Record</button>
-                <a asp-action="Index" class="btn btn-outline-secondary"><i class="fas fa-paper-plane"></i> Back to List</a>
+                <a asp-action="Index" class="btn btn-outline-secondary" onclick="showPleaseWait();"><i class="fas fa-paper-plane" onclick="showPleaseWait();"></i> Back to List</a>
             </div>
         </div>
     </form>

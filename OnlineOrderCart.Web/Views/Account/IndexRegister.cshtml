@@ -1,17 +1,18 @@
 ﻿@model IEnumerable<UserManagerEntity>
+@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer localizer
 @{
-    ViewData["Title"] = "Index Register";
+    ViewData["Title"] = @localizer["IndexRegister"];
 }
 
 <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/dataTables.bootstrap4.min.css" />
 <br />
 <div class="row">
     <div class="col">
-        <h1>Registro Kams</h1>
+        <h1> @localizer["RegistreKam"]</h1>
     </div>
     <div class="col text-right">
         <p>
-            <a asp-action="Register" class="btn btn-outline-primary text-uppercase" style="border-radius: 60px;"><i class="glyphicon glyphicon-plus"></i> New</a>
+            <a asp-action="Register" class="btn btn-outline-primary text-uppercase" style="border-radius: 60px;" onclick="showPleaseWait();"><i class="glyphicon glyphicon-plus"></i> @localizer["AddNew"]</a>
         </p>
     </div>
 </div>
@@ -20,19 +21,19 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.RolName)
+                @localizer["RolName"]
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.FullName)
+                @localizer["FullName"]
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.IsAdmin)
+                @localizer["IsAdmin"]
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Username)
+                @localizer["Username"]
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.ImageFullPath)
+                @localizer["ImageFullPath"]
             </th>
             <th></th>
         </tr>
@@ -58,8 +59,8 @@
                     <img src="@Url.Content(item.PicturePath)" alt="Image" style="width:100px;height:100px;max-width: 100%; height: auto; border-radius:50%" />
                 </td>
                 <td>
-                    <a asp-action="EditRegister" asp-route-id="@item.KamId" class="btn btn-outline-warning text-uppercase" style="border-radius: 60px;"><i class="glyphicon glyphicon-pencil"></i></a>
-                    <a asp-action="DetailRegister" asp-route-id="@item.KamId" class="btn btn-outline-info  text-uppercase" style="border-radius: 60px;"><i class="glyphicon glyphicon glyphicon-align-justify"></i></a>
+                    <a asp-action="EditRegister" asp-route-id="@item.KamId" class="btn btn-outline-warning text-uppercase" style="border-radius: 60px;" onclick="showPleaseWait();"><i class="glyphicon glyphicon-pencil"></i></a>
+                    <a asp-action="DetailRegister" asp-route-id="@item.KamId" class="btn btn-outline-info  text-uppercase" style="border-radius: 60px;" onclick="showPleaseWait();"><i class="glyphicon glyphicon glyphicon-align-justify"></i></a>
                     <button data-id="@item.KamId" class="btn btn-outline-danger text-uppercase deleteItem" data-toggle="modal" data-target="#deleteDialog" style="border-radius: 60px;"><i class="glyphicon glyphicon-trash" style="border-radius: 60px;"></i></button>
                 </td>
             </tr>
@@ -72,7 +73,7 @@
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
     <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.10.21/js/dataTables.bootstrap4.min.js"></script>
-    
+
     <script type="text/javascript">
         $(document).ready(function () {
             $('#MyTable').DataTable({

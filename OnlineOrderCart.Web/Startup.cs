@@ -15,6 +15,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
+using OnlineOrderCart.Web.Configurations;
 using OnlineOrderCart.Web.DataBase;
 using OnlineOrderCart.Web.DataBase.Repositories;
 using OnlineOrderCart.Web.Helpers;
@@ -134,6 +135,7 @@ namespace OnlineOrderCart.Web
             services.AddScoped<ICreateFileOrFolder, CreateFileOrFolder>();
             services.AddScoped<IOrderIncentiveRepository, OrderIncentiveRepository>();
             
+            services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 
             services.AddLocalization(opt => { opt.ResourcesPath = "Resources"; });
 
@@ -149,6 +151,7 @@ namespace OnlineOrderCart.Web
                .AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix)
                .AddDataAnnotationsLocalization()
                .AddRazorRuntimeCompilation();
+            services.Configure<MyConfiguration>(Configuration.GetSection("MyConfig"));
 
             //services.AddMvc()
             //    .AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix)
