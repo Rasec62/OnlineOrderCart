@@ -20,6 +20,7 @@ using OnlineOrderCart.Web.DataBase;
 using OnlineOrderCart.Web.DataBase.Repositories;
 using OnlineOrderCart.Web.Helpers;
 using OnlineOrderCart.Web.Middleware;
+using OnlineOrderCart.Web.OnlineOrderCartMappers;
 using OnlineOrderCart.Web.Services;
 using System;
 using System.Collections.Generic;
@@ -136,6 +137,8 @@ namespace OnlineOrderCart.Web
             services.AddScoped<IOrderIncentiveRepository, OrderIncentiveRepository>();
             
             services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+
+            services.AddAutoMapper(typeof(OnlineOrderCartMapper));
 
             services.AddLocalization(opt => { opt.ResourcesPath = "Resources"; });
 
