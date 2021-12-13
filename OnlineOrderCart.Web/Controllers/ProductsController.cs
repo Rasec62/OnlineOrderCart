@@ -46,13 +46,11 @@ namespace OnlineOrderCart.Web.Controllers
         [Authorize(Roles = "PowerfulUser,KamAdmin,KamAdCoordinator")]
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null)
-            {
+            if (id == null){
                 return new NotFoundViewResult("_ResourceNotFound");
             }
 
-            try
-            {
+            try{
                 var product = await ProducsExists(id.Value);
 
                 if (product == null)

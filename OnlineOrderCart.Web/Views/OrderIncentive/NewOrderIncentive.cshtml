@@ -3,7 +3,7 @@
     ViewData["Title"] = "NewOrderIncentive";
 }
 <link rel="stylesheet" href="https://cdn.datatables.net/1.10.25/css/jquery.dataTables.min.css" />
-<form asp-action="NewOrderIncentive" method="post">
+<form asp-action="NewOrderIncentive" method="post" onsubmit="showPleaseWait();">
     <div class="row">
         <div class="col-sm-6">
             <div class="card text-center">
@@ -53,7 +53,7 @@
                 </div>
                 <div class="card-footer bg-transparent border-success">
                     <input type="submit" value="adding To-Order" class="btn btn-outline-primary" style="border-radius: 60px;" />
-                    <a asp-action="DeliverOrderIncentive" asp-route-id="@Model.DistributorId" class="btn btn-outline-danger" style="border-radius: 60px;"><i class="fab fa-gitkraken"></i>Order Review</a>
+                    <a asp-action="DeliverOrderIncentive" asp-route-id="@Model.DistributorId" class="btn btn-outline-danger" style="border-radius: 60px;" onclick="showPleaseWait();"><i class="fab fa-gitkraken"></i>Order Review</a>
                 </div>
             </div>
         </div>
@@ -87,7 +87,7 @@
 
                 </div>
                 <div class="card-footer bg-transparent border-success">
-                    <a asp-action="Index" class="btn btn-outline-secondary btn-sm" style="border-radius: 60px;"><i class="fa fa-address-card" aria-hidden="true"></i> Back to list</a>
+                    <a asp-action="Index" class="btn btn-outline-secondary btn-sm" style="border-radius: 60px;" onclick="showPleaseWait();"><i class="fa fa-address-card" aria-hidden="true"></i> Back to list</a>
                 </div>
             </div>
         </div>
@@ -153,8 +153,8 @@
                                 @Html.DisplayFor(modelItem => item.Value)
                             </td>
                             <td align="center">
-                                <a asp-action="Increase" asp-route-id="@item.IncentiveId" class="btn btn-outline-warning" style="border-radius: 60px;"><i class="fa fa-plus"></i></a>
-                                <a asp-action="Decrease" asp-route-id="@item.IncentiveId" class="btn btn-outline-dark" style="border-radius: 60px;"><i class="fa fa-minus"></i></a>
+                                <a asp-action="Increase" asp-route-id="@item.IncentiveId" class="btn btn-outline-warning" style="border-radius: 60px;" onclick="showPleaseWait();"><i class="fa fa-plus"></i></a>
+                                <a asp-action="Decrease" asp-route-id="@item.IncentiveId" class="btn btn-outline-dark" style="border-radius: 60px;" onclick="showPleaseWait();"><i class="fa fa-minus"></i></a>
                                 @*<a asp-action="GeneratetheIncentiveOrder" asp-route-id="@item.IncentiveId" class="btn btn-outline-secondary" style="border-radius: 60px;"><i class="fa fa-algolia"></i></a>*@
                                 <a asp-action="DeletedTmp" asp-route-id="@item.IncentiveId" class="btn btn-outline-danger" style="border-radius: 60px;" onclick="return confirm('Are you sure you wish to delete this post?');">Delete</a>
                                 @*@Html.ActionLink("Delete", "DeleteProduct", new { id = item.OrderDetailTmpId }, new { @class = "btn btn-outline-danger", onclick = "return confirm('¿ Are you sure to delete this records?');" })*@

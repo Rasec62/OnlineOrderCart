@@ -33,7 +33,7 @@
                 <div class="form-group col-md-12">
                     <button type="submit" class="btn btn-outline-danger" style="float: left;text-align: center;border-radius: 60px;"><i class="far fa-save"></i> Save Record</button>
                     @*<a asp-action="DeliverOrderIncentive"  asp-route-id="@distributorId" class="btn btn-outline-warning" style="border-radius: 60px;"><i class="fas fa-check"></i> Verification of order information</a>*@
-                    <a asp-action="Index" class="btn btn-outline-secondary" style="border-radius: 60px;"><i class="fab fa-soundcloud" onclick="showPleaseWait();"></i> Back to List</a>
+                    <a asp-action="Index" class="btn btn-outline-secondary" style="border-radius: 60px;" onclick="showPleaseWait();"><i class="fab fa-soundcloud" onclick="showPleaseWait();"></i> Back to List</a>
                 </div>
             </div>
         </div>
@@ -49,26 +49,26 @@
         <div class="card-body">
             <h5 class="card-title">Send Order Incentive</h5>
             <div style="width:100%; margin:0 auto;">
-                    <table class="table table-hover display" id="example" style="width: 100%">
-                        <thead>
-                            <tr>
-                                <th>No. de Deudor</th>
-                                <th>Nombre del cliente</th>
-                                <th>No. de Sucursal de envío</th>
-                                <th>Nombre sucursal de envío</th>
-                                <th>SKU</th>
-                                <th>Descripción</th>
-                                <th>Cantidad</th>
-                                <th>METODO DE PAGO</th>
-                                <th>USO CFDI</th>
-                                <th>Clave Pedido</th>
-                                <th>Descripcion Corta</th>
-                                @*<th></th>*@
-                            </tr>
-                        </thead>
-                        <tbody>
-                        </tbody>
-                    </table>   
+                <table class="table table-hover display" id="example" style="width: 100%">
+                    <thead>
+                        <tr>
+                            <th>No. de Deudor</th>
+                            <th>Nombre del cliente</th>
+                            <th>No. de Sucursal de envío</th>
+                            <th>Nombre sucursal de envío</th>
+                            <th>SKU</th>
+                            <th>Descripción</th>
+                            <th>Cantidad</th>
+                            <th>METODO DE PAGO</th>
+                            <th>USO CFDI</th>
+                            <th>Clave Pedido</th>
+                            <th>Descripcion Corta</th>
+                            @*<th></th>*@
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
             </div>
         </div>
         <div class="card-footer text-muted">

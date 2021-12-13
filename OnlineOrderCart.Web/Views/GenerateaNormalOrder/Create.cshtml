@@ -9,7 +9,7 @@
 <div class="container">
     <div class="row">
         <div class="col-md-6">
-            <form asp-action="Create" method="post">
+            <form asp-action="Create" method="post" onsubmit="showPleaseWait();">
                 <div asp-validation-summary="All" class="text-danger"></div>
                 <flash dismissable="true" />
                 <input type="hidden" asp-for="UserId" />
@@ -88,8 +88,8 @@
                         <div class="form-group">
                             <div class="col-md-offset-2 col-md-10">
                                 <i class="glyphicon glyphicon-flash"></i><input type="submit" value="Add New Order" class="btn btn-outline-primary" style="border-radius: 60px;" />
-                                <a class="btn btn-outline-warning" style="border-radius: 60px;" asp-action="OrderVerification" asp-controller="GenerateaNormalOrder"><i class="glyphicon glyphicon-credit-card"></i> Verify the Order</a>
-                                <a asp-action="Index" class="btn btn-outline-secondary" style="border-radius: 60px;"><i class="glyphicon glyphicon-arrow-left"></i> Back to List</a>
+                                <a class="btn btn-outline-warning" style="border-radius: 60px;" asp-action="OrderVerification" asp-controller="GenerateaNormalOrder" onclick="showPleaseWait();"><i class="glyphicon glyphicon-credit-card"></i> Verify the Order</a>
+                                <a asp-action="Index" class="btn btn-outline-secondary" style="border-radius: 60px;" onclick="showPleaseWait();"><i class="glyphicon glyphicon-arrow-left"></i> Back to List</a>
                             </div>
                         </div>
                     </div>
@@ -140,8 +140,8 @@
                                         @Html.DisplayFor(modelItem => item.Value)
                                     </td>
                                     <td>
-                                        <a asp-action="Increase" asp-route-id="@item.OrderDetailTmpId" class="btn btn-outline-warning" style="border-radius: 60px;"><i class="glyphicon glyphicon-plus"></i></a>
-                                        <a asp-action="Decrease" asp-route-id="@item.OrderDetailTmpId" class="btn btn-outline-dark" style="border-radius: 60px;"><i class="glyphicon glyphicon-minus"></i></a>
+                                        <a asp-action="Increase" asp-route-id="@item.OrderDetailTmpId" class="btn btn-outline-warning" style="border-radius: 60px;" onclick="showPleaseWait();"><i class="glyphicon glyphicon-plus"></i></a>
+                                        <a asp-action="Decrease" asp-route-id="@item.OrderDetailTmpId" class="btn btn-outline-dark" style="border-radius: 60px;" onclick="showPleaseWait();"><i class="glyphicon glyphicon-minus"></i></a>
                                         @*<a asp-action="DeletedTmp"  asp-route-id="@item.OrderDetailTmpId" class="btn btn-outline-danger" style="border-radius: 60px;" onclick="return confirm('Are you sure you wish to delete this post?');">Delete</a>*@
                                         @*@Html.ActionLink("Delete", "", new { id = item.OrderDetailTmpId }, new { @class = "btn btn-outline-danger", onclick = "return confirm('¿ Are you sure to delete this records?');" })*@
                                     <button data-id="@item.OrderDetailTmpId" class="btn btn-outline-danger text-uppercase deleteItem" data-toggle="modal" data-target="#deleteDialog" style="border-radius: 60px;"><span class="glyphicon glyphicon-remove"></span> Remove</button>

@@ -15,7 +15,7 @@
         <h1>Order Incentive</h1>
     </div>
     <div class="col text-right">
-        <a asp-action="NewOrderIncentive" class="btn btn-outline-primary" style="border-radius: 60px;">New Order</a>
+        <a asp-action="NewOrderIncentive" class="btn btn-outline-primary" style="border-radius: 60px;" onclick="showPleaseWait();">New Order</a>
     </div>
 </div>
 <br />
@@ -76,8 +76,8 @@
                                     @Html.DisplayFor(modelItem => item.Observations)
                                 </td>
                                 <td>
-                                    <a asp-action="OrderConfirmationI" asp-route-id="@item.IncentiveOrderId" class="btn btn-outline-warning" style="border-radius: 60px;"><i class="fas fa-fighter-jet"></i></a>
-                                    <a asp-action="Details" asp-route-id="@item.IncentiveOrderId" class="btn btn-outline-info" style="border-radius: 60px;"><i class="fab fa-leanpub"></i></a>
+                                    <a asp-action="OrderConfirmationI" asp-route-id="@item.IncentiveOrderId" class="btn btn-outline-warning" style="border-radius: 60px;" onclick="showPleaseWait();"><i class="fas fa-fighter-jet"></i></a>
+                                    <a asp-action="Details" asp-route-id="@item.IncentiveOrderId" class="btn btn-outline-info" style="border-radius: 60px;" onclick="showPleaseWait();"><i class="fab fa-leanpub"></i></a>
                                 </td>
                             </tr>
                             }
