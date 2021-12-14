@@ -1,10 +1,11 @@
 ﻿@model ActivationsForm
+@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer localizer
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = @localizer["Details"];
 }
 
 <div class="card text-center border-danger mb-3" style="max-width: 78rem;">
-    <div class="card-header bg-transparent border-secondary">DetaiL Activation Form</div>
+    <div class="card-header bg-transparent border-secondary">@localizer["DetailActivationForm"]</div>
     <div class="card-body text-dark">
         <h5 class="card-title"></h5>
         <dl class="dl-horizontal">
@@ -23,7 +24,7 @@
         </dl>
     </div>
     <div class="card-footer bg-transparent border-warning">
-        <a asp-action="Edit" asp-route-id="@Model.ActivationFormId" class="btn btn-outline-warning" onclick="showPleaseWait();"><i class="fas fa-snowplow"></i> Edit</a>
-        <a asp-action="Index" class="btn btn-outline-secondary" onclick="showPleaseWait();"><i class="fas fa-paper-plane"></i> Back to List</a>
+        <a asp-action="Edit" asp-route-id="@Model.ActivationFormId" class="btn btn-outline-warning" onclick="showPleaseWait();"><i class="fas fa-snowplow"></i> @localizer["Edit"]</a>
+        <a asp-action="Index" class="btn btn-outline-secondary" onclick="showPleaseWait();"><i class="fas fa-paper-plane"></i> @localizer["BacktoList"]</a>
     </div>
 </div>

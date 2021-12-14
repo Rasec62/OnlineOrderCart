@@ -52,7 +52,7 @@
                     }
                 </td>
                 <td>
-                    <a asp-action="DistributorActivations" asp-route-id="@item.DistributorId" class="btn btn-outline-warning text-uppercase" style="border-radius: 60px;">Activation of the email</a>
+                    <a asp-action="DistributorActivations" asp-route-id="@item.DistributorId" class="btn btn-outline-warning text-uppercase" style="border-radius: 60px;" onclick=" return showPleaseWait()">Activation of the email</a>
                 </td>
             </tr>
         }

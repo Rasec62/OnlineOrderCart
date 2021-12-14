@@ -96,7 +96,7 @@ namespace OnlineOrderCart.Web.DataBase
             {
                 CheckUsersAsync(dataContext, "S911", "quetzalcoatl.ometecuhtli@yopmail.com", "quetzalcoatl", "ometecuhtli", "Master", "QOM", "PowerfulUser", "2", "911");
                 CheckUsersAsync(dataContext, "E711821", "ja512u@att.com", "Jose Antonio", "Argomaniz", "Arias", "JAAA", "KamAdmin", "2", "711821");
-                CheckUsersAsync(dataContext, "E711821", "ja318m@att.com", "JESSICA", "AVILA", "FLORES", "JAF", "KamAdCoordinator", "1", "1029580");
+                CheckUsersAsync(dataContext, "E1029580", "ja318m@att.com", "JESSICA", "AVILA", "FLORES", "JAF", "KamAdCoordinator", "1", "1029580");
             }
         }
         private static bool CheckUsersAsync(DataContext dataContext, string Username1, string userName, string FirstName, string LastName1, string LastName2

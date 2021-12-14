@@ -9,11 +9,11 @@ namespace OnlineOrderCart.Common.Entities
     {
         [Key]
         public int ActivationFormId { get; set; }
-        [Display(Name = "Description")]
+        [Display(Name = "Descripción")]
         [MaxLength(50, ErrorMessage = "El campo {0} no puede tener más de {1} caracteres.")]
         [Required(ErrorMessage = "El campo {0} es obligatorio.")]
         public string Description { get; set; }
-        [Display(Name = "CodeKey")]
+        [Display(Name = "Clave")]
         [MaxLength(50, ErrorMessage = "El campo {0} no puede tener más de {1} caracteres.")]
         [Required(ErrorMessage = "El campo {0} es obligatorio.")]
         public string CodeKey { get; set; }

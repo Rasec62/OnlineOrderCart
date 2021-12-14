@@ -6,7 +6,7 @@
 <hr />
 <div class="row">
     <div class="col-md-8">
-        <form asp-action="EditRegister" enctype="multipart/form-data" onsubmit="return showPleaseWait()">
+        <form asp-action="EditRegister" enctype="multipart/form-data" onsubmit=" return showPleaseWait()">
             <div asp-validation-summary="All" class="text-danger"></div>
             <input type="hidden" asp-for="KamId" />
             <input type="hidden" asp-for="ImageId" />

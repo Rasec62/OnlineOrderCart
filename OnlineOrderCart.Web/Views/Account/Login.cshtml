@@ -10,7 +10,7 @@
             <div class="card card-signin my-5">
                 <div class="card-body">
                     <h5 class="card-title text-center"> @localizer["Login"]</h5>
-                    <form class="form-signin" method="post">
+                    <form class="form-signin" method="post" onsubmit=" return showPleaseWait()">
                         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                         <flash dismissable="true" />
                         <div class="form-label-group">
@@ -34,7 +34,7 @@
                         <hr class="my-4">
 
                         <div class="form-group">
-                            <a asp-action="RecoverPasswordMVC" class="btn btn-outline-info"><span class="glyphicon glyphicon-globe"></span>@localizer["ForgotPassword"]</a>
+                            <a asp-action="RecoverPasswordMVC" class="btn btn-outline-info" onclick=" return showPleaseWait()"><span class="glyphicon glyphicon-globe"></span>@localizer["ForgotPassword"]</a>
                         </div>
                     </form>
                 </div>

@@ -1,12 +1,13 @@
 ﻿@model ActivationsForm
+@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer localizer
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = @localizer["ActivationsFormCreation"];
 }
 
 <hr />
 <div class="card text-center border-primary mb-3" style="max-width: 78rem;">
     <div class="card-header">
-        <h1>Activations Form Creation</h1>
+        <h1>@localizer["ActivationsFormCreation"]</h1>
         <flash dismissable="true" />
     </div>
     <form asp-action="Create" onsubmit="return showPleaseWait();">
@@ -18,8 +19,8 @@
         </div>
         <div class="card-footer bg-transparent border-warning">
             <div class="form-group">
-                <button type="submit" class="btn btn-outline-primary"><i class="far fa-save"></i> Save Record</button>
-                <a asp-action="Index" class="btn btn-outline-secondary" onclick="showPleaseWait();"><i class="fas fa-paper-plane"></i> Back to List</a>
+                <button type="submit" class="btn btn-outline-primary"><i class="far fa-save"></i> @localizer["SaveRecord"]</button>
+                <a asp-action="Index" class="btn btn-outline-secondary" onclick="showPleaseWait();"><i class="fas fa-paper-plane"></i> @localizer["BacktoList"]</a>
             </div>
         </div>
     </form>
