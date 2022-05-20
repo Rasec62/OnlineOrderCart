@@ -71,7 +71,10 @@
                                         @Html.DisplayFor(modelItem => item.OrderStatus)
                                     </td>
                                     <td>
-                                        <a asp-action="OrderConfirm" asp-route-id="@item.OrderId" class="btn btn-outline-warning" style="border-radius: 60px;"><i class="glyphicon glyphicon-share" onclick="showPleaseWait();"></i> Confirm the order</a>
+                                        @if (item.OrderStatus != "Confirmed")
+                                        {
+                                            <a asp-action="OrderConfirm" asp-route-id="@item.OrderId" class="btn btn-outline-warning" style="border-radius: 60px;"><i class="glyphicon glyphicon-share" onclick="showPleaseWait();"></i> Confirm the order</a>
+                                        }
                                         <a asp-action="OrderDetails" asp-route-id="@item.OrderId" class="btn btn-outline-info" style="border-radius: 60px;"><i class="glyphicon glyphicon-tasks" onclick="showPleaseWait();"></i> Order detail</a>
                                     </td>
                                 </tr>

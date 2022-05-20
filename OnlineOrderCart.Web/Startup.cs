@@ -15,6 +15,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
+using OnlineOrderCart.Web.Application.RepositoryHelpers;
 using OnlineOrderCart.Web.Configurations;
 using OnlineOrderCart.Web.DataBase;
 using OnlineOrderCart.Web.DataBase.Repositories;
@@ -103,7 +104,7 @@ namespace OnlineOrderCart.Web
                 options.LoginPath = "/Account/NotAuthorized";
                 options.ExpireTimeSpan = TimeSpan.FromMinutes(15);
             });
-           
+
             //services.ConfigureApplicationCookie(options => {
             //    options.LoginPath = "/Account/NotAuthorized";
             //    options.AccessDeniedPath = "/Account/NotAuthorized";
@@ -113,6 +114,7 @@ namespace OnlineOrderCart.Web
 
 
             //Register dapper in scope    
+            services.AddApplication();
             services.AddScoped<IDapper, Dapperr>();
             services.AddTransient<IClaimsTransformation, ClaimsTransformer>();
             services.AddScoped<IBlobHelper, BlobHelper>();
@@ -135,7 +137,11 @@ namespace OnlineOrderCart.Web
             services.AddScoped<IDevelopmentHelper, DevelopmentHelper>();
             services.AddScoped<ICreateFileOrFolder, CreateFileOrFolder>();
             services.AddScoped<IOrderIncentiveRepository, OrderIncentiveRepository>();
-            
+            services.AddScoped<ITypeofPaymentRepository, TypeofPaymentRepository>();
+
+            //Register dapper in scope    
+            services.AddScoped<IDapperHelper, DapperHelper>();
+
             services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 
             services.AddAutoMapper(typeof(OnlineOrderCartMapper));

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc.Rendering;
+﻿using AutoMapper.Configuration;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using OnlineOrderCart.Common.Enums;
 using OnlineOrderCart.Web.DataBase;
@@ -12,7 +13,6 @@ namespace OnlineOrderCart.Web.Helpers
     public class CombosHelper: ICombosHelper
     {
         private readonly DataContext _dataContext;
-
         public CombosHelper(DataContext context)
         {
             _dataContext = context;
@@ -70,7 +70,7 @@ namespace OnlineOrderCart.Web.Helpers
         public IEnumerable<SelectListItem> GetComboRoles()
         {
             int[] _marks = new int[3] { 1,2,3 };
-            string[] marks = new string[2] { "K", "KD" };
+            string[] marks = new string[1] {"K"};
             var list = _dataContext.Roles.Where(t => t.IsDeleted == 0 && marks.Contains(t.CodeKey))
                   .Select(pt => new SelectListItem
                   {
@@ -131,7 +131,7 @@ namespace OnlineOrderCart.Web.Helpers
         }
         public IEnumerable<SelectListItem> GetComboAllKams()
         {
-            string[] marks = new string[2] { "KD", "K" };
+            string[] marks = new string[2] { "KA", "K" };
 
             var list = (from k in _dataContext.Kams
                         join u in _dataContext.Users
@@ -217,9 +217,10 @@ namespace OnlineOrderCart.Web.Helpers
         }
         public IEnumerable<SelectListItem> GetComboDistributors()
         {
+            int[] marks1 = new int[2] { 0, 100 };
             var list = _dataContext
               .Distributors
-              .Where(t => t.IsDeleted == 0)
+              .Where(t => marks1.Contains(t.IsDeleted))
                 .Select(pt => new SelectListItem
                 {
                     Text = pt.BusinessName,
@@ -427,7 +428,7 @@ namespace OnlineOrderCart.Web.Helpers
         public IEnumerable<SelectListItem> GetComboCoordRoles()
         {
             int[] marks1 = new int[4] { 1, 2, 3, 6 };
-            string[] marks = new string[1] { "KC" };
+            string[] marks = new string[1] { "C" };
             var list = _dataContext.Roles.Where(t => t.IsDeleted == 0 && marks.Contains(t.CodeKey))
                   .Select(pt => new SelectListItem
                   {
@@ -605,9 +606,8 @@ namespace OnlineOrderCart.Web.Helpers
         {
             var list = _dataContext
                 .TypeofPayments
-                .Where(t => t.IsDeleted == 0 && t.CodeKey == "PNCI")
-                  .Select(pt => new SelectListItem
-                  {
+                .Where(t => t.IsDeleted == 0)
+                  .Select(pt => new SelectListItem{
                       Text = pt.PaymentName,
                       Value = $"{pt.TypeofPaymentId}"
                   })
@@ -620,6 +620,93 @@ namespace OnlineOrderCart.Web.Helpers
                 Value = "0"
             });
             return list;
+        }
+
+        public IEnumerable<SelectListItem> GetCombomodalsDisRoles()
+        {
+            var list = _dataContext
+                .Roles
+                .Where(t => t.IsDeleted == 0 && t.CodeKey == "DD")
+                  .Select(pt => new SelectListItem
+                  {
+                      Text = pt.RolName,
+                      Value = $"{pt.RolId}"
+                  })
+                   .OrderBy(pt => pt.Text)
+                   .ToList();
+
+            list.Insert(0, new SelectListItem
+            {
+                Text = "(Select a  Rol...)",
+                Value = ""
+            });
+            return list;
+        }
+
+        public IEnumerable<SelectListItem> GetCombomodalsGenders()
+        {
+            var list = new List<SelectListItem>
+            {
+                new SelectListItem { Value = "", Text = "(Seleccione un Genero...)" },
+                new SelectListItem { Value = "1", Text = Genders.Femenino.ToString() },
+                new SelectListItem { Value = "2", Text = Genders.Masculino.ToString() },
+                new SelectListItem { Value = "3", Text = Genders.Generico.ToString() }
+            };
+
+            return list;
+        }
+
+        public IEnumerable<SelectListItem> GetCombomodalsKamCoords()
+        {
+            string[] marks = new string[2] { "KA", "K" };
+            List<SelectListItem> Listfruits = new List<SelectListItem>();
+
+            var _Listk = (from k in _dataContext.Kams
+                          join u in _dataContext.Users on k.UserId equals u.UserId
+                          where u.IsDistributor == 0 && u.IsDeleted == 0
+                          && k.IsCoordinator.Equals(0) && k.EmployeeNumber != "911"
+                          select new
+                          {
+                              KamId = k.KamId,
+                              FullName = $"{u.FirstName}{" "}{u.LastName1}{" "}{u.LastName2}"
+                          }).ToList();
+
+            foreach (var item in _Listk)
+            {
+                var _ListC = (from k in _dataContext.Kams
+                              join u in _dataContext.Users on k.UserId equals u.UserId
+                              where u.IsDistributor == 0 && u.IsDeleted == 0
+                              && k.IsCoordinator.Equals(1) && k.KamManagerId == item.KamId && k.EmployeeNumber != "911"
+                              select new
+                              {
+                                  KamId = k.KamId,
+                                  CFullName = $"{u.FirstName}{" "}{u.LastName1}{" "}{u.LastName2}"
+                              }).FirstOrDefault();
+
+                if (_ListC != null)
+                {
+                    Listfruits.Add(new SelectListItem
+                    {
+                        Text = $"{item.FullName}{" - "}{_ListC.CFullName}",
+                        Value = $"{item.KamId.ToString()}"
+                    });
+                }
+                else
+                {
+                    Listfruits.Add(new SelectListItem
+                    {
+                        Text = $"{item.FullName}",
+                        Value = $"{item.KamId.ToString()}"
+                    });
+                }
+            }
+
+            Listfruits.Insert(0, new SelectListItem
+            {
+                Text = "(Seleccione un Kam...)",
+                Value = ""
+            });
+            return Listfruits;
         }
     }
 }

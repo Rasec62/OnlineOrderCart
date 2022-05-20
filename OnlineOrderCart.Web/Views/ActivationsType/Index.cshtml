@@ -28,39 +28,41 @@
                 <h3 class="panel-title">Activations Type</h3>
             </div>
             <div class="panel-body">
-                <table class="display" id="example" style="width:100%">
-                    <thead>
-                        <tr>
-                            <th>
-                                @*@Html.DisplayNameFor(model => model.Description)*@
-                                @localizer["Description"]
-                            </th>
-                            <th>
-                                @*@Html.DisplayNameFor(model => model.CodeKey)*@
-                                @localizer["CodeKey"]
-                            </th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var item in Model)
-                        {
+                <div class="table-responsive-md">
+                    <table class="display" id="example" style="width:100%">
+                        <thead>
                             <tr>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.Description)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.CodeKey)
-                                </td>
-                                <td>
-                                    <a asp-action="Edit" asp-route-id="@item.ActivationTypeId" class="btn btn-outline-warning" style="border-radius: 60px;" onclick="showPleaseWait();"><i class="glyphicon glyphicon-pencil"></i></a>
-                                    <a asp-action="Details" asp-route-id="@item.ActivationTypeId" class="btn btn-outline-info" style="border-radius: 60px;" onclick="showPleaseWait();"><i class="glyphicon glyphicon glyphicon-align-justify"></i></a>
-                                    <button data-id="@item.ActivationTypeId" class="btn btn-outline-danger deleteItem" data-toggle="modal" data-target="#deleteDialog" style="border-radius: 60px;"><i class="glyphicon glyphicon-trash" style="border-radius: 60px;"></i></button>
-                                </td>
+                                <th>
+                                    @*@Html.DisplayNameFor(model => model.Description)*@
+                                    @localizer["Description"]
+                                </th>
+                                <th>
+                                    @*@Html.DisplayNameFor(model => model.CodeKey)*@
+                                    @localizer["CodeKey"]
+                                </th>
+                                <th></th>
                             </tr>
-                        }
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Description)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.CodeKey)
+                                    </td>
+                                    <td>
+                                        <a asp-action="Edit" asp-route-id="@item.ActivationTypeId" class="btn btn-outline-warning" style="border-radius: 60px;" onclick="showPleaseWait();"><i class="glyphicon glyphicon-pencil"></i></a>
+                                        <a asp-action="Details" asp-route-id="@item.ActivationTypeId" class="btn btn-outline-info" style="border-radius: 60px;" onclick="showPleaseWait();"><i class="glyphicon glyphicon glyphicon-align-justify"></i></a>
+                                        <button data-id="@item.ActivationTypeId" class="btn btn-outline-danger deleteItem" data-toggle="modal" data-target="#deleteDialog" style="border-radius: 60px;"><i class="glyphicon glyphicon-trash" style="border-radius: 60px;"></i></button>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>

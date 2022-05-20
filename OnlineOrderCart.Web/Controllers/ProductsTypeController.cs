@@ -12,7 +12,7 @@ using Vereyon.Web;
 
 namespace OnlineOrderCart.Web.Controllers
 {
-    [Authorize(Roles = "PowerfulUser,KamAdmin,KamAdCoordinator")]
+    [Authorize(Roles = "PowerfulUser,KAM-Administrador,Coordinador-Administrador")]
     public class ProductsTypeController : Controller
     {
         private readonly IProductsTypeRespository _repository;

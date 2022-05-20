@@ -29,60 +29,62 @@
                 </div>
                 <div class="card-body">
                     <h5 class="card-title">Special Details</h5>
-                    <table class="table table-striped display" id="example" style="width:100%">
-                        <thead>
-                            <tr>
-                                <th>
-                                    @localizer["OrderDate"]
-                                </th>
-                                <th>
-                                    @localizer["Debtor"]
-                                </th>
-                                <th>
-                                    @localizer["BusinessName"]
-                                </th>
-                                <th>
-                                    @localizer["User"]
-                                </th>
-                                <th>
-                                    @localizer["OrderStatus"]
-                                </th>
-                                <th>
-                                    @localizer["Observations"]
-                                </th>
-                                <th></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach (var item in Model)
-                            {
-                            <tr>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.DateLocal)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.Debtor)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.BusinessName)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.FullName)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.OrderStatus)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.Observations)
-                                </td>
-                                <td>
-                                    <a asp-action="OrderConfirmationI" asp-route-id="@item.IncentiveOrderId" class="btn btn-outline-warning" style="border-radius: 60px;" onclick="showPleaseWait();"><i class="fas fa-fighter-jet"></i></a>
-                                    <a asp-action="Details" asp-route-id="@item.IncentiveOrderId" class="btn btn-outline-info" style="border-radius: 60px;" onclick="showPleaseWait();"><i class="fab fa-leanpub"></i></a>
-                                </td>
-                            </tr>
-                            }
-                        </tbody>
-                    </table>
+                    <div class="table-responsive-md">
+                        <table class="table table-striped display" id="example" style="width:100%">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        @localizer["OrderDate"]
+                                    </th>
+                                    <th>
+                                        @localizer["Debtor"]
+                                    </th>
+                                    <th>
+                                        @localizer["BusinessName"]
+                                    </th>
+                                    <th>
+                                        @localizer["User"]
+                                    </th>
+                                    <th>
+                                        @localizer["OrderStatus"]
+                                    </th>
+                                    <th>
+                                        @localizer["Observations"]
+                                    </th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model)
+                                {
+                                    <tr>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.DateLocal)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.Debtor)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.BusinessName)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.FullName)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.OrderStatus)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.Observations)
+                                        </td>
+                                        <td>
+                                            <a asp-action="OrderConfirmationI" asp-route-id="@item.IncentiveOrderId" class="btn btn-outline-warning" style="border-radius: 60px;" onclick="showPleaseWait();"><i class="fas fa-fighter-jet"></i></a>
+                                            <a asp-action="Details" asp-route-id="@item.IncentiveOrderId" class="btn btn-outline-info" style="border-radius: 60px;" onclick="showPleaseWait();"><i class="fab fa-leanpub"></i></a>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div> 
                 </div>
                 <div class="card-footer text-muted">
                 </div>

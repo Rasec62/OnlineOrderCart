@@ -21,7 +21,7 @@ using Vereyon.Web;
 
 namespace OnlineOrderCart.Web.Controllers
 {
-    [Authorize(Roles = "PowerfulUser,KamAdmin,KamAdCoordinator")]
+    [Authorize(Roles = "PowerfulUser,KAM-Administrador,Coordinador-Administrador")]
     public class DistributorsController : Controller
     {
         private readonly IFlashMessage _flashMessage;
@@ -39,30 +39,30 @@ namespace OnlineOrderCart.Web.Controllers
         private readonly IImageHelper _imageHelper;
 
         public DistributorsController(IFlashMessage flashMessage,
-            IConfiguration configuration, IBlobHelper blobHelper, 
+            IConfiguration configuration, IBlobHelper blobHelper,
             DataContext dataContext, IDistributorHelper distributorHelper
-            ,ICombosHelper combosHelper, IMovementsHelper movementsHelper
+            , ICombosHelper combosHelper, IMovementsHelper movementsHelper
             , IUserHelper userHelper, IConverterHelper converterHelper, IMailHelper mailHelper
             , IDapper dapper, IWarehouseRepository warehouseRepository, IImageHelper ImageHelper)
         {
-           _flashMessage = flashMessage;
-           _configuration = configuration;
-           _blobHelper = blobHelper;
-           _dataContext = dataContext;
-           _distributorHelper = distributorHelper;
-           _combosHelper = combosHelper;
-           _movementsHelper = movementsHelper;
-           _userHelper = userHelper;
-           _converterHelper = converterHelper;
-           _mailHelper = mailHelper;
-           _dapper = dapper;
-           _warehouseRepository = warehouseRepository;
-           _imageHelper = ImageHelper;
+            _flashMessage = flashMessage;
+            _configuration = configuration;
+            _blobHelper = blobHelper;
+            _dataContext = dataContext;
+            _distributorHelper = distributorHelper;
+            _combosHelper = combosHelper;
+            _movementsHelper = movementsHelper;
+            _userHelper = userHelper;
+            _converterHelper = converterHelper;
+            _mailHelper = mailHelper;
+            _dapper = dapper;
+            _warehouseRepository = warehouseRepository;
+            _imageHelper = ImageHelper;
         }
 
         public async Task<IActionResult> IndexDistributor()
         {
-           IEnumerable<IndexUserDistEntity> GetListIndexUserDist = new List<IndexUserDistEntity>();
+            IEnumerable<IndexUserDistEntity> GetListIndexUserDist = new List<IndexUserDistEntity>();
             if (User.Identity.Name == null)
             {
                 return new NotFoundViewResult("_ResourceNotFound");
@@ -74,13 +74,13 @@ namespace OnlineOrderCart.Web.Controllers
             }
             var RolUser = await _movementsHelper.GetRolAvatarConfirmAsync(User.Identity.Name);
 
-            if (!RolUser.IsSuccess){
+            if (!RolUser.IsSuccess) {
                 return new NotFoundViewResult("_ResourceNotFound");
             }
-            
+
             switch (RolUser.Result.RolName)
             {
-                case "KamAdmin":
+                case "KAM-Administrador":
                     GetListIndexUserDist = _movementsHelper
                         .GetSqlAllDataDistributors()
                         .OrderBy(k => k.KamId);
@@ -102,7 +102,7 @@ namespace OnlineOrderCart.Web.Controllers
 
         //[Authorize(Roles = "Admin")]
         [HttpGet]
-        [Authorize(Roles = "PowerfulUser,KamAdmin,KamAdCoordinator")]
+        [Authorize(Roles = "PowerfulUser,KAM-Administrador,Coordinador-Administrador")]
         public async Task<IActionResult> CreateDistributor()
         {
             if (User.Identity.Name == null)
@@ -150,10 +150,10 @@ namespace OnlineOrderCart.Web.Controllers
                     //imageId = await _blobHelper.UploadBlobAsync(model.ImageFile, "users");
                     path = await _imageHelper.UploadImageAsync(model.ImageFile, "users");
                 }
-                model.PicturePath = path; 
+                model.PicturePath = path;
                 Response<Users> user = await _distributorHelper.AddDistributorAsync(model, imageId);
-               
-                if (user == null || user.IsSuccess == false){
+
+                if (user == null || user.IsSuccess == false) {
                     _flashMessage.Danger(user.Message, "This email is already used.");
                     ModelState.AddModelError(string.Empty, "This email is already used.");
                     model.ComboGenders = _combosHelper.GetComboGenders();
@@ -162,48 +162,48 @@ namespace OnlineOrderCart.Web.Controllers
                     return View(model);
                 }
 
-                TokenResponse myToken = _converterHelper.GetToken(user.Result.Email);
+                //TokenResponse myToken = _converterHelper.GetToken(user.Result.Email);
 
-                Guid activationCode = Guid.NewGuid();
-                var userActivations = new UserActivations
-                {
-                    ActivationCode = activationCode,
-                    UserId = user.Result.UserId,
-                    UserName = user.Result.UserName,
-                    EventAction = "ConfirmEmail - Distributor",
-                    JwtId = myToken.Token,
-                    CreationDate = DateTime.UtcNow.ToUniversalTime(),
-                    ExpiryDate = myToken.Expiration,
-                    IsDeleted = 0,
-                    RegistrationDate = DateTime.Now.ToUniversalTime(),
-                };
+                //Guid activationCode = Guid.NewGuid();
+                //var userActivations = new UserActivations
+                //{
+                //    ActivationCode = activationCode,
+                //    UserId = user.Result.UserId,
+                //    UserName = user.Result.UserName,
+                //    EventAction = "ConfirmEmail - Distributor",
+                //    JwtId = myToken.Token,
+                //    CreationDate = DateTime.UtcNow.ToUniversalTime(),
+                //    ExpiryDate = myToken.Expiration,
+                //    IsDeleted = 0,
+                //    RegistrationDate = DateTime.Now.ToUniversalTime(),
+                //};
 
-                _dataContext.UserActivations.Add(userActivations);
-                await _dataContext.SaveChangesAsync();
-                string Password = _configuration["SecretP:SecretPassword"];
-                string tokenLink = Url.Action("ConfirmEmail", "Account", new
-                {
-                    userid = user.Result.UserId,
-                    username = user.Result.UserName,
-                    Jwt = activationCode,
-                    token = myToken.Token,
-                }, protocol: HttpContext.Request.Scheme);
+                //_dataContext.UserActivations.Add(userActivations);
+                //await _dataContext.SaveChangesAsync();
+                //string Password = _configuration["SecretP:SecretPassword"];
+                //string tokenLink = Url.Action("ConfirmEmail", "Account", new
+                //{
+                //    userid = user.Result.UserId,
+                //    username = user.Result.UserName,
+                //    Jwt = activationCode,
+                //    token = myToken.Token,
+                //}, protocol: HttpContext.Request.Scheme);
 
-                Response<object> response = _mailHelper.SendMail(model.Email, $"Email confirmation. this is your UserName:{user.Result.UserName} and password :{Password}", $"<h1>Email Confirmation</h1>" +
-                    $"To allow the Distributor, " +
-                    $"plase click in this link:<p><a href = \"{tokenLink}\" style='color: ##dc2a04'>Confirm Email . this is your UserName:{user.Result.UserName} and  Temporal Password :{Password}</a></p>");
-                if (response.IsSuccess)
-                {
-                    ViewBag.Message = "The instructions to allow your user has been sent to email.";
-                    _flashMessage.Confirmation("The instructions to allow your user has been sent to email.");
-                    //return RedirectToAction("IndexDistributor", "Distributors");
-                    return RedirectToAction("CreateDistributor", "Distributors");
-                }
+                //Response<object> response = _mailHelper.SendMail(model.Email, $"Email confirmation. this is your UserName:{user.Result.UserName} and password :{Password}", $"<h1>Email Confirmation</h1>" +
+                //    $"To allow the Distributor, " +
+                //    $"plase click in this link:<p><a href = \"{tokenLink}\" style='color: ##dc2a04'>Confirm Email . this is your UserName:{user.Result.UserName} and  Temporal Password :{Password}</a></p>");
+                //if (response.IsSuccess)
+                //{
+                //    ViewBag.Message = "The instructions to allow your user has been sent to email.";
+                //    _flashMessage.Confirmation("The instructions to allow your user has been sent to email.");
+                //    //return RedirectToAction("IndexDistributor", "Distributors");
+                //    return RedirectToAction("CreateDistributor", "Distributors");
+                //}
 
-                ModelState.AddModelError(string.Empty, response.Message);
-                _flashMessage.Danger(response.Message, "This Confirm Email is already used.");
+                //ModelState.AddModelError(string.Empty, response.Message);
+                //_flashMessage.Danger(response.Message, "This Confirm Email is already used.");
 
-
+                return RedirectToRoute(new { controller = "Distributors", action = "IndexDistributor" });
             }
             model.ComboGenders = _combosHelper.GetComboGenders();
             model.ComboDisRoles = _combosHelper.GetComboDisRoles();
@@ -211,8 +211,8 @@ namespace OnlineOrderCart.Web.Controllers
             return View(model);
         }
 
-        [HttpGet]
-        [Authorize(Roles = "PowerfulUser,KamAdmin,KamAdCoordinator")]
+        [HttpPost]
+        [Authorize(Roles = "PowerfulUser,KAM-Administrador,Coordinador-Administrador")]
         public async Task<IActionResult> DeleteDistributor(long? id)
         {
             if (id == null)
@@ -251,8 +251,52 @@ namespace OnlineOrderCart.Web.Controllers
             }
             return RedirectToAction(nameof(IndexDistributor));
         }
+
         [HttpGet]
-        [Authorize(Roles = "PowerfulUser,KamAdmin,KamAdCoordinator")]
+        public async Task<IActionResult> MyCreatePartial() {
+            if (User.Identity.Name == null)
+            {
+                return new NotFoundViewResult("_ResourceNotFound");
+            }
+            var _users = await _userHelper.GetUserByEmailAsync(User.Identity.Name);
+            if (!_users.IsSuccess || _users.Result == null)
+            {
+                return new NotFoundViewResult("_ResourceNotFound");
+            }
+
+            AddDistributorViewModel model = new AddDistributorViewModel
+            {
+                Password = _configuration["SecretP:SecretPassword"],
+                PasswordConfirm = _configuration["SecretP:SecretPassword"],
+                ComboGenders = _combosHelper.GetComboGenders(),
+                ComboDisRoles = _combosHelper.GetCombomodalsDisRoles(),
+                ComboKams = _combosHelper.GetCombomodalsKamCoords(),
+                EmployeeNumber = _users.Result.EmployeeNumber,
+                GenderId = 3,
+            };
+
+            ViewBag.RoleId = new SelectList(_combosHelper.GetCombomodalsDisRoles());
+            ViewBag.KamId = new SelectList(_combosHelper.GetCombomodalsKamCoords());
+
+            return PartialView("_CreatePartial", model);
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> MyCreatePartial(AddDistributorViewModel model)
+        {
+            if (ModelState.IsValid) {
+                await _dataContext.SaveChangesAsync();
+                return RedirectToAction(nameof(IndexDistributor));
+            }
+            model.ComboGenders = _combosHelper.GetComboGenders();
+            model.ComboDisRoles = _combosHelper.GetCombomodalsDisRoles();
+            model.ComboKams = _combosHelper.GetCombomodalsKamCoords();
+
+            return PartialView("_CreatePartial", model);
+        }
+
+        [HttpGet]
+        [Authorize(Roles = "PowerfulUser,KAM-Administrador,Coordinador-Administrador")]
         public async Task<IActionResult> DetailIsDistrubutor(long? id)
         {
             if (id == null)
@@ -295,7 +339,7 @@ namespace OnlineOrderCart.Web.Controllers
 
         [HttpGet]
         [Authorize(Roles = "Distributor")]
-        public async Task<IActionResult> DistChangeUser(){
+        public async Task<IActionResult> DistChangeUser() {
 
             if (!User.Identity.IsAuthenticated)
             {
@@ -318,7 +362,7 @@ namespace OnlineOrderCart.Web.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = "PowerfulUser,KamAdmin,KamAdCoordinator")]
+        [Authorize(Roles = "PowerfulUser,KAM-Administrador,Coordinador-Administrador")]
         public async Task<IActionResult> EditDistributor(long? id)
         {
             if (User.Identity.Name == null)
@@ -347,7 +391,7 @@ namespace OnlineOrderCart.Web.Controllers
                 _flashMessage.Danger(string.Empty, $"{errorResponse.StatusCode}{" "}{errorResponse.Message}");
                 return new NotFoundViewResult("_ResourceNotFound");
             }
-            
+
             var model = new AddDistributorViewModel
             {
                 UserId = _Dis.Result.UserId,
@@ -362,6 +406,7 @@ namespace OnlineOrderCart.Web.Controllers
                 PicturePath = _Dis.Result.PicturePath,
                 BusinessName = _Dis.Result.BusinessName,
                 Debtor = _Dis.Result.Debtor,
+                Debtors = _Dis.Result.Debtor.ToString(),
                 ImageId = _Dis.Result.ImageId,
                 PictureFullPaths = _Dis.Result.PictureFullPaths,
                 EmployeeNumber = _users.Result.EmployeeNumber,
@@ -404,6 +449,7 @@ namespace OnlineOrderCart.Web.Controllers
                         _users.Email = model.Email ?? _users.Email;
                         _users.UserName = model.Username ?? _users.UserName;
                         _users.ImageId = imageId;
+                        _users.UserName = $"D{model.Debtors}" ?? _users.UserName;
                         _users.PicturePath = path;
 
                         _dataContext.Users.Update(_users);
@@ -419,7 +465,7 @@ namespace OnlineOrderCart.Web.Controllers
 
                         _Dist.BusinessName = model.BusinessName ?? _Dist.BusinessName;
                         _Dist.KamId = model.KamId == 0 ? model.KamId : _Dist.KamId;
-                        _Dist.Debtor = model.Debtor.ToString()??_Dist.Debtor;
+                        _Dist.Debtor = model.Debtors.ToString() ?? _Dist.Debtor;
                         _Dist.MD = model.MD ?? _Dist.MD;
 
                         _dataContext.Distributors.Update(_Dist);
@@ -444,7 +490,7 @@ namespace OnlineOrderCart.Web.Controllers
             return View(model);
         }
         [HttpGet]
-        [Authorize(Roles = "PowerfulUser,KamAdmin,KamAdCoordinator")]
+        [Authorize(Roles = "PowerfulUser,KAM-Administrador,Coordinador-Administrador")]
         public async Task<IActionResult> DetailDistributor(long? id)
         {
             if (User.Identity.Name == null)
@@ -474,7 +520,7 @@ namespace OnlineOrderCart.Web.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = "PowerfulUser,KamAdmin,KamAdCoordinator")]
+        [Authorize(Roles = "PowerfulUser,KAM-Administrador,Coordinador-Administrador")]
         public async Task<IActionResult> IndexWarehouseDist(long? id)
         {
             if (User.Identity.Name == null)
@@ -573,7 +619,7 @@ namespace OnlineOrderCart.Web.Controllers
             return View(model);
         }
         [HttpGet]
-        [Authorize(Roles = "PowerfulUser,KamAdmin,KamAdCoordinator")]
+        [Authorize(Roles = "PowerfulUser,KAM-Administrador,Coordinador-Administrador")]
         public async Task<IActionResult> DistributorWareDelete(long? id) {
             if (id == null)
             {
@@ -593,7 +639,7 @@ namespace OnlineOrderCart.Web.Controllers
                 _ware.IsDeleted = 1;
                 _ware.RegistrationDate = saveUtcNow;
                 _dataContext.Update(_ware);
-               await _dataContext.SaveChangesAsync();
+                await _dataContext.SaveChangesAsync();
             }
             catch (Exception ex)
             {
@@ -603,7 +649,73 @@ namespace OnlineOrderCart.Web.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = "PowerfulUser,KamAdmin,KamAdCoordinator")]
+        public async Task<IActionResult> ConfirmAccessDistributor(long? id) {
+            if (User.Identity.Name == null)
+            {
+                return new NotFoundViewResult("_ResourceNotFound");
+            }
+            var _users = await _userHelper.GetUserByEmailAsync(User.Identity.Name);
+            if (!_users.IsSuccess || _users.Result == null)
+            {
+                return new NotFoundViewResult("_ResourceNotFound");
+            }
+
+            if (id == null)
+            {
+                return new NotFoundViewResult("_ResourceNotFound");
+            }
+            var model = await _distributorHelper.GetDistrByIdAsync(id.Value);
+            if (!model.IsSuccess)
+            {
+                var errorResponse = new CodeErrorResponse(404);
+                _flashMessage.Danger(string.Empty, $"{errorResponse.StatusCode}{" "}{errorResponse.Message}");
+                return new NotFoundViewResult("_ResourceNotFound");
+            }
+
+            TokenResponse myToken = _converterHelper.GetToken(model.Result.Email);
+
+            Guid activationCode = Guid.NewGuid();
+            var userActivations = new UserActivations
+            {
+                ActivationCode = activationCode,
+                UserId = model.Result.UserId,
+                UserName = model.Result.Username,
+                EventAction = "ConfirmEmail - Distributor",
+                JwtId = myToken.Token,
+                CreationDate = DateTime.UtcNow.ToUniversalTime(),
+                ExpiryDate = myToken.Expiration,
+                IsDeleted = 0,
+                RegistrationDate = DateTime.Now.ToUniversalTime(),
+            };
+
+            _dataContext.UserActivations.Add(userActivations);
+            await _dataContext.SaveChangesAsync();
+            string Password = _configuration["SecretP:SecretPassword"];
+            string tokenLink = Url.Action("ConfirmEmail", "Account", new
+            {
+                userid = model.Result.UserId,
+                username = model.Result.Username,
+                Jwt = activationCode,
+                token = myToken.Token,
+            }, protocol: HttpContext.Request.Scheme);
+            Response<object> response = _mailHelper.SendMail(model.Result.Email, $"Email confirmation. this is your UserName:{model.Result.Username} and password :{Password}", $"<h1>Email Confirmation</h1>" +
+                $"To allow the Distributor, " +
+                $"plase click in this link:<p><a href = \"{tokenLink}\" style='color: ##dc2a04'>Confirm Email . this is your UserName:{model.Result.Username} and  Temporal Password :{Password}</a></p>");
+            if (response.IsSuccess)
+            {
+                ViewBag.Message = "The instructions to allow your user has been sent to email.";
+                _flashMessage.Confirmation("The instructions to allow your user has been sent to email.");
+                return RedirectToRoute(new { controller = "Distributors", action = "IndexDistributor" });
+            }
+
+            ModelState.AddModelError(string.Empty, response.Message);
+            _flashMessage.Danger(response.Message, "This Confirm Email is already used.");
+
+            return RedirectToRoute(new { controller = "Distributors", action = "IndexDistributor" });
+        }
+
+        [HttpGet]
+        [Authorize(Roles = "PowerfulUser,KAM-Administrador,Coordinador-Administrador")]
         public async Task<IActionResult> ActiveofDetailWarehouses(long? id)
         {
             if (id == null)
@@ -634,7 +746,7 @@ namespace OnlineOrderCart.Web.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = "PowerfulUser,KamAdmin,KamAdCoordinator")]
+        [Authorize(Roles = "PowerfulUser,KAM-Administrador,Coordinador-Administrador")]
         public async Task<IActionResult> OtherProduct(long? id)
         {
             if (id == null)
@@ -642,7 +754,7 @@ namespace OnlineOrderCart.Web.Controllers
                 return new NotFoundViewResult("_ResourceNotFound");
             }
 
-      
+
             var _Store = await _dataContext.DeatilWarehouses
                 .Include(w => w.Warehouses)
                 .ThenInclude(w => w.Distributors)
@@ -682,18 +794,18 @@ namespace OnlineOrderCart.Web.Controllers
                 }
 
                 var _model = new DeatilWarehouses {
-                 StoreId = model.StoreId,
-                 PurposeId = model.PurposeId,
-                 ProductId = model.ProductId,
-                 IsDeleted = 0,
-                 RegistrationDate = DateTime.Now.ToUniversalTime(),
+                    StoreId = model.StoreId,
+                    PurposeId = model.PurposeId,
+                    ProductId = model.ProductId,
+                    IsDeleted = 0,
+                    RegistrationDate = DateTime.Now.ToUniversalTime(),
                 };
 
                 var _R = await _distributorHelper.PostAddWarehouseOtherProduct(_model);
 
-                if (!_R.IsSuccess){
+                if (!_R.IsSuccess) {
                     _flashMessage.Danger(_R.Message, "This not data.");
-                    model.ComboProducts = _combosHelper.GettoNextDisComboProducts(Convert.ToInt64(model.StoreId),model.SimTypeId);
+                    model.ComboProducts = _combosHelper.GettoNextDisComboProducts(Convert.ToInt64(model.StoreId), model.SimTypeId);
                     model.ComboPurposes = _combosHelper.GetComboPurposes();
                     return View(model);
                 }
@@ -727,13 +839,13 @@ namespace OnlineOrderCart.Web.Controllers
             }
 
             var model = new OtherProductViewModel {
-               BusinessName = _Store.Warehouses.Distributors.BusinessName,
-               Debtor = _Store.Warehouses.Distributors.Debtor,
-               ShippingBranchName = _Store.Warehouses.ShippingBranchName,
-               StoreId =_Store.StoreId,
-               DeatilStoreId = _Store.DeatilStoreId,
-               DistributorId = _Store.Warehouses.DistributorId,
-               ComboProducts =_combosHelper.GettoNextComboProducts(_Store.Warehouses.Distributors.DistributorId, _Store.Warehouses.SimTypeId)
+                BusinessName = _Store.Warehouses.Distributors.BusinessName,
+                Debtor = _Store.Warehouses.Distributors.Debtor,
+                ShippingBranchName = _Store.Warehouses.ShippingBranchName,
+                StoreId = _Store.StoreId,
+                DeatilStoreId = _Store.DeatilStoreId,
+                DistributorId = _Store.Warehouses.DistributorId,
+                ComboProducts = _combosHelper.GettoNextComboProducts(_Store.Warehouses.Distributors.DistributorId, _Store.Warehouses.SimTypeId)
             };
 
 
@@ -742,7 +854,7 @@ namespace OnlineOrderCart.Web.Controllers
 
 
         [HttpGet]
-        [Authorize(Roles = "PowerfulUser,KamAdmin,KamAdCoordinator")]
+        [Authorize(Roles = "PowerfulUser,KAM-Administrador,Coordinador-Administrador")]
         public async Task<IActionResult> GuardiansofDetailWarehouses(int? id)
         {
             if (User.Identity.Name == null)
@@ -764,9 +876,9 @@ namespace OnlineOrderCart.Web.Controllers
                 return new NotFoundViewResult("_ResourceNotFound");
             }
             long _Id = Convert.ToInt64(id);
-              var warehouse = await _dataContext.Warehouses
-                .Include(d => d.Distributors)
-                .Where(w=> w.StoreId == _Id).FirstOrDefaultAsync();
+            var warehouse = await _dataContext.Warehouses
+              .Include(d => d.Distributors)
+              .Where(w => w.StoreId == _Id).FirstOrDefaultAsync();
 
             if (warehouse == null)
             {
@@ -801,9 +913,9 @@ namespace OnlineOrderCart.Web.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = "PowerfulUser,KamAdmin,KamAdCoordinator")]
+        [Authorize(Roles = "PowerfulUser,KAM-Administrador,Coordinador-Administrador")]
         public async Task<IActionResult> EditofDetailWarehouses(int? id) {
-            
+
             if (User.Identity.Name == null)
             {
                 return new NotFoundViewResult("_ResourceNotFound");
@@ -870,7 +982,7 @@ namespace OnlineOrderCart.Web.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = "PowerfulUser,KamAdmin,KamAdCoordinator")]
+        [Authorize(Roles = "PowerfulUser,KAM-Administrador,Coordinador-Administrador")]
         public async Task<IActionResult> DetailWarehouseDelete(long? id)
         {
             if (id == null)
@@ -878,7 +990,7 @@ namespace OnlineOrderCart.Web.Controllers
                 return new NotFoundViewResult("_ResourceNotFound");
             }
             var DetailWarehouse = await DeatilWarehousesExists(id.Value);
-            try{
+            try {
                 if (DetailWarehouse == null)
                 {
                     return new NotFoundViewResult("_ResourceNotFound");
@@ -892,7 +1004,7 @@ namespace OnlineOrderCart.Web.Controllers
                 dwmodel.RegistrationDate = DateTime.Now.ToUniversalTime();
                 _dataContext.DeatilWarehouses.Update(dwmodel);
                 await _dataContext.SaveChangesAsync();
-                
+
                 _flashMessage.Confirmation("The DeatilWarehouses was deleted.");
             }
             catch (Exception ex)
@@ -905,7 +1017,7 @@ namespace OnlineOrderCart.Web.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = "PowerfulUser,KamAdmin,KamAdCoordinator")]
+        [Authorize(Roles = "PowerfulUser,KAM-Administrador,Coordinador-Administrador")]
         public async Task<IActionResult> ProductActivation(long? id)
         {
             if (id == null)
@@ -940,7 +1052,7 @@ namespace OnlineOrderCart.Web.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = "PowerfulUser,KamAdmin,KamAdCoordinator")]
+        [Authorize(Roles = "PowerfulUser,KAM-Administrador,Coordinador-Administrador")]
         public async Task<IActionResult> Emailforwarding()
         {
             if (User.Identity.Name == null)
@@ -1001,9 +1113,8 @@ namespace OnlineOrderCart.Web.Controllers
             }
             return RedirectToAction("Emailforwarding", "Distributors");
         }
-
         [HttpGet]
-        [Authorize(Roles = "PowerfulUser,KamAdmin,KamAdCoordinator")]
+        [Authorize(Roles = "PowerfulUser,KAM-Administrador,Coordinador-Administrador")]
         public async Task<IActionResult> DetailOptionalEmail(long? id)
         {
             if (id == null)
@@ -1088,7 +1199,7 @@ namespace OnlineOrderCart.Web.Controllers
             return View(model);
         }
         [HttpGet]
-        [Authorize(Roles = "PowerfulUser,KamAdmin,KamAdCoordinator")]
+        [Authorize(Roles = "PowerfulUser,KAM-Administrador,Coordinador-Administrador")]
         public async Task<IActionResult> DeletedOptionalEmail(string id)
         {
             if (string.IsNullOrEmpty(id)){

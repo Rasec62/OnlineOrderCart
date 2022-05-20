@@ -15,10 +15,15 @@ namespace OnlineOrderCart.Web.Models
         public string BusinessName { get; set; }
         
         [Display(Name = "Debtor")]
-        [Required(ErrorMessage = "The field {0} is mandatory.")]
-        [Range(1, int.MaxValue, ErrorMessage = "You must select a Gender.")]
+        //[Required(ErrorMessage = "The field {0} is mandatory.")]
+        //[Range(1, int.MaxValue, ErrorMessage = "You must select a Debtor.")]
         public int Debtor { get; set; }
-        
+
+        [Display(Name = "Debtor")]
+        [Required(ErrorMessage = "The field {0} is mandatory.")]
+        [MaxLength(10, ErrorMessage = "The {0} field can not have more than {1} characters.")]
+        public string Debtors { get; set; }
+
         [Display(Name = "MD")]
         [Required(ErrorMessage = "The field {0} is mandatory.")]
         [MaxLength(10, ErrorMessage = "The {0} field can not have more than {1} characters.")]

@@ -18,7 +18,7 @@ using Vereyon.Web;
 
 namespace OnlineOrderCart.Web.Controllers
 {
-    [Authorize(Roles = "PowerfulUser,KamAdmin,KamAdCoordinator")]
+    [Authorize(Roles = "PowerfulUser,KAM-Administrador,Coordinador-Administrador")]
     public class GenerateaNormalOrderController : Controller
     {
         private readonly IUserHelper _userHelper;

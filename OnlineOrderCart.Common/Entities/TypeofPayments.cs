@@ -17,6 +17,7 @@ namespace OnlineOrderCart.Common.Entities
         [Required(ErrorMessage = "El campo {0} es obligatorio.")]
         public string CodeKey { get; set; }
         public int IsDeleted { get; set; }
+        [DisplayFormat(DataFormatString = "{0:yyyy/MM/dd HH:mm:ss}")]
         public DateTime RegistrationDate { get; set; }
         public ICollection<IncentiveOrderDetails> GetIncentiveOrderDetails { get; set; }
     }

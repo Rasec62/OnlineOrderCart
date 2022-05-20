@@ -17,7 +17,7 @@ using Vereyon.Web;
 
 namespace OnlineOrderCart.Web.Controllers
 {
-    [Authorize(Roles = "PowerfulUser,KamAdmin,KamAdCoordinator,KamCoordinator,Kam")]
+    [Authorize(Roles = "PowerfulUser,KAM-Administrador,Coordinador-Administrador,Coordinador,Kam")]
     public class OrderIncentiveController : Controller
     {
         private readonly DataContext _dataContext;

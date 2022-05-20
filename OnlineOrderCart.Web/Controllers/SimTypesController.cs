@@ -12,7 +12,7 @@ using Vereyon.Web;
 
 namespace OnlineOrderCart.Web.Controllers
 {
-    [Authorize(Roles = "PowerfulUser,KamAdmin,KamAdCoordinator")]
+    [Authorize(Roles = "PowerfulUser,KAM-Administrador,Coordinador-Administrador")]
     public class SimTypesController : Controller
     {
         private readonly ISimTypesRepository _repository;
@@ -31,7 +31,7 @@ namespace OnlineOrderCart.Web.Controllers
             ViewBag.dataSource = data;
             return View(data);
         }
-        [Authorize(Roles = "PowerfulUser,KamAdmin,KamAdCoordinator")]
+        [Authorize(Roles = "PowerfulUser,KAM-Administrador,Coordinador-Administrador")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -82,7 +82,7 @@ namespace OnlineOrderCart.Web.Controllers
             return View(model);
         }
 
-        [Authorize(Roles = "PowerfulUser,KamAdmin,KamAdCoordinator")]
+        [Authorize(Roles = "PowerfulUser,KAM-Administrador,Coordinador-Administrador")]
         public IActionResult Create()
         {
             return View();
@@ -110,7 +110,7 @@ namespace OnlineOrderCart.Web.Controllers
             return View(model);
         }
 
-        [Authorize(Roles = "PowerfulUser,KamAdmin,KamAdCoordinator")]
+        [Authorize(Roles = "PowerfulUser,KAM-Administrador,Coordinador-Administrador")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)

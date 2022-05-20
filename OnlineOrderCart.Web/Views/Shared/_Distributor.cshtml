@@ -7,14 +7,14 @@
     <div class="col-sm-6">
         <div class="form-group">
             <label asp-for="Email" class="control-label"></label>
-            <input asp-for="Email" class="form-control" type="email" multiple style="float: left;text-align: center;border-radius: 60px;" placeholder="Email" />
+            <input asp-for="Email" class="form-control" type="email" multiple style="float: left;text-align: center;border-radius: 60px;" placeholder="Email" required/>
             <span asp-validation-for="Email" class="text-danger"></span>
         </div>
     </div>
     <div class="col-sm-6">
         <div class="form-group">
             <label asp-for="MD" class="control-label"></label>
-            <input asp-for="MD" class="form-control" style="float: left;text-align: center;border-radius: 60px;" placeholder="MD" />
+            <input asp-for="MD" class="form-control" style="float: left;text-align: center;border-radius: 60px;" placeholder="MD" required/>
             <span asp-validation-for="MD" class="text-danger"></span>
         </div>
     </div>

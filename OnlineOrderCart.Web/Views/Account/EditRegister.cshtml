@@ -10,6 +10,8 @@
             <div asp-validation-summary="All" class="text-danger"></div>
             <input type="hidden" asp-for="KamId" />
             <input type="hidden" asp-for="ImageId" />
+            <input type="hidden" asp-for="PictureFPath" />
+            <input type="hidden" asp-for="PicturePath" />
             <input type="hidden" asp-for="UserId" />
             <input type="hidden" asp-for="Username" />
             <input type="hidden" asp-for="Password" />
@@ -31,7 +33,7 @@
                         </div>
                         <div class="col-md-6 mb-6">
                             <div class="form-group">
-                                <label  class="control-label">@localizer["GenderId"]</label>
+                                <label class="control-label">@localizer["GenderId"]</label>
                                 <select asp-for="GenderId" asp-items="Model.ComboGender" class="form-control" style="float: left;text-align: center;"></select>
                                 <span asp-validation-for="GenderId" class="text-danger"></span>
                             </div>

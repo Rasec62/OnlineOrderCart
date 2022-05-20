@@ -15,7 +15,7 @@
                     <li class="nav-item">
                         <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy"> @localizer["Privacy"]</a>
                     </li>
-                    @if (User.Identity.IsAuthenticated && User.IsInRole("PowerfulUser") || User.IsInRole("KamAdmin") || User.IsInRole("KamAdCoordinator"))
+                    @if (User.Identity.IsAuthenticated && User.IsInRole("PowerfulUser"))
                     {
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -23,6 +23,16 @@
                             </a>
                             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                                 <a class="nav-link text-dark dropdown-item" asp-area="" asp-controller="Roles" asp-action="Index"><span class="fas fa-bezier-curve"></span> @localizer["Roles"]</a>
+                            </div>
+                        </li>
+                    }
+                    @if (User.Identity.IsAuthenticated && User.IsInRole("PowerfulUser") || User.IsInRole("KAM-Administrador") || User.IsInRole("Coordinador-Administrador"))
+                    {
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                @localizer["Catalogs"]
+                            </a>
+                            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                                 <a class="nav-link text-dark dropdown-item" asp-area="" asp-controller="Trademark" asp-action="Index"><span class="fas fa-burn"></span> @localizer["Trademarks"]</a>
                                 <a class="nav-link text-dark  dropdown-item" asp-area="" asp-controller="SimTypes" asp-action="Index"><span class="fab fa-cloudflare"></span> @localizer["SimTypes"]</a>
                                 <div class="dropdown-divider"></div>
@@ -38,7 +48,7 @@
                             </div>
                         </li>
                     }
-                    @if (User.Identity.IsAuthenticated && User.IsInRole("PowerfulUser") || User.IsInRole("KamAdmin") || User.IsInRole("KamAdCoordinator"))
+                    @if (User.Identity.IsAuthenticated && User.IsInRole("PowerfulUser") || User.IsInRole("KAM-Administrador") || User.IsInRole("Coordinador-Administrador"))
                     {
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -53,10 +63,11 @@
                                 <div class="dropdown-divider"></div>
                                 <a class="nav-link text-dark dropdown-item" asp-area="" asp-controller="Distributors" asp-action="Emailforwarding"><span class="glyphicon glyphicon-compressed"></span> @localizer["Emailforwarding"]</a>
                                 <div class="dropdown-divider"></div>
+                                <a class="nav-link text-dark dropdown-item" asp-area="" asp-controller="Account" asp-action="KamAdCoordinatorEmailforwarding"><span class="glyphicon glyphicon-compressed"></span> @localizer["KamAdCoordinatorEmailforwarding"]</a>
                             </div>
                         </li>
                     }
-                    @if (User.Identity.IsAuthenticated && User.IsInRole("PowerfulUser") || User.IsInRole("KamAdmin") || User.IsInRole("KamAdCoordinator"))
+                    @if (User.Identity.IsAuthenticated && User.IsInRole("PowerfulUser") || User.IsInRole("KAM-Administrador") || User.IsInRole("Coordinador-Administrador"))
                     {
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -83,7 +94,7 @@
                             </div>
                         </li>
                     }
-                    @if (User.Identity.IsAuthenticated && User.IsInRole("PowerfulUser") || User.IsInRole("KamAdCoordinator") || User.IsInRole("KamAdmin") || User.IsInRole("KamCoordinator") || User.IsInRole("Kam"))
+                    @if (User.Identity.IsAuthenticated && User.IsInRole("PowerfulUser") || User.IsInRole("Coordinador-Administrador") || User.IsInRole("KAM-Administrador") || User.IsInRole("Coordinador") || User.IsInRole("Kam"))
                     {
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -103,7 +114,7 @@
                     </li>
                     @if (User.Identity.IsAuthenticated)
                     {
-                        if (User.IsInRole("PowerfulUser") || User.IsInRole("KamAdmin") || User.IsInRole("KamAdCoordinator") || User.IsInRole("Kam") || User.IsInRole("KamCoordinator"))
+                        if (User.IsInRole("PowerfulUser") || User.IsInRole("KAM-Administrador") || User.IsInRole("Coordinador-Administrador") || User.IsInRole("Kam") || User.IsInRole("Coordinador"))
                         {
                             <li class="nav-item"><a asp-area="" class="nav-link text-dark" asp-controller="Account" asp-action="ChangeUser"><i class="fas fa-user-circle"></i> @User.Identity.Name</a></li>
                         }

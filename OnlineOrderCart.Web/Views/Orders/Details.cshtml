@@ -1,0 +1,141 @@
+﻿@model OnlineOrderCart.Web.Models.Dtos.OrderUsDistDto
+@{
+    ViewData["Title"] = "Details";
+}
+@*<link rel="stylesheet" href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.min.css" />*@
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.2/css/bootstrap.css" />
+<link rel="stylesheet" href="https://cdn.datatables.net/1.11.4/css/dataTables.bootstrap4.min.css" />
+<link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.2.9/css/responsive.bootstrap4.min.css" />
+
+<h1>Details</h1>
+
+<div class="card border-primary mb-3 text-center">
+    <div class="card-header">
+        Featured
+    </div>
+    <div class="card-body">
+        <h5 class="card-title">Special title Orders</h5>
+        <div class="container">
+            <div class="row">
+                <div class="col"><p class="card-text">Razon Social: @Model.BusinessName</p></div>
+                <div class="col"><p class="card-text">Deudor: @Model.Deudor</p></div>
+                <div class="w-100"></div>
+                <div class="col"><p class="card-text">Operador: @Model.Operador</p></div>
+                <div class="col"> <p class="card-text">Fecha de Orden: @Model.DateLocal</p></div>
+                <div class="w-100"></div>
+                <div class="col"><p class="card-text">Status: @Model.OrderStatus</p></div>
+            </div>
+        </div>
+    </div>
+    <div class="card-footer bg-transparent border-primary text-muted">
+        <a asp-action="Histories" class="btn btn-outline-secondary btn-sm" style="border-radius: 60px;" onclick="showPleaseWait();"><i class="fa fa-address-card" aria-hidden="true"></i> Back to list</a>
+    </div>
+</div>
+<div class="card border-danger mb-3 text-center" style="max-width: 75rem;">
+    <div class="card-header bg-transparent border-dark">
+        Featured
+    </div>
+    <div class="card-body text-secondary">
+        @if (Model.OrderDetailDist.Count == 0)
+        {
+            <h4 class="card-title"> Details of the Orders have not yet been record</h4>
+        }
+        else
+        {
+            <table id="example" class="table table-striped table-bordered dt-responsive nowrap" style="width:100%">
+                <thead>
+                    <tr>
+                        <th>OrderCode</th>
+                        <th>OrderStatus</th>
+                        <th>ShortDescription</th>
+                        <th>Description</th>
+                        <th>PaymentName</th>
+                        <th>Price</th>
+                        <th>TaxRate</th>
+                        <th>Quantity</th>
+                        <th>Value</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.OrderDetailDist.OrderByDescending(o => o.OrderId).ToList())
+                    {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.OrderCode)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.OrderStatus)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.ShortDescription)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Description)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.PaymentName)
+                        </td>
+                        <td align="right">
+                            @Html.DisplayFor(modelItem => item.Price)
+                        </td>
+                        <td align="right">
+                            @Html.DisplayFor(modelItem => item.TaxRate)
+                        </td>
+                        <td align="right">
+                            @Html.DisplayFor(modelItem => item.Quantity)
+                        </td>
+                        <td align="right">
+                            @Html.DisplayFor(modelItem => item.Value)
+                        </td>
+                    </tr>
+                    }
+                </tbody>
+                <tr>
+                    <td colspan="7" align="right">
+                        <strong>Total</strong>
+                    </td>
+                    <td align="right">
+                        <strong>@Html.DisplayFor(modelItem => Model.TotalQuantity)</strong>
+                    </td>
+                    <td align="right">
+                        <strong>@Html.DisplayFor(modelItem => Model.TotalValue)</strong>
+                    </td>
+                </tr>
+                <tfoot>
+                    <tr>
+                        <th>OrderCode</th>
+                        <th>OrderStatus</th>
+                        <th>ShortDescription</th>
+                        <th>Description</th>
+                        <th>PaymentName</th>
+                        <th>Price</th>
+                        <th>TaxRate</th>
+                        <th>Quantity</th>
+                        <th>Value</th>
+                    </tr>
+                </tfoot>
+            </table>
+        }
+    </div>
+    <div class="card-footer bg-transparent border-warning text-muted">
+    </div>
+</div>
+<br />
+<br />
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+    @*<script src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.min.js"></script>*@
+    <script src="https://cdn.datatables.net/1.11.4/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.11.4/js/dataTables.bootstrap4.min.js"></script>
+    <script src="https://cdn.datatables.net/responsive/2.2.9/js/dataTables.responsive.min.js"></script>
+    <script src="https://cdn.datatables.net/responsive/2.2.9/js/responsive.bootstrap4.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#example').DataTable({
+                "order": [[2, "desc"]],
+                "lengthMenu": [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]]
+            });
+        });</script>
+}

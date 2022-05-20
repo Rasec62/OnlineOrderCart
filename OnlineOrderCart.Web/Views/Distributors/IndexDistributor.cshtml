@@ -4,7 +4,10 @@
     ViewData["Title"] = @localizer["Distributor"];
 }
 
-<link rel="stylesheet" href="https://cdn.datatables.net/1.10.25/css/dataTables.bootstrap4.min.css" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.2/css/bootstrap.css" />
+<link rel="stylesheet" href="https://cdn.datatables.net/1.11.4/css/dataTables.bootstrap4.min.css" />
+<link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.2.9/css/responsive.bootstrap4.min.css" />
+
 <br />
 <div class="row">
     <div class="col">
@@ -14,10 +17,12 @@
     <div class="col text-right">
         <p>
             <a asp-action="CreateDistributor" class="btn btn-outline-primary text-uppercase" style="border-radius: 60px;" onclick="showPleaseWait();"><i class="glyphicon glyphicon-plus"></i> @localizer["AddNew"]</a>
+            @*<input type="button" class="btn btn-outline-warning" id="addData" value="Add" onclick="AddData();" />*@
         </p>
     </div>
 </div>
-<table class="table table-responsive-sm  table-hover table-striped" id="MyTable">
+
+<table class="table table-striped table-bordered dt-responsive nowrap" style="width:100%" id="MyTable">
     <thead>
         <tr>
             <th>
@@ -33,10 +38,16 @@
                 @localizer["Debtor"]
             </th>
             <th>
-                @localizer["PicturePath"]
+                @localizer["Email"]
+            </th>
+            <th>
+                @localizer["UserName"]
             </th>
             <th>
                 @localizer["IsActive"]
+            </th>
+            <th>
+                @localizer["PicturePath"]
             </th>
             <th></th>
         </tr>
@@ -44,54 +55,74 @@
     <tbody>
         @foreach (var item in Model)
         {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.RolName)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.KFullName)
-                </td>
-                <th>
-                    @Html.DisplayFor(modelItem => item.BusinessName)
-                </th>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Debtor)
-                </td>
-                <td>
-                    @if (item.PicturefullPath != null)
-                    {
-                        @*<img src="@item.PicturefullPath" style="width:80px;height:80px;max-width: 100%; height: auto; border-radius:50%" />*@
-                        <img src="@Url.Content(item.PicturefullPath)" alt="Image" style="width:100px;height:100px;max-width: 100%; height: auto; border-radius:50%" />
-                    }
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.IsActive)
-                </td>
-                <td>
-                    @if (item.IsActive)
-                    {
-                        <a asp-action="EditDistributor" asp-route-id="@item.DistributorId" class="btn btn-outline-warning text-uppercase" style="border-radius: 60px;" onclick="showPleaseWait();"><i class="glyphicon glyphicon-pencil"></i></a>
-                        <a asp-action="DetailDistributor" asp-route-id="@item.DistributorId" class="btn btn-outline-info  text-uppercase" style="border-radius: 60px;" onclick="showPleaseWait();"><i class="glyphicon glyphicon glyphicon-align-justify"></i></a>
-                        <a asp-action="DetailOptionalEmail" asp-route-id="@item.DistributorId" class="btn btn-outline-secondary  text-uppercase" style="border-radius: 60px;" onclick="showPleaseWait();"><i class="glyphicon glyphicon-envelope" style="border-radius: 60px;"></i></a>
-                        <button data-id="@item.DistributorId" class="btn btn-outline-danger text-uppercase deleteItem" data-toggle="modal" data-target="#deleteDialog" style="border-radius: 60px;"><i class="glyphicon glyphicon-trash" style="border-radius: 60px;"></i></button>
-                    }
-                    else
-                    {
-                        <a asp-action="DetailIsDistrubutor" asp-route-id="@item.DistributorId" class="btn btn-outline-secondary  text-uppercase" style="border-radius: 60px;" onclick="showPleaseWait();"><i class="glyphicon glyphicon-share" style="border-radius: 60px;"></i></a>
-                    }
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.RolName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.KFullName)
+            </td>
+            <th>
+                @Html.DisplayFor(modelItem => item.BusinessName)
+            </th>
+            <td>
+                @Html.DisplayFor(modelItem => item.Debtor)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Email)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Username)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IsActive)
+            </td>
+            <td>
+                @if (item.PicturefullPath != null)
+                {
+                    @*<img src="@item.PicturefullPath" style="width:80px;height:80px;max-width: 100%; height: auto; border-radius:50%" />*@
+                    <img src="@Url.Content(item.PicturefullPath)" alt="Image" style="width:100px;height:100px;max-width: 100%; height: auto; border-radius:50%" />
+                }
+            </td>
+            <td>
+                @if (item.IsActive)
+                {
+                    <a asp-action="EditDistributor" asp-route-id="@item.DistributorId" class="btn btn-outline-warning text-uppercase" style="border-radius: 60px;" onclick="showPleaseWait();"><i class="glyphicon glyphicon-pencil"></i></a>
+                    <a asp-action="DetailDistributor" asp-route-id="@item.DistributorId" class="btn btn-outline-info  text-uppercase" style="border-radius: 60px;" onclick="showPleaseWait();"><i class="glyphicon glyphicon glyphicon-align-justify"></i></a>
+                    <a asp-action="DetailOptionalEmail" asp-route-id="@item.DistributorId" class="btn btn-outline-secondary  text-uppercase" style="border-radius: 60px;" onclick="showPleaseWait();"><i class="glyphicon glyphicon-envelope" style="border-radius: 60px;"></i></a>
+                    <a href="#" class="btn btn-outline-danger" style="border-radius: 60px;" onclick="deleteConfirm('@item.BusinessName','@item.DistributorId')"><i class="glyphicon glyphicon-trash"></i></a>
+                    @*<button data-id="@item.DistributorId" class="btn btn-outline-danger text-uppercase deleteItem" data-toggle="modal" data-target="#deleteDialog" style="border-radius: 60px;"><i class="glyphicon glyphicon-trash" style="border-radius: 60px;"></i></button>*@
+                }
+                else if (!item.IsActive && item.CountW > 0)
+                {
+                    <a asp-action="ConfirmAccessDistributor" asp-route-id="@item.DistributorId" class="btn btn-outline-secondary  text-uppercase" style="border-radius: 60px;" onclick="showPleaseWait();"><i class="glyphicon glyphicon-share" style="border-radius: 60px;"></i></a>
+                }
+                else
+                {
+                    @*<a asp-action="DetailIsDistrubutor" asp-route-id="@item.DistributorId" class="btn btn-outline-secondary  text-uppercase" style="border-radius: 60px;" onclick="showPleaseWait();"><i class="glyphicon glyphicon-share" style="border-radius: 60px;"></i></a>*@
+                    <a asp-action="DetailDistributor" asp-route-id="@item.DistributorId" class="btn btn-outline-info  text-uppercase" style="border-radius: 60px;" onclick="showPleaseWait();"><i class="glyphicon glyphicon glyphicon-align-justify"></i></a>
+                }
 
-                </td>
-            </tr>
+            </td>
+        </tr>
         }
     </tbody>
 </table>
-<partial name="_DeleteDialog" />
+<br />
+<partial name="_DeleteDialogs" />
+
+@*hidden field for storing current employeeId*@
+<input type="hidden" id="hiddenDistrubutorId" />
+<partial name="_ModalDialog" />
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-    <script src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.min.js"></script>
-    <script src="https://cdn.datatables.net/1.10.25/js/dataTables.bootstrap4.min.js"></script>
+    <script src="https://cdn.datatables.net/1.11.4/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.11.4/js/dataTables.bootstrap4.min.js"></script>
+    <script src="https://cdn.datatables.net/responsive/2.2.9/js/dataTables.responsive.min.js"></script>
+    <script src="https://cdn.datatables.net/responsive/2.2.9/js/responsive.bootstrap4.min.js"></script>
 
+    @* <script src="~/js/PartialJavaScript.js" asp-append-version="true"></script>*@
     <script type="text/javascript">
         $(document).ready(function () {
             $('#MyTable').DataTable({
@@ -109,5 +140,59 @@
             $("#btnYesDelete").click(function () {
                 window.location.href = '/Distributors/DeleteDistributor/' + item_to_delete;
             });
-        });</script>
+        });
+        function AddData() {
+                $.get("@Url.Action("MyCreatePartial", "Distributors")",
+                    function (data) {
+                        $('.modal-body').html(data);
+                    });
+            $("#myModal").modal("show");
+        };
+        var ConfirmDelete = function (EmployeeId) {
+            $("#hiddenDistrubutorId").val(EmployeeId);
+            $("#myModal").modal('show');
+        }
+
+        var DeleteEmployee = function () {
+
+            var empId = $("#hiddenDistrubutorId").val();
+
+            $.ajax({
+
+                type: "GET",
+                url: "/Distributors/DeleteDistributor",
+                data: { Id: empId },
+                success: function (result) {
+
+                    $("#myModal").modal("hide");
+                    $("#row_" + empId).remove();
+                    window.location.href = '/Distributors/IndexDistributor/';
+                }
+            })
+
+        }
+        var deleteConfirm = function (val,val1) {
+            $('#deletedValueName').text(val);
+            $("#hiddenDistrubutorId").val(val1);
+            $('#delete-conformation').modal('show');
+        }
+        //call this function after click on confirm delete button
+        var deleteData = function () {
+            $('#divLoading').show();
+            var id = $("#hiddenDistrubutorId").val();
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("DeleteDistributor", "Distributors")',
+                data: { id: id },
+                success: function (result) {
+                    $("#delete-conformation").modal('hide');
+                    window.location.href = '/Distributors/IndexDistributor/';
+                },
+                error: function () {
+                    $("#delete-conformation").modal('hide');
+                    window.location.href = '/Distributors/IndexDistributor/';
+                }
+            });
+        }
+    </script>
 }

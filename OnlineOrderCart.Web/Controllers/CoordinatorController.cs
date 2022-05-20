@@ -19,7 +19,7 @@ using Vereyon.Web;
 
 namespace OnlineOrderCart.Web.Controllers
 {
-    [Authorize(Roles = "PowerfulUser,KamAdmin,KamAdCoordinator")]
+    [Authorize(Roles = "PowerfulUser,KAM-Administrador,Coordinador-Administrador")]
     public class CoordinatorController : Controller
     {
         private readonly DataContext _dataContext;
@@ -107,7 +107,7 @@ namespace OnlineOrderCart.Web.Controllers
                     }
                     Guid imageId = Guid.Empty;
                     string Path = string.Empty;
-                    model.KamManagerId = model.KamId;
+                    model.KamManagerId = model.KamManagerId;
                     model.IsCoordinator = 1;
                     if (model.ImageFile != null)
                     {
@@ -284,13 +284,14 @@ namespace OnlineOrderCart.Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                string path = model.PicturePath;
+                string path = model.PictureFPath;
                 Guid imageId = model.ImageId;
                 if (model.ImageFile != null)
                 {
                     //imageId = await _blobHelper.UploadBlobAsync(model.ImageFile, "users");
                     path = await _imageHelper.UploadImageAsync(model.ImageFile, "users");
                 }
+               
                 using (Microsoft.EntityFrameworkCore.Storage.IDbContextTransaction transaction = _dataContext.Database.BeginTransaction())
                 {
                     try
@@ -414,8 +415,32 @@ namespace OnlineOrderCart.Web.Controllers
         }
         private async Task<Kams> CoordExists(int id)
         {
-            var _kam = await _dataContext.Kams.FindAsync(id);
+            long _Id = Convert.ToInt64(id);
+            var _kam = await _dataContext.Kams.FindAsync(_Id);
             return _kam;
+        }
+        [HttpGet]
+        [Authorize(Roles = "PowerfulUser,KAM-Administrador,Coordinador-Administrador")]
+        public async Task<IActionResult> ActiveRegister(int? id)
+        {
+            if (id == null)
+            {
+                return new NotFoundViewResult("_ResourceNotFound");
+            }
+            long _Id = Convert.ToInt64(id);
+            var _KamCoord = await _userHelper.GetKamAdCoordinatorByActiveIdAsync(_Id);
+            if (_KamCoord == null)
+            {
+                return new NotFoundViewResult("_ResourceNotFound");
+            }
+            var _Result = await _userHelper.PutKamAdCoordByActiveIdAsync(_KamCoord.Result);
+
+            if (!_Result.IsSuccess)
+            {
+                _flashMessage.Danger(string.Empty, _Result.Message);
+            }
+
+            return RedirectToAction("Index", "Coordinator");
         }
     }
 }

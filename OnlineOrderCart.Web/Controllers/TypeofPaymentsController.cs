@@ -8,23 +8,33 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using OnlineOrderCart.Common.Entities;
 using OnlineOrderCart.Web.DataBase;
+using OnlineOrderCart.Web.DataBase.Repositories;
+using OnlineOrderCart.Web.Helpers;
+using Vereyon.Web;
 
 namespace OnlineOrderCart.Web.Controllers
 {
-    [Authorize(Roles = "PowerfulUser,KamAdmin,KamAdCoordinator")]
+    [Authorize(Roles = "PowerfulUser,KAM-Administrador,Coordinador-Administrador")]
     public class TypeofPaymentsController : Controller
     {
         private readonly DataContext _context;
+        private readonly ITypeofPaymentRepository _typeofPaymentRepository;
+        private readonly IConverterHelper _converterHelper;
+        private readonly IFlashMessage _flashMessage;
 
-        public TypeofPaymentsController(DataContext context)
+        public TypeofPaymentsController(DataContext context
+            , ITypeofPaymentRepository typeofPaymentRepository, IConverterHelper converterHelper, IFlashMessage flashMessage)
         {
             _context = context;
+            _typeofPaymentRepository = typeofPaymentRepository;
+            _converterHelper = converterHelper;
+            _flashMessage = flashMessage;
         }
 
         // GET: TypeofPayments
         public async Task<IActionResult> Index()
         {
-            return View(await _context.TypeofPayments.ToListAsync());
+            return View(await _typeofPaymentRepository.GetAllTypeofPaymentsAsync());
         }
 
         // GET: TypeofPayments/Details/5
@@ -35,8 +45,7 @@ namespace OnlineOrderCart.Web.Controllers
                 return NotFound();
             }
 
-            var typeofPayments = await _context.TypeofPayments
-                .FirstOrDefaultAsync(m => m.TypeofPaymentId == id);
+            var typeofPayments = await _typeofPaymentRepository.GetOnlyTypeofPaymentAsync(id.Value);
             if (typeofPayments == null)
             {
                 return NotFound();
@@ -56,13 +65,31 @@ namespace OnlineOrderCart.Web.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("TypeofPaymentId,Description,CodeKey,IsDeleted,RegistrationDate")] TypeofPayments typeofPayments)
+        public async Task<IActionResult> Create(TypeofPayments typeofPayments)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(typeofPayments);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                try
+                {
+                    var model = _converterHelper.ToTypeofPaymentsEntity(typeofPayments,true);
+                   await _typeofPaymentRepository.CreateAsync(model);
+                    return RedirectToAction(nameof(Index));
+                }
+                catch (DbUpdateException dbUpdateException)
+                {
+                    if (dbUpdateException.InnerException.Message.Contains("duplicate"))
+                    {
+                        ModelState.AddModelError(string.Empty, "Ya existe esta Tipo de pago .");
+                    }
+                    else
+                    {
+                        ModelState.AddModelError(string.Empty, dbUpdateException.InnerException.Message);
+                    }
+                }
+                catch (Exception exception)
+                {
+                    ModelState.AddModelError(string.Empty, exception.Message);
+                }
             }
             return View(typeofPayments);
         }
@@ -72,13 +99,13 @@ namespace OnlineOrderCart.Web.Controllers
         {
             if (id == null)
             {
-                return NotFound();
+                return new NotFoundViewResult("_ResourceNotFound");
             }
 
-            var typeofPayments = await _context.TypeofPayments.FindAsync(id);
+            var typeofPayments = await _typeofPaymentRepository.GetOnlyTypeofPaymentAsync(id.Value);
             if (typeofPayments == null)
             {
-                return NotFound();
+                return new NotFoundViewResult("_ResourceNotFound");
             }
             return View(typeofPayments);
         }
@@ -88,63 +115,95 @@ namespace OnlineOrderCart.Web.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("TypeofPaymentId,Description,CodeKey,IsDeleted,RegistrationDate")] TypeofPayments typeofPayments)
+        public async Task<IActionResult> Edit(int id, TypeofPayments typeofPayments)
         {
             if (id != typeofPayments.TypeofPaymentId)
             {
-                return NotFound();
+                return new NotFoundViewResult("_ResourceNotFound");
             }
 
             if (ModelState.IsValid)
             {
                 try
                 {
-                    _context.Update(typeofPayments);
-                    await _context.SaveChangesAsync();
+                    var _dupli = await _typeofPaymentRepository.GetOnlyTypeofPaymentAsync(typeofPayments.TypeofPaymentId);
+                    _dupli.PaymentName = typeofPayments.PaymentName.ToUpper() ?? _dupli.PaymentName.ToUpper();
+                    _dupli.CodeKey = typeofPayments.CodeKey.ToUpper() ?? _dupli.CodeKey.ToUpper();
+                    await _typeofPaymentRepository.UpdateAsync(_dupli);
+                    return RedirectToAction(nameof(Index));
                 }
-                catch (DbUpdateConcurrencyException)
+                catch (DbUpdateException dbUpdateException)
                 {
-                    if (!TypeofPaymentsExists(typeofPayments.TypeofPaymentId))
+                    if (dbUpdateException.InnerException.Message.Contains("duplicate"))
                     {
-                        return NotFound();
+                        ModelState.AddModelError(string.Empty, "Ya existe esta Tipo de pago .");
                     }
                     else
                     {
-                        throw;
+                        ModelState.AddModelError(string.Empty, dbUpdateException.InnerException.Message);
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                catch (Exception exception)
+                {
+                    ModelState.AddModelError(string.Empty, exception.Message);
+                }
             }
             return View(typeofPayments);
         }
 
         // GET: TypeofPayments/Delete/5
+
+        //public async Task<IActionResult> Delete(int? id)
+        [HttpPost]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
             {
-                return NotFound();
+                return new NotFoundViewResult("_ResourceNotFound");
             }
-
-            var typeofPayments = await _context.TypeofPayments
-                .FirstOrDefaultAsync(m => m.TypeofPaymentId == id);
-            if (typeofPayments == null)
+            try
             {
-                return NotFound();
+                var typeofPayments = await _typeofPaymentRepository.GetOnlyTypeofPaymentAsync(id.Value);
+                if (typeofPayments == null)
+                {
+                    return new NotFoundViewResult("_ResourceNotFound");
+                }
+                typeofPayments.IsDeleted = 1;
+                await _typeofPaymentRepository.UpdateAsync(typeofPayments);
+            }
+            catch (Exception ex)
+            {
+                _flashMessage.Danger($"The Type of Payments can't be deleted because it has related records. {ex.Message}");
             }
 
-            return View(typeofPayments);
+            //return RedirectToAction(nameof(Index));
+            return View();
         }
-
-        // POST: TypeofPayments/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        [HttpPost]
+        public JsonResult DeleteDetails(int? id)
         {
-            var typeofPayments = await _context.TypeofPayments.FindAsync(id);
-            _context.TypeofPayments.Remove(typeofPayments);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+
+            if (id == null)
+            {
+                return Json(new { status = "Error" });
+            }
+            try
+            {
+                var typeofPayments = _context.TypeofPayments.FirstOrDefault(x => x.TypeofPaymentId==id.Value);
+                if (typeofPayments == null)
+                {
+                    return Json(new { status = "Error" });
+                }
+                typeofPayments.IsDeleted = 1;
+               _context.TypeofPayments.Update(typeofPayments);
+                _context.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                _flashMessage.Danger($"The Type of Payments can't be deleted because it has related records. {ex.Message}");
+            }
+            return Json(new { status = "Success" });
+
         }
 
         private bool TypeofPaymentsExists(int id)

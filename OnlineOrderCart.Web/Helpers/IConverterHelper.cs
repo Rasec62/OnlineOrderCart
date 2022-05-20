@@ -25,6 +25,8 @@ namespace OnlineOrderCart.Web.Helpers
         Warehouses ToWarehousetEntity(IndexWarehouseDistViewModel model, bool isNew);
         #endregion
 
+        TypeofPayments ToTypeofPaymentsEntity(TypeofPayments model, bool isNew);
+
         Task<PrOrderDetailTmps> ToOrdersTmpEntity(AddItemViewModel model, bool isNew);
         Task<PrOrderDetailTmps> ToGenerateaNormalOrdersTmpEntity(GenerateaNormalOrderViewModel model, bool isNew);
         IncentiveOrderDetailTmp ToIncentiveOrdersTmpEntity(NOrderIncentiveViewModel model, bool isNew);

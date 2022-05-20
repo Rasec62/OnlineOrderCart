@@ -40,7 +40,7 @@ namespace OnlineOrderCart.Web.Helpers
                 {
                     string NE = $"E{model.EmployeeNumber}";
                     var _register = await _dataContext.Users
-                        .Where(u => u.Email.Equals(model.Email) || u.GetKamsCollection.FirstOrDefault().EmployeeNumber.ToUpper()== NE.ToUpper())
+                        .Where(u => u.Email.Equals(model.Email) || u.UserName == model.EmployeeNumber || u.GetKamsCollection.FirstOrDefault().EmployeeNumber.ToUpper()== NE.ToUpper())
                         .FirstOrDefaultAsync();
                     if (_register != null)
                     {
@@ -218,12 +218,13 @@ namespace OnlineOrderCart.Web.Helpers
             try
             {
                 string[] marks = new string[1] { "PowerfulUser" };
-                
+                var myInClause = new Int64[] { 0,1 };
+
                 var myProducts = await (from rg in _dataContext.RoleGroups
                                   join r in  _dataContext.Roles on rg.RolId equals r.RolId
                                   join u in _dataContext.Users on rg.UserId equals u.UserId
                                   join k in _dataContext.Kams on u.UserId equals k.UserId
-                                  where(u.IsDeleted == 0 && u.IsDistributor == 0 && !marks.Contains(r.RolName) && k.IsCoordinator == 0)
+                                  where(myInClause.Contains(u.IsDeleted) && u.IsDistributor == 0 && myInClause.Contains(k.IsDeleted) && !marks.Contains(r.RolName) && k.IsCoordinator == 0)
                                   select new {
                                       UserId = u.UserId,
                                       KamId = k.KamId,
@@ -238,6 +239,7 @@ namespace OnlineOrderCart.Web.Helpers
                                       KamManagerId = k.KamManagerId,
                                       UserName = u.UserName,
                                       RolName = r.RolName,
+                                      IsDeleted = u.IsDeleted,
 
                                   }).ToListAsync();
 
@@ -257,7 +259,8 @@ namespace OnlineOrderCart.Web.Helpers
                     KamManagerId = p.KamManagerId,
                     Username = p.UserName,
                     RolName = p.RolName,
-                    IsAdmin = p.RolName == "KamAdmin" ? true : false,
+                    IsAdmin = p.RolName == _configuration["MyConfig:KamAdmin"] ? true : false,
+                    IsActive = p.IsDeleted == 0? true : false,
                 })
             .OrderBy(p => p.Username)
             .ToList());
@@ -344,9 +347,9 @@ namespace OnlineOrderCart.Web.Helpers
                         };
                         break;
                     case "PowerfulUser":
-                    case "KamAdmin":
-                    case "KamAdCoordinator":
-                    case "KamCoordinator":
+                    case "KAM-Administrador":
+                    case "Coordinador-Administrador":
+                    case "Coordinador":
                     case "Kam":
                         _manager = new UserManagerEntity{
                             UserId = _truefalse.UserId,
@@ -850,12 +853,13 @@ namespace OnlineOrderCart.Web.Helpers
             try
             {
                 string[] marks = new string[1] { "PowerfulUser" };
+                var myInClause = new Int64[] { 0, 1 };
 
                 var myProducts = await (from rg in _dataContext.RoleGroups
                                         join r in _dataContext.Roles on rg.RolId equals r.RolId
                                         join u in _dataContext.Users on rg.UserId equals u.UserId
                                         join k in _dataContext.Kams on u.UserId equals k.UserId
-                                        where (u.IsDeleted == 0 && u.IsDistributor == 0 && !marks.Contains(r.RolName) && k.IsCoordinator == 1)
+                                        where (myInClause.Contains(u.IsDeleted) && u.IsDistributor == 0 && myInClause.Contains(k.IsDeleted) && !marks.Contains(r.RolName) && k.IsCoordinator == 1)
                                         select new
                                         {
                                             UserId = u.UserId,
@@ -872,6 +876,7 @@ namespace OnlineOrderCart.Web.Helpers
                                             UserName = u.UserName,
                                             RolName = r.RolName,
                                             IsCoordinator = k.IsCoordinator,
+                                            IsDeleted = u.IsDeleted,
 
                                         }).ToListAsync();
 
@@ -892,8 +897,9 @@ namespace OnlineOrderCart.Web.Helpers
                    Username = p.UserName,
                    RolName = p.RolName,
                    KFullName = KamManager(p.KamManagerId),
-                   IsAdmin = p.RolName == "KamAdCoordinator" ? true : false,
+                   IsAdmin = p.RolName == _configuration["MyConfig:CoordAdmin"] ? true : false,
                    IsCoordinator = p.IsCoordinator,
+                   IsActive = p.IsDeleted == 0 ? true : false,
                })
            .OrderBy(p => p.Username)
            .ToList());
@@ -1169,6 +1175,165 @@ namespace OnlineOrderCart.Web.Helpers
                 Token = new JwtSecurityTokenHandler().WriteToken(token),
                 Expiration = token.ValidTo
             };
+        }
+
+        public async Task<Response<IndexKamCoordViewModel>> GetKamAdCoordinatorBySentIdAsync(long id)
+        {
+            try{
+                
+                var _KCUser = await _dataContext
+                    .Kams
+                    .Include(u => u.Users)
+                    .Where(k => k.KamId == id && (k.IsDeleted != 0 && k.IsDeleted!= 1)  && (k.Users.IsDeleted != 0 && k.Users.IsDeleted != 1))
+                    .FirstOrDefaultAsync();
+
+                IndexKamCoordViewModel KamCoord = new IndexKamCoordViewModel {
+                    Email = _KCUser.Users.Email,
+                    UserName = _KCUser.Users.UserName,
+                    Id = _KCUser.Users.UserId,
+                    KcId = _KCUser.KamId,
+                    IsCoordinator = _KCUser.IsCoordinator,
+                    Path = _KCUser.Users.PicturePath,
+                    IsKam = _KCUser.IsCoordinator == 0? true : false,
+                };
+
+                if (_KCUser == null){
+                    return new Response<IndexKamCoordViewModel>
+                    {
+                        IsSuccess = false,
+                    };
+                }
+                return new Response<IndexKamCoordViewModel>
+                {
+                    IsSuccess = true,
+                    Result = KamCoord,
+                };
+            }
+            catch (Exception ex)
+            {
+                if (ex.InnerException.Message.Contains("duplicate"))
+                {
+                    return new Response<IndexKamCoordViewModel>
+                    {
+                        IsSuccess = false,
+                        Message = "Already there is a record with the same name.",
+                    };
+                }
+                else
+                {
+                    return new Response<IndexKamCoordViewModel>
+                    {
+                        IsSuccess = false,
+                        Message = ex.InnerException.Message,
+                    };
+                }
+            }
+        }
+        public async Task<Response<IndexKamCoordViewModel>> GetKamAdCoordinatorByActiveIdAsync(long id)
+        {
+            try
+            {
+
+                var _KCUser = await _dataContext
+                    .Kams
+                    .Include(u => u.Users)
+                    .Where(k => k.KamId == id && k.IsDeleted == 1 && k.Users.IsDeleted == 1)
+                    .FirstOrDefaultAsync();
+
+                IndexKamCoordViewModel KamCoord = new IndexKamCoordViewModel
+                {
+                    Email = _KCUser.Users.Email,
+                    UserName = _KCUser.Users.UserName,
+                    Id = _KCUser.Users.UserId,
+                    KcId = _KCUser.KamId,
+                    IsCoordinator = _KCUser.IsCoordinator,
+                    Path = _KCUser.Users.PicturePath,
+                    IsKam = _KCUser.IsCoordinator == 0 ? true : false,
+                };
+
+                if (_KCUser == null)
+                {
+                    return new Response<IndexKamCoordViewModel>
+                    {
+                        IsSuccess = false,
+                    };
+                }
+                return new Response<IndexKamCoordViewModel>
+                {
+                    IsSuccess = true,
+                    Result = KamCoord,
+                };
+            }
+            catch (Exception ex)
+            {
+                if (ex.InnerException.Message.Contains("duplicate"))
+                {
+                    return new Response<IndexKamCoordViewModel>
+                    {
+                        IsSuccess = false,
+                        Message = "Already there is a record with the same name.",
+                    };
+                }
+                else
+                {
+                    return new Response<IndexKamCoordViewModel>
+                    {
+                        IsSuccess = false,
+                        Message = ex.InnerException.Message,
+                    };
+                }
+            }
+        }
+
+        public async Task<Response<object>> PutKamAdCoordByActiveIdAsync(IndexKamCoordViewModel modol)
+        {
+            using (Microsoft.EntityFrameworkCore.Storage.IDbContextTransaction transaction = _dataContext.Database.BeginTransaction())
+            {
+                try
+                {
+                    var _Users = await _dataContext.Users.FirstOrDefaultAsync(u => u.UserId.Equals(modol.Id) && u.IsDeleted == 1);
+                    if (_Users == null)
+                    {
+                        return new Response<object>
+                        {
+                            IsSuccess = false,
+                            Message = "No Data Register",
+                        };
+                    }
+                    _Users.IsDeleted = 0;
+                    _dataContext.Users.Update(_Users);
+
+                    var _KamCoods = await _dataContext.Kams.FirstOrDefaultAsync(k => k.UserId.Equals(modol.Id) && k.KamId.Equals(modol.KcId) && k.IsDeleted==1);
+
+                    if (_KamCoods == null)
+                    {
+                        return new Response<object>
+                        {
+                            IsSuccess = false,
+                            Message = "No Datas Register",
+                        };
+                    }
+                    _KamCoods.IsDeleted = 0;
+                    _dataContext.Kams.Update(_KamCoods);
+                    await _dataContext.SaveChangesAsync();
+                    transaction.Commit();
+                    return new Response<object>
+                    {
+                        IsSuccess = true,
+                        Message = "operation carried out successfully",
+                    };
+                }
+                catch (Exception ex)
+                {
+                    transaction.Rollback();
+                    return new Response<object>
+                    {
+                        IsSuccess = false,
+                        Message = ex.Message,
+                        Result = ex,
+                    };
+                }
+            }
         }
     }
 }

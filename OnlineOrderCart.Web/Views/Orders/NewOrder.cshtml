@@ -72,7 +72,8 @@
 
                     @*<input type="submit" value="Save Orders" class="btn btn-outline-primary" style="border-radius: 60px;" />
         @Html.ActionLink("Add Product", "AddProduct", "Orders", new { }, new { @class = "btn btn-outline-warning  popup" })*@
-                <a class="btn btn-outline-warning" style="border-radius: 60px;" asp-action="AddProduct" asp-controller="Orders" onclick="showPleaseWait();"><i class="glyphicon glyphicon-saved"></i> Add New Order</a>
+                    @*<a class="btn btn-outline-warning" style="border-radius: 60px;" asp-action="AddProduct" asp-controller="Orders" onclick="showPleaseWait();"><i class="glyphicon glyphicon-saved"></i> Add New Order</a>*@
+                    <button type="button" class="btn btn-outline-danger" style="border-radius: 60px;" data-toggle="modal" data-target="#myModal" onclick="OpenAddPopup();"><i class="glyphicon glyphicon-saved"></i> Add New Product</button>
                     <a asp-action="IndexOrders" class="btn btn-outline-secondary" style="border-radius: 60px;"><i class="glyphicon glyphicon-arrow-left" onclick="showPleaseWait();"></i> Back to List</a>
                     @*@Html.ActionLink("Back to Orders", "IndexOrders", new { }, new { @class = "btn btn-outline-dark" })*@
                 </div>
@@ -162,36 +163,164 @@
 
 <partial name="_Modal" />
 
+<div id="divcontent">
+
+</div>
+
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
     <script src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.min.js"></script>
-    <script type="text/javascript">
-        $(function () {
-            $('#datepicker').datetimepicker({ format: 'YYYY/MM/DD' });
-        });
+    <script>
+
         $(document).ready(function () {
 
             $('#example').DataTable({
                 "order": [[2, "desc"]],
                 "lengthMenu": [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]]
             });
-
-            //$("body").on("click", "a.dialog-window", null, function (e) {
-            //    e.preventDefault();
-            //    var $link = $(this);
-            //    var title = $link.text();
-            //    $('#AddProduct .modal-title').html(title);
-            //    var url = $(this).attr('href');
-            //    if (url.indexOf('#') == 0) {
-            //        $('#AddProduct').modal('show');
-            //    }
-            //    else {
-            //        $.get(url, function (data) {
-            //            $('#AddProduct .te').html(data);
-            //            $('#AddProduct').modal();
-            //        }).success(function () { $('input:text:visible:first').focus(); });
-            //    }
-            //});
+            var items = "<option value='0'>Seleccionar Productos</option>";
+            $("#DeatilStoreId").html(items);
         });
+        function OpenAddPopup() {
+            $.ajax({
+                url: '/Orders/LoadaddProductPopup',
+                contentType: 'application/html; charset=utf-8',
+                type: 'GET',
+                dataType: 'html',
+                success: function (result) {
+                    $('#divcontent').empty();
+                    $('#divcontent').html(result);
+                    $('#AddUpdateModelPopup').modal('show');
+                },
+                error: function (xhr, status) {
+                    alert(status);
+                }
+            })
+        }
+        //Add Data Function
+        function AddProduct() {
+            var res = ValidateForm();
+            if (res == false) {
+                return false;
+            }
+            var jsonObj = {
+                "StoreId": $('#StoreId').val(),
+                "DeatilStoreId": $('#DeatilStoreId').val(),
+                "TypeofPaymentId": $('#TypeofPaymentId').val(),
+                "Quantity": $('#Quantity').val(),
+                "Observations": $('#Observations').val(),
+                'Debtor': $('#Debtor').val(),
+                'DistributorId': $('#DistributorId').val(),
+                'KamId': $('#KamId').val(),
+                'UserId': $('#UserId').val(),
+                'EmployeeNumber': $('#EmployeeNumber').val(),
+                'GenerateDistributor': $('#GenerateDistributor').val(),
+            };
+
+            console.log(jsonObj.DeatilStoreId);
+            console.log(jsonObj.Observations);
+            
+            $.ajax({
+                url: "@Url.Action("AddPartialProduct", "Orders")",
+                type: 'POST',
+                data: JSON.stringify(jsonObj),
+                contentType: "application/json;charset=utf-8",
+                dataType: "json",
+                success: function (result) {
+                    //populate table with new record
+                    $('#AddUpdateModelPopup').modal('hide');
+                    window.location.href = '/Orders/NewOrder/';
+                },
+                error: function (errormessage) {
+                    alert(errormessage.responseText);
+                }
+            });
+        }
+
+        function ValidateForm() {
+            var isValid = true;
+            if ($('#StoreId').val().trim() == "") {
+                $('#StoreId').css('border-color', 'Red');
+                isValid = false;
+            }
+            else if ($('#StoreId').val() == 0) {
+                $('#StoreId').css('border-color', 'Red');
+                isValid = false;
+            }
+            else {
+                 $('#StoreId').css('border-color', 'lightgrey');
+            }
+            if ($('#TypeofPaymentId').val().trim() == "") {
+                $('#TypeofPaymentId').css('border-color', 'Red');
+                isValid = false;
+            }
+            else if ($('#TypeofPaymentId').val() == 0) {
+                $('#TypeofPaymentId').css('border-color', 'Red');
+                isValid = false;
+            }
+            else {
+                $('#TypeofPaymentId').css('border-color', 'lightgrey');
+            }
+
+            if ($('#DeatilStoreId').val().trim() == "") {
+                $('#DeatilStoreId').css('border-color', 'Red');
+                isValid = false;
+            }
+            else if ($('#DeatilStoreId').val().trim() == "") {
+                $('#DeatilStoreId').css('border-color', 'Red');
+                isValid = false;
+            }
+            else if ($('#DeatilStoreId').val() == 0) {
+                $('#DeatilStoreId').css('border-color', 'Red');
+                isValid = false;
+            }
+            else {
+                $('#DeatilStoreId').css('border-color', 'lightgrey');
+            }
+
+            var Quantity = document.getElementById("Quantity").value;
+            if (Quantity >= 150) {
+                var rest = Quantity % 10;
+                if (rest == 0) {
+                    //alert("the amount is valid");
+                    $(this).css("background-color", "#EBEDEF");
+                    //isValid = true;
+                }
+                else {
+                    alert("the amount is not valid && Something went wrong call the police");
+                    document.getElementById("Quantity").focus();
+                    document.getElementById("Quantity").value = 150;
+                    $(this).css("background-color", "#CD6155");
+                    isValid = false;
+                }
+            }
+            else {
+                alert('Data not Validation Quantity && Something went wrong call the police');
+                document.getElementById("Quantity").focus();
+                document.getElementById("Quantity").value = 150;
+                $(this).css("background-color", "#F2D7D5");
+                isValid = false;
+            }
+            return isValid;
+        }
+        function myFunction() {
+
+             if ($('#StoreId').val() == 0) {
+                 var items = "<option value='0'>Seleccionar Productos</option>";
+                 $("#DeatilStoreId").html(items);
+            }
+             else {
+                var url = '@Url.Content("~/")' + "Orders/GetSubProduct";
+                var ddlsource = "#StoreId";
+                $.getJSON(url, { StoreId: $(ddlsource).val() }, function (data) {
+                    var items = '';
+                    $('#DeatilStoreId').empty();
+                    $.each(data, function (i, product) {
+                        items += "<option value='" + product.value + "'>" + product.text + "</option>";
+                    });
+                    $('#DeatilStoreId').html(items);
+                });
+             }
+        }
     </script>
 }

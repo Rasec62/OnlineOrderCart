@@ -13,26 +13,7 @@
         <form asp-action="Edit" method="post" onsubmit="showPleaseWait();">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="TypeofPaymentId" />
-            <div class="form-group">
-                <label asp-for="PaymentName" class="control-label"></label>
-                <input asp-for="PaymentName" class="form-control" />
-                <span asp-validation-for="PaymentName" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="CodeKey" class="control-label"></label>
-                <input asp-for="CodeKey" class="form-control" />
-                <span asp-validation-for="CodeKey" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="IsDeleted" class="control-label"></label>
-                <input asp-for="IsDeleted" class="form-control" />
-                <span asp-validation-for="IsDeleted" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="RegistrationDate" class="control-label"></label>
-                <input asp-for="RegistrationDate" class="form-control" />
-                <span asp-validation-for="RegistrationDate" class="text-danger"></span>
-            </div>
+            <partial name="_TypeofPayments" />
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-outline-primary" style="border-radius: 60px;" />
                 <a asp-action="Index" style="border-radius: 60px;" class="btn btn-outline-secondary" onclick="showPleaseWait();">Back to List</a>

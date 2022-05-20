@@ -13,54 +13,174 @@
         <a asp-action="Create" class="btn btn-outline-success" style="border-radius: 60px;" onclick="showPleaseWait();"><i class="glyphicon glyphicon-plus"></i> New</a>
     </div>
 </div>
+<flash dismissable="true" />
 <br />
-<table class="display" id="example" style="width:100%">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.PaymentName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.CodeKey)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
+<div class="table-responsive-md">
+    <table class="display" id="example" style="width:100%">
+        <thead>
             <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.PaymentName)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.CodeKey)
-                </td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@item.TypeofPaymentId" class="btn btn-outline-warning" style="border-radius: 60px;" onclick="showPleaseWait();"><i class="glyphicon glyphicon-pencil"></i></a> 
-                    <a asp-action="Details" asp-route-id="@item.TypeofPaymentId" class="btn btn-outline-info" style="border-radius: 60px;" onclick="showPleaseWait();"><i class="glyphicon glyphicon glyphicon-align-justify"></i></a> 
-                    <button data-id="@item.TypeofPaymentId" class="btn btn-outline-danger deleteItem" data-toggle="modal" data-target="#deleteDialog" style="border-radius: 60px;"><i class="glyphicon glyphicon-trash" style="border-radius: 60px;"></i></button>
-                </td>
+                <th>
+                    @Html.DisplayNameFor(model => model.PaymentName)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.CodeKey)
+                </th>
+                <th></th>
             </tr>
-        }
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.PaymentName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.CodeKey)
+                    </td>
+                    <td id="@item.TypeofPaymentId">
+                        <a asp-action="Edit" asp-route-id="@item.TypeofPaymentId" class="btn btn-outline-warning" style="border-radius: 60px;" onclick="showPleaseWait();"><i class="glyphicon glyphicon-pencil"></i></a>
+                        <a asp-action="Details" asp-route-id="@item.TypeofPaymentId" class="btn btn-outline-info" style="border-radius: 60px;" onclick="showPleaseWait();"><i class="glyphicon glyphicon glyphicon-align-justify"></i></a>
+                        @*<a asp-action="Delete" class="btn btn-outline-danger" asp-route-id="@item.TypeofPaymentId" id="btnDelete"><i class="glyphicon glyphicon-trash"></i> </a>
+                            <button data-id="@item.TypeofPaymentId" class="btn btn-danger deleteItem" data-toggle="modal" data-target="#deleteDialog"><i class="glyphicon glyphicon-trash"></i></button>*@
+                        @*<a href="#" class="btn btn-outline-danger" onclick="ConfirmDelete(@item.TypeofPaymentId)"><i class="glyphicon glyphicon-trash"></i></a>
+                            <input type="button" value="Delete" class="btn btn-outline-danger" onclick="deleteConfirm('@item.PaymentName','@item.TypeofPaymentId')" />*@
+                        <a href="#" class="btn btn-outline-danger" onclick="deleteConfirm('@item.PaymentName','@item.TypeofPaymentId')"><i class="glyphicon glyphicon-trash"></i></a>
+                        @*<button data-id="@item.TypeofPaymentId" class="btn btn-outline-danger deleteItem" data-toggle="modal" data-target="#deleteDialog" style="border-radius: 60px;"><i class="glyphicon glyphicon-trash"></i></button>
+                            <input type="button" asp-route-id="@item.TypeofPaymentId" value="Delete" class="btn btn-outline-danger" onclick="deleteConfirm('@item.PaymentName')" />*@
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
 
-<partial name="_DeleteDialog" />
+</div>
+
+<div class="modal fade" id="myModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Delete Type of Payment</h3>
+                <a href="#" class="close" data-dismiss="modal">&times;</a>
+            </div>
+            <div class="modal-body">
+                <h4>Are you sure you want to Remove this Type of Payment?</h4>
+
+            </div>
+            <div class="modal-footer">
+                <a href="#" class="btn btn-outline-dark" data-dismiss="modal">Cancel</a>
+                <a href="#" class="btn btn-outline-success" onclick="DeleteEmployee()">Confirm</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@*<partial name="_DeleteDialog" />*@
+<!--bootstra pop up confirmation dialog-->
+<div class="modal fade" id="delete-conformation" tabindex="-1" role="dialog" aria-labelledby="deleteconformation">
+    <div class="modal-dialog" style="width:501px !important;margin:0 auto;">
+        <div class="modal-content">
+            <div class="modal-header" style="background:#d9534f;color:white;">
+                <h4 class="modal-title" id="delete-conformation">
+                    Delete Confirmation
+                </h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="form-group">
+                        <div class="col-sm-12">
+                            <span>
+                                Are you sure you want to delete?
+                            </span>
+                            <strong id="deletedValueName">
+                            </strong>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-dark" data-dismiss="modal">Cancel</button>
+                    <input type="submit" class="btn btn-outline-danger" value="Delete" onclick="deleteData()" />
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@*hidden field for storing current employeeId*@
+<input type="hidden" id="hiddenTypeofPaymentId" />
+
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
     <script src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.min.js"></script>
-    <script src="/js/deleteDialog.js"></script>
+    @*<script src="/js/deleteDialog.js"></script>*@
 
-    <script type="text/javascript">
+<script type="text/javascript">
         $(document).ready(function () {
             $('#example').DataTable({
                 "order": [[2, "desc"]],
-                "lengthMenu": [[5,10, 25, 50, -1], [5,10, 25, 50, "All"]]
+                "lengthMenu": [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]]
             });
 
             // Delete item
-            sc_deleteDialog.openModal('deleteItem', true, 'btnYesDelete', '/Roles/Delete/', false);
-        });</script>
+            var item_to_delete;
+
+            $('.deleteItem').click((e) => {
+                item_to_delete = e.currentTarget.dataset.id;
+            });
+
+            $("#btnYesDelete").click(function () {
+                window.location.href = '/TypeofPayments/Delete/' + item_to_delete;
+            });
+
+        });
+        var ConfirmDelete = function (EmployeeId) {
+
+            $("#hiddenTypeofPaymentId").val(EmployeeId);
+            $("#myModal").modal('show');
+
+        }
+
+        var DeleteEmployee = function () {
+
+            var empId = $("#hiddenTypeofPaymentId").val();
+
+            $.ajax({
+
+                type: "GET",
+                url: "/TypeofPayments/DeleteDetails",
+                data: { Id: empId },
+                success: function (result) {
+
+                    $("#myModal").modal("hide");
+                    $("#row_" + empId).remove();
+                    window.location.href = '/TypeofPayments/Index/';
+                }
+            })
+
+        }
+        var deleteConfirm = function (val,val1) {
+            $('#deletedValueName').text(val);
+            $("#hiddenTypeofPaymentId").val(val1);
+            $('#delete-conformation').modal('show');
+        }
+        //call this function after click on confirm delete button
+        var deleteData = function () {
+        $('#divLoading').show();
+            var id = $("#hiddenTypeofPaymentId").val();
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("DeleteDetails", "TypeofPayments")',
+            data:{id: id},
+            success: function (result) {
+                $("#delete-conformation").modal('hide');
+                window.location.href = '/TypeofPayments/Index/';
+            },
+            error: function () {
+                $("#delete-conformation").modal('hide');
+                window.location.href = '/TypeofPayments/Index/';
+            }
+        });
+       }
+</script>
 }

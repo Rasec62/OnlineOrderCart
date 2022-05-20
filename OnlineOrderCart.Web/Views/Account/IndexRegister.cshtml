@@ -35,35 +35,53 @@
             <th>
                 @localizer["ImageFullPath"]
             </th>
+            <th>
+                Is Active
+            </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
         @foreach (var item in Model)
         {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.RolName)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.FullName)
-                </td>
-                <th>
-                    @Html.DisplayFor(modelItem => item.IsAdmin)
-                </th>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Username)
-                </td>
-                <td>
-                    @*<img src="@item.PicturePath" style="width:80px;height:80px;border-radius:50%" />*@
-                    <img src="@Url.Content(item.PicturePath)" alt="Image" style="width:100px;height:100px;max-width: 100%; height: auto; border-radius:50%" />
-                </td>
-                <td>
-                    <a asp-action="EditRegister" asp-route-id="@item.KamId" class="btn btn-outline-warning text-uppercase" style="border-radius: 60px;" onclick="showPleaseWait();"><i class="glyphicon glyphicon-pencil"></i></a>
-                    <a asp-action="DetailRegister" asp-route-id="@item.KamId" class="btn btn-outline-info  text-uppercase" style="border-radius: 60px;" onclick="showPleaseWait();"><i class="glyphicon glyphicon glyphicon-align-justify"></i></a>
-                    <button data-id="@item.KamId" class="btn btn-outline-danger text-uppercase deleteItem" data-toggle="modal" data-target="#deleteDialog" style="border-radius: 60px;"><i class="glyphicon glyphicon-trash" style="border-radius: 60px;"></i></button>
-                </td>
-            </tr>
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.RolName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FullName)
+            </td>
+            <th>
+                @Html.DisplayFor(modelItem => item.IsAdmin)
+            </th>
+            <td>
+                @Html.DisplayFor(modelItem => item.Username)
+            </td>
+            <td>
+                @*<img src="@item.PicturePath" style="width:80px;height:80px;border-radius:50%" />*@
+                <img src="@Url.Content(item.PicturePath)" alt="Image" style="width:100px;height:100px;max-width: 100%; height: auto; border-radius:50%" />
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IsActive)
+            </td>
+            <td>
+                @if (item.IsActive)
+                {
+                    @if (!item.IsAdmin)
+                    {
+                        <a asp-action="EditRegister" asp-route-id="@item.KamId" class="btn btn-outline-warning text-uppercase" style="border-radius: 60px;" onclick="showPleaseWait();"><i class="glyphicon glyphicon-pencil"></i></a>
+                        <a asp-action="DetailRegister" asp-route-id="@item.KamId" class="btn btn-outline-info  text-uppercase" style="border-radius: 60px;" onclick="showPleaseWait();"><i class="glyphicon glyphicon glyphicon-align-justify"></i></a>
+                        <button data-id="@item.KamId" class="btn btn-outline-danger text-uppercase deleteItem" data-toggle="modal" data-target="#deleteDialog" style="border-radius: 60px;"><i class="glyphicon glyphicon-trash" style="border-radius: 60px;"></i></button>
+                    }
+
+
+                }
+                else
+                {
+                    <a asp-action="ActiveRegister" asp-route-id="@item.KamId" class="btn btn-outline-secondary  text-uppercase" style="border-radius: 60px;" onclick="showPleaseWait();"><i class="glyphicon glyphicon-share"></i></a>
+                }
+            </td>
+        </tr>
         }
     </tbody>
 </table>

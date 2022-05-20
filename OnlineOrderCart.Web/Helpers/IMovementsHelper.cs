@@ -16,6 +16,7 @@ namespace OnlineOrderCart.Web.Helpers
         IEnumerable<IndexUserDistEntity> GetSqlAllDataDistributors();
         Task<Response<RolAvatarConfirm>> GetRolAvatarConfirmAsync(string UserName);
         List<IndexUserDistEntity> GetSqlforwardingDataDistributors();
+        Task<List<IndexKamCoordViewModel>> GetSqlforwardingDataKamAdCoords();
         Task<Response<UserActivations>> GetSqlEmailforwardingDataDistributors(long UserId, string UserName, string Email);
         Task<List<TblOptionalEmail>> GetDetailsOptionalEmailAsync(long UserId, string Debtor);
     }

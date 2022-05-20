@@ -1,0 +1,241 @@
+﻿@addTagHelper*, Microsoft.AspNetCore.Mvc.Rendering.SelectListItem
+@model EditDistributorViewModel
+@{
+    ViewData["Title"] = "Create Distributor";
+}
+<hr />
+<div class="row">
+    <div class="col-md-8">
+        @*<form asp-action="MyCreatePartial" enctype="multipart/form-data" method="post" onsubmit="return showPleaseWait();">*@
+        <form id="new-members-form" asp-action="MyCreatePartial" enctype="multipart/form-data" method="post" onsubmit="return validateForm()">
+            <div asp-validation-summary="All" class="text-danger"></div>
+            <flash dismissable="true" />
+            <input type="hidden" asp-for="GenderId" />
+
+            <div class="card border-secondary text-center mb-3" style="max-width: 70rem;">
+                <div class="card-header  bg-transparent border-dark">
+                    <h2>Create Distributor</h2>
+                </div>
+                <div class="card-body text-dark">
+                    <div class="form-row">
+                        <div class="col-md-6 mb-6">
+                            <div class="form-group">
+                                <label asp-for="RoleId" class="control-label"></label>
+                                <select asp-for="RoleId" asp-items="Model.ComboDisRoles" class="form-control" style="float: left;text-align: center;border-radius: 60px;" required></select>
+                                <span asp-validation-for="RoleId" class="text-danger"></span>
+                                <span id="lblError" style="color:red"></span>
+                            </div>
+                        </div>
+                        @*<div class="col-md-4 mb-6">
+                                <div class="form-group">
+                                    <label asp-for="GenderId" class="control-label"></label>
+                                    <select asp-for="GenderId" asp-items="Model.ComboGenders" class="form-control" style="float: left;text-align: center;border-radius: 60px;"></select>
+                                    <span asp-validation-for="GenderId" class="text-danger"></span>
+                                </div>
+                            </div>*@
+                        <div class="col-md-6 mb-6">
+                            <div class="form-group">
+                                <label asp-for="KamId" class="control-label"></label>
+                                <select asp-for="KamId" asp-items="Model.ComboKams" class="form-control" style="float: left;text-align: center;border-radius: 60px;" required></select>
+                                <span asp-validation-for="KamId" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <hr />
+                    <partial name="_Distributor" />
+                    <hr />
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label asp-for="BusinessName" class="control-label"></label>
+                                <input asp-for="BusinessName" class="form-control" style="float: left;text-align: center;border-radius: 60px;" placeholder="Business Name" required />
+                                <span asp-validation-for="BusinessName" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label asp-for="Debtors" class="control-label"></label>
+                                <input asp-for="Debtors" class="form-control" type="number" style="float: left;text-align: center;border-radius: 60px;" placeholder="Debtor" required />
+                                <span asp-validation-for="Debtors" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label asp-for="ImageFile" class="control-label"></label>
+                                <input asp-for="ImageFile" class="form-control" type="file" accept="image/jpeg, image/png" style="float: left;text-align: center;border-radius: 60px;" onchange="ShowImagePreview(this,document.getElementById('imagePreview'))" />
+                                <span asp-validation-for="ImageFile" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <hr />
+                </div>
+                <div class="card-footer  bg-transparent border-secondary text-muted">
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-outline-primary btn-block text-uppercase" style="border-radius: 60px;"><span class="glyphicon glyphicon-floppy-saved"></span> Guardar Registro</button>
+                        <a asp-controller="Distributors" asp-action="IndexDistributor" class="btn btn-outline-secondary btn-block text-uppercase" style="border-radius: 60px;"><i class="glyphicon glyphicon-arrow-left"></i> Volver a la Lista</a>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    <hr />
+    <div class="col-md-4" style="border-radius: 60px;">
+        <div class="card border-secondary mb-3" style="max-width: 48rem;">
+            <div class="card-header bg-transparent border-secondary"></div>
+            <div class="card-body text-dark">
+                <h5 class="card-title">Avatar</h5>
+                <div class="form-group">
+                    <img class="lazyload" src="~/image/img_avatar1.png" style="width:250px; height:100px; max-width: 100%; height: auto;" id="imagePreview" />
+                </div>
+            </div>
+            <div class="card-footer bg-transparent border-secondary"></div>
+        </div>
+    </div>
+</div>
+
+<div class="text-success">
+    <p>
+        @ViewBag.Message
+    </p>
+</div>
+<script src="~/lib/jquery/dist/jquery.js"></script>
+
+
+<script type="text/javascript">
+    $(document).ready(function () {
+
+    });
+    function ValidateEmail() {
+
+        console.log("Enter in Java Script");
+
+        console.log($('select[id=RoleId]').val());
+
+        var _RoleId = document.getElementById("RoleId").value;
+        var _Debtors = document.getElementById("Debtors").value;
+        _RoleId = parseFloat(_RoleId);
+        // var selectedValue = _RoleId.options[_RoleId.selectedIndex].value;
+        var combo = document.getElementById("RoleId");
+        var selectedValue = combo.options[combo.selectedIndex].value;
+        selectedValue = parseFloat(selectedValue);
+        console.log(_RoleId);
+
+        console.log(selectedValue);
+
+        var lblError = document.getElementById("lblError");
+        lblError.innerHTML = "";
+        // var expr = /^([\w-\.]+)@@((\[[0-9]{1, 3}\.[0-9]{1, 3}\.[0-9]{1, 3}\.)|(([\w-]+\.)+))([a-zA-Z]{2, 4}|[0-9]{1, 3})(\]?)$/;
+        //if (!expr.test(email)) {
+        //    lblError.innerHTML = "Invalid email address.";
+        //}
+        console.log('selectedValue Start');
+        if (selectedValue == 0) {
+            console.log('selectedValue Start Enter');
+            lblError.innerHTML = "Invalid email address.";
+            return false;
+        }
+
+        if (_RoleId === 0) {
+            lblError.innerHTML = "Invalid email address.";
+            return false;
+        }
+
+        if (_Debtors === 0) {
+            lblError.innerHTML = "Invalid email address.";
+            return false;
+        }
+
+        //if (selected==0) {
+        //    lblError.innerHTML = "Invalid email address.";
+        //    return false;
+        //}
+
+
+        return true;
+    }
+    function ShowSelected() {
+        /* Para obtener el valor */
+        var cod = document.getElementById("RoleId").value;
+        console.log(cod);
+
+        /* Para obtener el texto */
+        var combo = document.getElementById("RoleId");
+        var selected = combo.options[combo.selectedIndex].text;
+        console.log(selected);
+    }
+    var numbersOnly = /^\d+$/;
+    var decimalOnly = /^\s*-?[1-9]\d*(\.\d{1,2})?\s*$/;
+    var uppercaseOnly = /^[A-Z]+$/;
+    var lowercaseOnly = /^[a-z]+$/;
+    var stringOnly = /^[A-Za-z0-9]+$/;
+
+    function testInputData(myfield, restrictionType) {
+
+        var myData = document.getElementById(myfield).value;
+
+        console.log(myData);
+
+        if (myData !== '') {
+            if (restrictionType.test(myData)) {
+                alert('It is GOOD!');
+            } else {
+                alert('Your data input is invalid!');
+                return false;
+            }
+        } else {
+            alert('Please enter data!');
+            return false;
+        }
+        return;
+
+    }
+    function phoneNumberCheck(phoneNumber) {
+
+        console.log(phoneNumber);
+        var regEx = /^\d+$/;
+        if (phoneNumber.value.match(regEx)) {
+            return true;
+        }
+        else {
+            alert("Please enter a valid phone number.");
+            return false;
+        }
+    }
+    function allnumeric(inputtxt) {
+        var numbers = /^[0-9]+$/;
+        if (inputtxt.value.match(numbers)) {
+            alert('Your Registration number has accepted....');
+            document.new-members-form.Debtors.focus();
+            return true;
+        }
+        else {
+            alert('Please input numeric characters only');
+            document.new-members-form.Debtors.focus();
+            return false;
+        }
+    }
+    function validateForm() {
+        var inputtxt = document.getElementById("Debtors").value;
+
+        console.log(inputtxt);
+
+        var numbers = /^[0-9]+$/;
+        if (typeof (inputtxt) === 'undefined') {
+            alert("Name must be filled out");
+            return false;
+        } else {
+            if (inputtxt.value.match(numbers)) {
+                alert('Your Registration number has accepted....');
+                inputtxt.focus();
+                return true;
+            }
+            else {
+                alert('Please input numeric characters only');
+                inputtxt.focus();
+                return false;
+            }
+        }
+    }
+</script>
+
+

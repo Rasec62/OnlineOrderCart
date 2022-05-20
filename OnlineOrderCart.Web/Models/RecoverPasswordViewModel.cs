@@ -5,7 +5,7 @@ namespace OnlineOrderCart.Web.Models
     public class RecoverPasswordViewModel
     {
         [Required]
-        [EmailAddress]
+        //[EmailAddress]
         public string Email { get; set; }
     }
 }

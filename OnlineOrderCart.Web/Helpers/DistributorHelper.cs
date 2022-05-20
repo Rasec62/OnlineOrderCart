@@ -105,7 +105,7 @@ namespace OnlineOrderCart.Web.Helpers
                     _Dist = new Distributors{
                         UserId = _users.UserId,
                         BusinessName = model.BusinessName,
-                        Debtor = model.Debtor.ToString(),
+                        Debtor = model.Debtors.ToString(),
                         KamId = model.KamId,
                         MD = model.MD,
                         IsDeleted = 100,
@@ -211,12 +211,13 @@ namespace OnlineOrderCart.Web.Helpers
         public async Task<Response<AddDistributorViewModel>> GetDistrByIdAsync(long Id)
         {
             try{
+                int[] marks1 = new int[2] { 0,100 };
                 var _Distri = await (from rg in _dataContext.RoleGroups
                                      join r in _dataContext.Roles on rg.RolId equals r.RolId
                                      join u in _dataContext.Users on rg.UserId equals u.UserId
                                      join d in _dataContext.Distributors on u.UserId equals d.UserId
                                      join k in _dataContext.Kams on d.KamId equals k.KamId
-                                     where (d.DistributorId == Id && u.IsDeleted == 0 && d.IsDeleted == 0 && u.IsDistributor == 1)
+                                     where (d.DistributorId == Id && marks1.Contains(u.IsDeleted) && marks1.Contains(d.IsDeleted) && u.IsDistributor == 1)
                                      select new AddDistributorViewModel
                                      {
                                          BusinessName = d.BusinessName,
@@ -261,13 +262,14 @@ namespace OnlineOrderCart.Web.Helpers
         public async Task<List<Warehouses>> GetWarehousesList(AddDistributorViewModel model)
         {
             try{
+                int[] marks1 = new int[2] { 0, 100 };
                 _List = await (from w in _dataContext.Warehouses
                                //join dw in _dataContext.DeatilWarehouses on w.StoreId equals dw.StoreId
                                join d in _dataContext.Distributors on w.DistributorId equals d.DistributorId
                                join u in _dataContext.Users on d.UserId equals u.UserId
                                //join pu in _dataContext.Purposes on dw.PurposeId equals pu.PurposeId
                                //join p in _dataContext.Products on dw.ProductId equals p.ProductId
-                               where (u.UserName == model.Username && d.UserId == model.UserId && u.IsDeleted == 0)
+                               where (u.UserName == model.Username && d.UserId == model.UserId && marks1.Contains(u.IsDeleted))
                                select new Warehouses
                                {
                                    DelegationMunicipality = w.DelegationMunicipality,

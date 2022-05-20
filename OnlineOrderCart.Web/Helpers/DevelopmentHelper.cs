@@ -140,7 +140,7 @@ namespace OnlineOrderCart.Web.Helpers
 
                 return ListTmpOrders.OrderBy(t => t.OrderDetailTmpId).ToList();
             }
-            catch (Exception ex){
+            catch (Exception){
                 return null;
             }
         }
@@ -294,7 +294,7 @@ namespace OnlineOrderCart.Web.Helpers
                                  }).ToListAsync();
                 return _dk;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
 
                 return null;
@@ -355,7 +355,7 @@ namespace OnlineOrderCart.Web.Helpers
                                  }).FirstOrDefaultAsync();
                 return _dk;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
 
                 return null;
@@ -684,7 +684,7 @@ namespace OnlineOrderCart.Web.Helpers
                                 }).FirstOrDefaultAsync();
                 return _dk;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
 
                 return null;

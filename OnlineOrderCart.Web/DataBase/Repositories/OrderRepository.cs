@@ -283,7 +283,7 @@ namespace OnlineOrderCart.Web.DataBase.Repositories
 
                 return ListIndexOrder.OrderBy(t => t.OrderId).ToList();
             }
-            catch (Exception ex)
+            catch (Exception)
             {
 
                 throw;
@@ -632,7 +632,8 @@ namespace OnlineOrderCart.Web.DataBase.Repositories
                         RegistrationDate = DateTime.UtcNow,
                         DeliveryDate = Convert.ToDateTime("01/01/1900"),
                         CKamManagerId = model.KamId,
-                        GenerateUserId = Convert.ToInt32(_user.UserId),
+                        //GenerateUserId = Convert.ToInt32(_user.UserId),
+                        GenerateUserId = 1,
                     };
 
                     _dataContext.PrOrders.Add(order);

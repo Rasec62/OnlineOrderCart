@@ -22,6 +22,7 @@ namespace OnlineOrderCart.Web.Helpers
         private readonly IConverterHelper _converterHelper;
         List<SelectListItem> GetListKam;
         List<IndexUserDistEntity> GetListIndexUserDist;
+        List<IndexKamCoordViewModel> GetListIndexUserKC;
         public MovementsHelper(IConfiguration configuration,
             ICombosHelper combosHelper, DataContext dataContext, IConverterHelper converterHelper)
         {
@@ -112,7 +113,7 @@ namespace OnlineOrderCart.Web.Helpers
                 try
                 {
                     //string query = $"{" Select u.UserId,ka.KamId, u.PicturePath, u.Email,ka.EmployeeNumber,u.FirstName,u.LastName1,u.LastName2, u.FirstName +''+ u.LastName1+' '+u.LastName2 as 'KFullName', u.GenderId ,"}{"Case u.GenderId When 1 then 'Femenino'when 2 then 'Masculina' else 'Generico' end as'Gender',"}{" 'PicturePath', u.ImageId, u.Username, r.RolName,r.RolId, d.BusinessName,d.Debtor,d.DistributorId, d.IsDeleted"}{" from dbo.Users u With(Nolock)  Inner Join dbo.Distributors d With(Nolock) On u.UserId = d.UserId Inner Join dbo.Kams ka With(Nolock) On ka.KamId = d.KamId Inner Join dbo.RoleGroups rg with(Nolock) On rg.UserId = u.UserId Inner Join dbo.Roles r With(Nolock) On rg.RolId = r.RolId Where u.IsDeleted = 0 and u.IsDistributor = 1 and d.IsDeleted = 0"}";
-                    string query = $"{" Select u.UserId,ka.KamId, u.PicturePath, u.Email,ka.EmployeeNumber,u.FirstName,u.LastName1,u.LastName2, u.FirstName +''+ u.LastName1+' '+u.LastName2 as 'KFullName', u.GenderId ,"}{"Case u.GenderId When 1 then 'Femenino'when 2 then 'Masculina' else 'Generico' end as'Gender',"}{" 'PicturePath', u.ImageId, u.Username, r.RolName,r.RolId, d.BusinessName,d.Debtor,d.DistributorId, d.IsDeleted"}{" from dbo.Users u With(Nolock)  Inner Join dbo.Distributors d With(Nolock) On u.UserId = d.UserId Inner Join dbo.Kams ka With(Nolock) On ka.KamId = d.KamId Inner Join dbo.RoleGroups rg with(Nolock) On rg.UserId = u.UserId Inner Join dbo.Roles r With(Nolock) On rg.RolId = r.RolId Where u.IsDeleted in(0,1) and u.IsDistributor = 1 and d.IsDeleted in(0,1)"}";
+                    string query = $"{" Select u.UserId,ka.KamId, u.PicturePath, u.Email,ka.EmployeeNumber,u.FirstName,u.LastName1,u.LastName2, u.FirstName +''+ u.LastName1+' '+u.LastName2 as 'KFullName', u.GenderId ,"}{"Case u.GenderId When 1 then 'Femenino'when 2 then 'Masculina' else 'Generico' end as'Gender',"}{" 'PicturePath', u.ImageId, u.Username, r.RolName,r.RolId, d.BusinessName,d.Debtor,d.DistributorId, d.IsDeleted, dbo.CountWarehousesDist(d.DistributorId) as 'CountW'"}{" from dbo.Users u With(Nolock)  Inner Join dbo.Distributors d With(Nolock) On u.UserId = d.UserId Inner Join dbo.Kams ka With(Nolock) On ka.KamId = d.KamId Inner Join dbo.RoleGroups rg with(Nolock) On rg.UserId = u.UserId Inner Join dbo.Roles r With(Nolock) On rg.RolId = r.RolId Where u.IsDeleted in(0,1,100) and u.IsDistributor = 1 and d.IsDeleted in(0,1,100)"}";
                     using (SqlCommand cmd = new SqlCommand(query))
                     {
                         
@@ -143,6 +144,7 @@ namespace OnlineOrderCart.Web.Helpers
                                     BusinessName = sdr["BusinessName"].ToString().ToUpper(),
                                     DistributorId = Convert.ToInt32(sdr["DistributorId"].ToString()),
                                     IsActive = Convert.ToInt32(sdr["IsDeleted"].ToString()) == 0 ? true : false,
+                                    CountW = Convert.ToInt32(sdr["CountW"].ToString()),
                                 }); 
                             }
                         }
@@ -167,11 +169,12 @@ namespace OnlineOrderCart.Web.Helpers
             using (SqlConnection connection = new SqlConnection(_configuration.GetConnectionString("DefaultConnection"))) {
                 try
                 {
-                    string query = $"{"Select u.FirstName +' '+ u.LastName1 +' '+ u.LastName2 as 'FullName' from dbo.Users u With(Nolock) Inner Join dbo.Kams k With(Nolock) On u.UserId = k.KamId Where u.IsDeleted = 0 and k.IsDeleted = 0 and k.KamId = @KamId"}";
+                    string query = $"{"Select u.FirstName +' '+ u.LastName1 +' '+ u.LastName2 as 'FullName' from dbo.Users u With(Nolock) Inner Join dbo.Kams k With(Nolock) On u.UserId = k.UserId Where u.IsDeleted = 0 and k.IsDeleted = 0 and k.KamId = @KamId"}";
                     using (SqlCommand cmd = new SqlCommand(query))
                     {
                         cmd.Parameters.Add("@KamId", SqlDbType.BigInt);
                         cmd.Parameters["@KamId"].Value = KamId;
+                        
                         cmd.Connection = connection;
                         connection.Open();
                         using (SqlDataReader sdr = cmd.ExecuteReader())
@@ -347,8 +350,7 @@ namespace OnlineOrderCart.Web.Helpers
                         .FirstOrDefaultAsync();
                     if (_UserActivation == null)
                     {
-                        return new Response<UserActivations>
-                        {
+                        return new Response<UserActivations>{
                             IsSuccess = false,
                             Message = "Do not Data",
                         };
@@ -364,7 +366,7 @@ namespace OnlineOrderCart.Web.Helpers
                         ActivationCode = activationCode,
                         UserId = UserId,
                         UserName = UserName,
-                        EventAction = "forwarding-Email - Distributor",
+                        EventAction = "forwarding - Email - Avatar",
                         JwtId = myToken.Token,
                         CreationDate = DateTime.UtcNow.ToUniversalTime(),
                         ExpiryDate = myToken.Expiration,
@@ -409,8 +411,44 @@ namespace OnlineOrderCart.Web.Helpers
                                 .ToListAsync();
                 return Optionemail;
             }
-            catch (Exception ex){
+            catch (Exception){
                 return null;
+            }
+        }
+
+        public async Task<List<IndexKamCoordViewModel>> GetSqlforwardingDataKamAdCoords()
+        {
+            using (SqlConnection connection = new SqlConnection(_configuration.GetConnectionString("DefaultConnection"))){
+                GetListIndexUserKC = new List<IndexKamCoordViewModel>();
+                try{
+                    string query = $"{" Select  u.UserId 'Id', k.KamId 'kcId', k.EmployeeNumber 'NoEmployee' , u.Email, u.UserName 'KickName',u.FirstName +' '+ u.LastName1+' ' + u.LastName2 as 'FullName',u.PicturePath 'Path', k.IsCoordinator "}{" from dbo.Users u with(Nolock) Inner Join dbo.Kams k with(Nolock) on u.UserId = k.UserId "}{" Where u.IsDeleted Not In(0,1)  and k.IsDeleted Not In(0,1) and u.IsDistributor = 0 "}";
+                    using (SqlCommand cmd = new SqlCommand(query)) {
+                        cmd.Connection = connection;
+                       await connection.OpenAsync();
+                        using (SqlDataReader sdr = cmd.ExecuteReader()) {
+                            while (sdr.Read()){
+                                GetListIndexUserKC.Add(new IndexKamCoordViewModel{
+                                    Id = Convert.ToInt32(sdr["Id"].ToString()),
+                                    KcId = Convert.ToInt64(sdr["KcId"].ToString()),
+                                    Email = sdr["Email"].ToString(),
+                                    NoEmployee = sdr["NoEmployee"].ToString(),
+                                    FullName = sdr["FullName"].ToString(),
+                                    Path = sdr["Path"].ToString(),
+                                    KickName = sdr["KickName"].ToString(),
+                                    IsCoordinator = Convert.ToInt32(sdr["IsCoordinator"].ToString()),
+                                    IsKam = Convert.ToInt32(sdr["IsCoordinator"].ToString())== 0 ? true: false, 
+                                });
+                            }
+                        }
+                    }
+                    return GetListIndexUserKC.OrderBy(u => u.KcId).ToList();
+                }
+                catch (Exception){
+                    return null;
+                }
+                finally{
+                   await connection.CloseAsync();
+                }
             }
         }
     }

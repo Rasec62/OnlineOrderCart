@@ -2,7 +2,8 @@
 
 namespace OnlineOrderCart.Common.Responses
 {
-    public class GenericResponse<T> where T : class
+    //public class GenericResponse<T> where T : class
+    public class GenericResponse<T>
     {
         public bool IsSuccess { get; set; }
         public string Message { get; set; }

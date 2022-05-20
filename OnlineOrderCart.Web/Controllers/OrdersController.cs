@@ -1,9 +1,11 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Dapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json.Linq;
 using OnlineOrderCart.Common.Entities;
 using OnlineOrderCart.Common.Responses;
 using OnlineOrderCart.Web.DataBase;
@@ -11,8 +13,10 @@ using OnlineOrderCart.Web.DataBase.Repositories;
 using OnlineOrderCart.Web.Errors;
 using OnlineOrderCart.Web.Helpers;
 using OnlineOrderCart.Web.Models;
+using OnlineOrderCart.Web.Models.Dtos;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using Vereyon.Web;
@@ -32,12 +36,13 @@ namespace OnlineOrderCart.Web.Controllers
         private readonly IDevelopmentHelper _developmentHelper;
         private readonly IConfiguration _configuration;
         private readonly ICreateFileOrFolder _createFileOrFolder;
+        private readonly IDapperHelper _dapperHelper;
 
         public OrdersController(DataContext dataContext
             , IUserHelper userHelper, IDistributorHelper distributorHelper
             , ICombosHelper combosHelper, IOrderRepository orderRepository, IFlashMessage flashMessage,
             IConverterHelper converterHelper, IDevelopmentHelper developmentHelper, IConfiguration configuration
-            , ICreateFileOrFolder createFileOrFolder)
+            , ICreateFileOrFolder createFileOrFolder, IDapperHelper dapperHelper)
         {
             _dataContext = dataContext;
             _userHelper = userHelper;
@@ -49,8 +54,8 @@ namespace OnlineOrderCart.Web.Controllers
             _developmentHelper = developmentHelper;
             _configuration = configuration;
             _createFileOrFolder = createFileOrFolder;
+            _dapperHelper = dapperHelper;
         }
-
         public async Task<IActionResult> IndexOrders()
         {
             if (User.Identity.Name == null)
@@ -66,7 +71,6 @@ namespace OnlineOrderCart.Web.Controllers
 
             return View(ListOrders);
         }
-
         public async Task<IActionResult> NewOrder()
         {
 
@@ -260,7 +264,6 @@ namespace OnlineOrderCart.Web.Controllers
             model.IncentiveOrdersDetails = await _developmentHelper.GetSqlDataIncentiveOrdersVMl(_users.Result.DistributorId);
             return View(model);
         }
-
         public async Task<IActionResult> OrderConfirm(long? id)
         {
             if (User.Identity.Name == null)
@@ -316,7 +319,7 @@ namespace OnlineOrderCart.Web.Controllers
 
             if (OrdersLayout.Count > 0)
             {
-                var _response = _createFileOrFolder.WriteExcelFileNormal(OrdersLayout);
+                var _response = _createFileOrFolder.WriteExcelGenerateReport(OrdersLayout);
 
                 if (!_response.IsSuccess)
                 {
@@ -358,6 +361,126 @@ namespace OnlineOrderCart.Web.Controllers
 
 
             return Json(new SelectList(subStoreslist, "DeatilStoreId", "Description"));
+        }
+        public async Task<IActionResult> LoadaddProductPopup()
+        {
+            AddItemViewModel _model = new AddItemViewModel();
+            try
+            {
+                var _users = await _distributorHelper.GetDistrByEmailAsync(User.Identity.Name);
+            if (!_users.IsSuccess || _users.Result == null)
+            {
+                var errorResponse = new CodeErrorResponse(401);
+                _flashMessage.Danger(string.Empty, $"{errorResponse.StatusCode}{" "}{errorResponse.Message}");
+                return new NotFoundViewResult("_ResourceNotFound");
+            }
+
+                _model.CombosWarehouses = _combosHelper.GetComboWarehouses(_users.Result.DistributorId);
+                _model.CombosTypeofPayments = _combosHelper.GetComboTypeofPayments();
+                _model.DistributorId = _users.Result.DistributorId;
+                _model.Debtor = _users.Result.Debtor;
+                _model.UserId = _users.Result.UserId;
+                _model.KamId = _users.Result.KamId;
+                _model.EmployeeNumber = _users.Result.EmployeeNumber;
+                _model.GenerateDistributor = 1;
+                _model.Quantity = 150;
+            
+                return PartialView("_AddProduct",_model);
+            }
+            catch (Exception)
+            {
+                return PartialView("_AddProduct", _model);
+            }
+        }
+        [HttpPost]
+        public async Task<JsonResult> AddPartialProduct([FromBody] JObject dataObj)
+        {
+            string status = "success";
+            try
+            {
+                AddItemViewModel model = new AddItemViewModel {
+                    Debtor = dataObj["Debtor"].Value<int>(),
+                    DistributorId = dataObj["DistributorId"].Value<int>(),
+                    DeatilStoreId = dataObj["DeatilStoreId"].Value<int>(),
+                    EmployeeNumber = dataObj["EmployeeNumber"].Value<string>(),
+                    KamId = dataObj["KamId"].Value<int>(),
+                    Quantity = dataObj["Quantity"].Value<int>(),
+                    StoreId = dataObj["StoreId"].Value<int>(),
+                    TypeofPaymentId = dataObj["TypeofPaymentId"].Value<int>(),
+                    UserId = dataObj["UserId"].Value<int>(),
+                    Observations = dataObj["Observations"].Value<string>(),
+                    GenerateDistributor = dataObj["GenerateDistributor"].Value<int>()
+                };
+                var _Result = await _orderRepository.AddItemToOrderAsync(model, User.Identity.Name);
+                if (!_Result.IsSuccess)
+                {
+                    status = "Error";
+                    _flashMessage.Danger("Incorrect information Order Tmp check", _Result.Message);
+                    model.CombosWarehouses = _combosHelper.GetComboWarehouses(model.DistributorId);
+                    model.CombosTypeofPayments = _combosHelper.GetComboTypeofPayments();
+                    model.Quantity = 150;
+                    return Json(status);
+                }
+            }
+            catch (Exception ex)
+            {
+                status = ex.Message;
+            }
+            return Json(status);
+
+        }
+
+        public async Task<IActionResult> Details(long? id)
+        {
+           
+            if (User.Identity.Name == null)
+            {
+                return new NotFoundViewResult("_ResourceNotFound");
+            }
+            if (id == null)
+            {
+                return new NotFoundViewResult("_ResourceNotFound");
+            }
+            var _users = await _distributorHelper.GetDistrByEmailAsync(User.Identity.Name);
+            if (!_users.IsSuccess || _users.Result == null)
+            {
+                return new NotFoundViewResult("_ResourceNotFound");
+            }
+            string Query = $"{"Select o.OrderId as 'OrdenId', o.OrderDate, o.OrderStatus, o.DeliveryDate as 'FechaEntrega',dbo.[fun_OnlyDistKams](o.UserId) as 'Operador', d.BusinessName , d.Debtor as 'Deudor' , d.DistributorId, u.UserId  ,o.IsDeleted "}{" from dbo.PrOrders o with(Nolock) Inner Join dbo.Users u With(Nolock) on o.UserId= u.UserId "}{" Inner Join dbo.Distributors d With(Nolock) on o.DistributorId = d.DistributorId Where o.OrderId ="}{id}";
+            var dbparams = new DynamicParameters();
+            dbparams.Add("Id", id, DbType.Int32);
+            var result = await Task.FromResult(_dapperHelper.GetOnlyAvatar<OrderUsDistDto>(Query
+                , null,
+                commandType: CommandType.Text));
+
+            if (!result.IsSuccess)
+            {
+                return new NotFoundViewResult("_ResourceNotFound");
+            }
+            string ListQuery = $"{"Select w.ShippingBranchName, w.ShippingBranchNo , od.Quantity, od.Price, od.TaxRate, od.OrderStatus, od.OrderCode,p.Description, tp.PaymentName, p.ShortDescription "}{" from dbo.PrOrderDetails od With(Nolock) Inner Join  dbo.DeatilWarehouses dw With(Nolock) on od.DeatilStoreId = dw.DeatilStoreId "}{" Inner Join dbo.Warehouses w With(Nolock) on dw.StoreId = w.StoreId Inner Join dbo.Products p With(Nolock) on dw.ProductId= p.ProductId Inner Join dbo.TypeofPayments tp With(Nolock) on od.TypeofPaymentId = tp.TypeofPaymentId Where od.OrderId = "}{id}";
+            
+            var ListOrderDertail = await _dapperHelper.GetAllAsync<OrderDetailDistDto>(ListQuery, null,
+                commandType: CommandType.Text);
+
+            if (!ListOrderDertail.IsSuccess)
+            {
+                return new NotFoundViewResult("_ResourceNotFound");
+            }
+            OrderUsDistDto orderUsDistDto = new OrderUsDistDto {
+                BusinessName = result.Result.BusinessName,
+                Deudor = result.Result.Deudor,
+                DistributorId = result.Result.DistributorId,
+                Operador = result.Result.Operador,
+                OrdenId = result.Result.OrdenId,
+                UserId = result.Result.UserId,
+                OrderDate = result.Result.OrderDate,
+                OrderStatus = result.Result.OrderStatus,
+                FechaEntrega = result.Result.FechaEntrega,
+                IsDeleted = result.Result.IsDeleted,
+                RegistrationDate = result.Result.RegistrationDate,
+                OrderDetailDist = ListOrderDertail.ListResults.ToList(),
+            };
+          return View(orderUsDistDto);
         }
     }
 }

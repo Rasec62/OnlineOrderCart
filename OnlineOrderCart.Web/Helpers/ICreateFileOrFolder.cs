@@ -8,5 +8,7 @@ namespace OnlineOrderCart.Web.Helpers
     {
         Response<object> WriteExcelFile(List<OrdersLayoutModel> OrdersDetails);
         Response<object> WriteExcelFileNormal(List<ObjectAvatarViewModel> OrdersNormalDetails);
+        Response<object> WriteExcelGenerateReport(List<ObjectAvatarViewModel> OrdersNormalDetails);
+        Response<object> DWriteExcelFileGenerateReport(List<OrdersLayoutModel> OrdersDetails);
     }
 }

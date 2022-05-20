@@ -1,52 +1,134 @@
 ﻿@model AddItemViewModel
     <!--Modal Body Start-->
-
-<div class="modal-content">
-
-    <!--Modal Header Start-->
-    <div class="modal-header">
-        <h4 class="modal-title">Add Product</h4>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+<div class="modal fade" id="AddUpdateModelPopup" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="AddUpdateModelLabel">Add Records</h4>
+                <button type="button" class="close" data-dismiss="modal">×</button>
+            </div>
+            <div class="modal-body">
+                @using (Html.BeginForm())
+                {
+                    @Html.AntiForgeryToken()
+                    <div asp-validation-summary="All" class="text-danger"></div>
+                    <flash dismissable="true" />
+                    <input type="hidden" asp-for="Debtor" />
+                    <input type="hidden" asp-for="DistributorId" />
+                    <input type="hidden" asp-for="KamId" />
+                    <input type="hidden" asp-for="UserId" />
+                    <input type="hidden" asp-for="EmployeeNumber" />
+                    <input type="hidden" asp-for="GenerateDistributor" />
+                    @*<input type="hidden" asp-for="Quantity" />*@
+                    <div class="card text-center border-secondary mb-3" style="max-width: 75rem;">
+                        <div class="card-header bg-transparent border-danger">
+                            <h1>Add order of Product</h1>
+                        </div>
+                        <div class="card-body text-dark">
+                            <div class="form-row">
+                                <div class="form-group col-md-4">
+                                    <label asp-for="StoreId" class="control-label"></label>
+                                    <select asp-for="StoreId" asp-items="Model.CombosWarehouses" class="form-control" style="float: left;text-align: center;border-radius: 60px;" onchange="myFunction()"></select>
+                                    <span asp-validation-for="StoreId" class="text-danger"></span>
+                                </div>
+                                <div class="form-group col-md-4">
+                                    <label asp-for="DeatilStoreId" class="control-label"></label>
+                                    <select asp-for="DeatilStoreId" asp-items="Model.CombosDWProducts" class="form-control" style="float: left;text-align: center;border-radius: 60px;"></select>
+                                    <span asp-validation-for="DeatilStoreId" class="text-danger"></span>
+                                </div>
+                                <div class="form-group col-md-4">
+                                    <label asp-for="TypeofPaymentId" class="control-label"></label>
+                                    <select asp-for="TypeofPaymentId" asp-items="Model.CombosTypeofPayments" class="form-control" style="float: left;text-align: center;border-radius: 60px;"></select>
+                                    <span asp-validation-for="TypeofPaymentId" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="Quantity" class="control-label"></label>
+                                <input asp-for="@Model.Quantity" type="number" min="150" max="90000" placeholder="Quantity" class="form-control" style="float: left;text-align: center;border-radius: 60px;" />
+                                <span asp-validation-for="Quantity" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="Observations" class="control-label"></label>
+                                <input asp-for="@Model.Observations" placeholder="Observations" class="form-control" style="float: left;text-align: center;border-radius: 60px;" />
+                                <span asp-validation-for="Observations" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <hr />
+                        <div class="card-footer  bg-transparent border-danger text-muted">
+                            <div class="form-group">
+                                @*<button type="submit" class="btn btn-outline-primary  btn-sm" style="border-radius: 60px;"> <span class="glyphicon glyphicon-ok"></span> Add the Order</button>
+                                    <a asp-action="NewOrder" class="btn btn-outline-secondary btn-sm" style="border-radius: 60px;"><i class="glyphicon glyphicon-share-alt"></i> Back to list</a>*@
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-primary" id="btnUpdateSpeciality" onclick="return AddProduct();">Add Product</button>
+                <button type="button" class="btn btn-outline-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
     </div>
-    <!--Modal Header End-->
-
-
-    <form asp-action="AddProduct" asp-controller="Orders" method="post" enctype="multipart/form-data">
-
-        @Html.AntiForgeryToken()
-
-        <div class="modal-body form-horizontal">
-            <div class="form-group row">
-                @Html.HiddenFor(model => model.Debtor)
-                @Html.LabelFor(model => model.Quantity, new { @class = "col-sm-2 col-form-label" })
-                <div class="col-sm-10">
-                    <input asp-for="@Model.Quantity" placeholder="Enter Name" class="form-control" disabled />
-                </div>
-            </div>
-            <div class="form-group row">
-                @Html.LabelFor(model => model.Observations, new { @class = "col-sm-2 col-form-label" })
-                <div class="col-sm-10">
-                    <input asp-for="@Model.Observations" class="form-control" placeholder="Please enter your address here" required />
-                </div>
-            </div>
-            <div class="form-group row">
-                    <label asp-for="DeatilStoreId" class="control-label"></label>
-                    <select asp-for="DeatilStoreId" asp-items="Model.CombosDWProducts" class="form-control" required></select>
-                    <span asp-validation-for="DeatilStoreId" class="text-danger"></span>
-            </div>
-        </div>
-        <!--Modal Footer Start-->
-        <div class="modal-footer">
-            <button data-dismiss="modal" id="cancel" class="btn btn-default" type="button">Cancel</button>
-            <button class="btn btn-success relative" id="btnSubmit" type="submit">
-                <i class="loader"></i>
-                Submit
-            </button>
-        </div>
-        <!--Modal Footer End-->
-    </form>
-
 </div>
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script type="text/javascript">
+        // Example starter JavaScript for disabling form submissions if there are invalid fields
+        $(document).on('ready', function (e) {
+            var items = "<option value='0'>Seleccionar Productos</option>";
+            $("#DeatilStoreId").html(items);
+        })
+        $(document).ready(function () {
+            
+            $("#StoreId").on("change", function () {
+                $list = $("#DeatilStoreId");
+                $.ajax({
+                    type: "POST",//id of the state which is used to extract cities
+                    url: '/Orders/OnChangeAutoComplete/',
+                    data: { "StoreId": $("#StoreId").val() },
+                    traditional: true,
+                    success: function (result) {
+                        $list.empty();
+                        var items = "<option value='0'>Seleccion un Productos</option>";
+                        $list.html(items);
+                        $.each(result, function (i, item) {
+                            $list.append('<option value="' + item["DeatilStoreId"] + '">' + item["Description"] + '</option>');
+                        });
+                    },
+                    error: function () {
+                        alert("Something went wrong call the police");
+                    }
+                });
+            });
 
-
-<!--Modal Body End-->
+            $("#Quantity").change(function () {
+                // Print entered value in a div box
+                var Quantity = document.getElementById("Quantity").value;
+                if (Quantity >= 150) {
+                    var rest = Quantity % 10;
+                    if (rest == 0) {
+                        alert("the amount is valid");
+                        $(this).css("background-color", "#EBEDEF");
+                        return true;
+                    }
+                    else {
+                        alert("the amount is not valid && Something went wrong call the police");
+                        document.getElementById("Quantity").focus();
+                        document.getElementById("Quantity").value = 150;
+                        $(this).css("background-color", "#CD6155");
+                        return false;
+                    }
+                }
+                else {
+                    alert('Data not Validation Quantity && Something went wrong call the police');
+                    document.getElementById("Quantity").focus();
+                    document.getElementById("Quantity").value = 150;
+                    $(this).css("background-color", "#F2D7D5");
+                    return false;
+                }
+            });
+        });
+    </script>
+}

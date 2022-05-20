@@ -24,6 +24,7 @@ using Vereyon.Web;
 
 namespace OnlineOrderCart.Web.Controllers
 {
+    
     public class AccountController : Controller
     {
         private readonly IConverterHelper _converterHelper;
@@ -56,7 +57,7 @@ namespace OnlineOrderCart.Web.Controllers
             _imageHelper = ImageHelper;
             _config = config;
         }
-        [Authorize(Roles = "PowerfulUser,KamAdmin,KamAdCoordinator")]
+        [Authorize(Roles = "PowerfulUser,KAM-Administrador,Coordinador-Administrador")]
         public async Task<IActionResult> IndexRegister()
         {
             var ListAsync = await _userHelper.GetAllKamsRecordsAsync();
@@ -136,7 +137,8 @@ namespace OnlineOrderCart.Web.Controllers
             return RedirectToAction("Index", "Home");
         }
 
-        [Authorize(Roles = "PowerfulUser,KamAdmin,KamAdCoordinator")]
+        [HttpGet]
+        [Authorize(Roles = "PowerfulUser,KAM-Administrador,Coordinador-Administrador")]
         public async Task<IActionResult> ChangeUser()
         {
             if (User.Identity.Name == null)
@@ -240,7 +242,8 @@ namespace OnlineOrderCart.Web.Controllers
             return View(model);
         }
 
-        [Authorize(Roles = "PowerfulUser,KamAdmin,KamAdCoordinator")]
+        [HttpGet]
+        [Authorize(Roles = "PowerfulUser,KAM-Administrador,Coordinador-Administrador")]
         public IActionResult ChangePassword()
         {
             return View();
@@ -413,7 +416,7 @@ namespace OnlineOrderCart.Web.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = "PowerfulUser,KamAdmin,KamAdCoordinator")]
+        [Authorize(Roles = "PowerfulUser,KAM-Administrador,Coordinador-Administrador")]
         public async Task<IActionResult> Register()
         {
             if (User.Identity.Name == null)
@@ -463,7 +466,7 @@ namespace OnlineOrderCart.Web.Controllers
                         return new NotFoundViewResult("_ResourceNotFound");
                     }
 
-                    switch (model.RolId)
+                    switch (_users.Result.RolId)
                     {
                         case 2:
                             model.KamManagerId = 0;
@@ -534,7 +537,7 @@ namespace OnlineOrderCart.Web.Controllers
                         ViewBag.Message = "The instructions to allow your user has been sent to email.";
                         _flashMessage.Confirmation("The instructions to allow your user has been sent to email.");
                         
-                        return RedirectToAction("IndexRegister", "Account");
+                        return RedirectToAction("Register", "Account");
                     }
 
                     ModelState.AddModelError(string.Empty, response.Message);
@@ -560,7 +563,7 @@ namespace OnlineOrderCart.Web.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = "PowerfulUser,KamAdmin,KamAdCoordinator")]
+        [Authorize(Roles = "PowerfulUser,KAM-Administrador,Coordinador-Administrador")]
         public async Task<IActionResult> EditRegister(int? id)
         {
             if (User.Identity.Name == null)
@@ -624,7 +627,7 @@ namespace OnlineOrderCart.Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                string path = model.PicturePath;
+                string path = model.PictureFPath;
 
                 Guid imageId = model.ImageId;
 
@@ -653,6 +656,7 @@ namespace OnlineOrderCart.Web.Controllers
                         _users.Email = model.Email ?? _users.Email;
                         _users.UserName = model.Username ?? _users.UserName;
                         _users.ImageId = imageId;
+                        _users.UserName = $"E{model.EmployeeNumber}" ?? _users.UserName;
                         _users.PicturePath = model.PicturePath;
 
                         _dataContext.Users.Update(_users);
@@ -674,7 +678,8 @@ namespace OnlineOrderCart.Web.Controllers
                         _dataContext.Kams.Update(_kams);
                         await _dataContext.SaveChangesAsync();
                         transaction.Commit();
-                        return RedirectToAction("Index", "Home");
+                        _flashMessage.Confirmation(string.Empty, "record saved successfully.");
+                        return RedirectToAction("EditRegister", "Account",new { id= model.KamId});
                     }
                     catch (DbUpdateException dbUpdateException)
                     {
@@ -819,7 +824,7 @@ namespace OnlineOrderCart.Web.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = "PowerfulUser,KamAdmin,KamAdCoordinator")]
+        [Authorize(Roles = "PowerfulUser,KAM-Administrador,Coordinador-Administrador")]
         public async Task<IActionResult> DetailRegister(int? id)
         {
             if (User.Identity.Name == null)
@@ -844,8 +849,8 @@ namespace OnlineOrderCart.Web.Controllers
             return View(model);
         }
 
-        [Authorize(Roles = "PowerfulUser,KamAdmin,KamAdCoordinator")]
         [HttpGet]
+        [Authorize(Roles = "PowerfulUser,KAM-Administrador,Coordinador-Administrador")]
         public async Task<IActionResult> DeleteRegister(long? id)
         {
             if (User.Identity.Name == null)
@@ -893,6 +898,90 @@ namespace OnlineOrderCart.Web.Controllers
         public IActionResult NotAuthorized()
         {
             return View();
+        }
+        [HttpGet]
+        [Authorize(Roles = "PowerfulUser,KAM-Administrador,Coordinador-Administrador")]
+        public async Task<IActionResult> KamAdCoordinatorEmailforwarding()
+        {
+            if (User.Identity.Name == null){
+                return new NotFoundViewResult("_ResourceNotFound");
+            }
+            var _users = await _userHelper.GetUserByEmailAsync(User.Identity.Name);
+            if (!_users.IsSuccess || _users.Result == null){
+                return new NotFoundViewResult("_ResourceNotFound");
+            }
+
+            return View(await _movementsHelper
+                        .GetSqlforwardingDataKamAdCoords());
+        }
+        [HttpGet]
+        [Authorize(Roles = "PowerfulUser,KAM-Administrador,Coordinador-Administrador")]
+        public async Task<IActionResult> KamAdCoordinatorActivations(int? id)
+        {
+            if (id == null)
+            {
+                return new NotFoundViewResult("_ResourceNotFound");
+            }
+            long _Id = Convert.ToInt64(id);
+            var _KamCoord = await _userHelper.GetKamAdCoordinatorBySentIdAsync(_Id);
+            if (_KamCoord == null)
+            {
+                return new NotFoundViewResult("_ResourceNotFound");
+            }
+
+            var _Result = await _movementsHelper
+                .GetSqlEmailforwardingDataDistributors(_KamCoord.Result.Id, _KamCoord.Result.UserName, _KamCoord.Result.Email);
+            if (!_Result.IsSuccess)
+            {
+                return new NotFoundViewResult("_ResourceNotFound");
+            }
+            string Password = _configuration["SecretP:SecretPassword"];
+            string tokenLink = Url.Action("ConfirmEmail", "Account", new
+            {
+                userid = _KamCoord.Result.Id,
+                username = _KamCoord.Result.UserName,
+                Jwt = _Result.Result.ActivationCode,
+                token = _Result.Result.JwtId,
+            }, protocol: HttpContext.Request.Scheme);
+
+            Response<object> response = _mailHelper.SendMail(_KamCoord.Result.Email, $"Email confirmation. this is your UserName:{_KamCoord.Result.UserName} and password :{Password}", $"<h1>Email Confirmation</h1>" +
+                $"To forwarding the Kam or Coordinator, " +
+                $"plase click in this link:<p><a href = \"{tokenLink}\" style='color: ##dc2a04'>Confirm Email . this is your UserName:{_KamCoord.Result.UserName} and  Temporal Password :{Password}</a></p>");
+            if (response.IsSuccess)
+            {
+                ViewBag.Message = "The instructions to allow your user has been sent to email.";
+                _flashMessage.Confirmation("The instructions to allow your user has been sent to email.");
+                return RedirectToAction("KamAdCoordinatorEmailforwarding", "Account");
+            }
+            else
+            {
+                _flashMessage.Danger(string.Empty, response.Message);
+            }
+            return RedirectToAction("KamAdCoordinatorEmailforwarding", "Account");
+        }
+
+        [HttpGet]
+        [Authorize(Roles = "PowerfulUser,KAM-Administrador,Coordinador-Administrador")]
+        public async Task<IActionResult> ActiveRegister(int? id)
+        {
+            if (id == null)
+            {
+                return new NotFoundViewResult("_ResourceNotFound");
+            }
+            long _Id = Convert.ToInt64(id);
+            var _KamCoord = await _userHelper.GetKamAdCoordinatorByActiveIdAsync(_Id);
+            if (_KamCoord == null)
+            {
+                return new NotFoundViewResult("_ResourceNotFound");
+            }
+            var _Result = await _userHelper.PutKamAdCoordByActiveIdAsync(_KamCoord.Result);
+
+            if (!_Result.IsSuccess)
+            {
+                _flashMessage.Danger(string.Empty, _Result.Message);
+            }
+
+            return RedirectToAction("IndexRegister", "Account");
         }
     }
 }

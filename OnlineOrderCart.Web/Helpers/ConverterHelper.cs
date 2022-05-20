@@ -62,8 +62,8 @@ namespace OnlineOrderCart.Web.Helpers
             Guid name = Guid.NewGuid();
             return new Products{
                 ProductId = isNew ? 0 : model.ProductId,
-                Description = model.Description,
-                CodeKey = model.ShortDescription.ToUpper(),
+                Description = model.Description.ToUpper().Trim(),
+                CodeKey = model.ShortDescription.ToUpper().TrimStart(),
                 ProductTypeId = model.ProductTypeId,
                 ValueWithOutTax = model.ValueWithOutTax,
                 TrademarkId = model.TrademarkId,
@@ -73,7 +73,7 @@ namespace OnlineOrderCart.Web.Helpers
                 ActivationTypeId = model.ActivationTypeId,
                 SimTypeId = model.SimTypeId,
                 OraclepId = model.OraclepId,
-                ShortDescription = model.ShortDescription.ToUpper(),
+                ShortDescription = model.ShortDescription.ToUpper().Trim(),
                 IsDeleted = 0,
                 RegistrationDate = DateTime.Now.ToUniversalTime(),
             };
@@ -168,7 +168,7 @@ namespace OnlineOrderCart.Web.Helpers
                     LastName2 = string.IsNullOrEmpty(model.LastName2) ? "S/D" : model.LastName2,
                     GenderId = model.GenderId.ToString(),
                     Email = model.Email,
-                    UserName = $"D{model.Debtor.ToString()}",
+                    UserName = $"D{model.Debtors.ToString()}",
                     ImageId = imageId,
                     PicturePath = model.PicturePath,
                     Password = _password.Message,
@@ -304,6 +304,18 @@ namespace OnlineOrderCart.Web.Helpers
                 IncentiveId = isNew ? 0 : model.IncentiveId,
                 IODTDate = DateTime.Now.ToUniversalTime(),
                 DistributorId = model.DistributorId,
+            };
+        }
+
+        public TypeofPayments ToTypeofPaymentsEntity(TypeofPayments model, bool isNew)
+        {
+
+            return new TypeofPayments{
+                PaymentName = model.PaymentName.ToUpper().ToString(),
+                CodeKey = model.CodeKey.ToUpper(),
+                IsDeleted = 0,
+                RegistrationDate = DateTime.Now.ToUniversalTime(),
+                TypeofPaymentId = isNew ? 0 : model.TypeofPaymentId,
             };
         }
         #endregion

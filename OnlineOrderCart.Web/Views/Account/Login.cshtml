@@ -21,7 +21,12 @@
                         </div>
 
                         <div class="form-label-group">
-                            <input type="password" asp-for="Password" id="inputPassword" class="form-control" placeholder=@localizer["PasswordPlaceHolder"] required>
+                            <div class="input-group-append">
+                                <input type="password" asp-for="Password" id="inputPassword" class="form-control" placeholder=@localizer["PasswordPlaceHolder"] required />
+                                <button id="show_password" class="btn btn-outline-secondary" type="button">
+                                    <span class="fa fa-eye-slash icon"></span>
+                                </button>
+                            </div>
                             <label for="inputPassword">@localizer["Password"]</label>
                             <span asp-validation-for="Password" class="text-warning"></span>
                         </div>
@@ -42,3 +47,31 @@
         </div>
     </div>
 </div>
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        $(document).ready(function () {
+            $('#show_password').hover(function show() {
+                //Change the attribute to text  
+                $('#inputPassword').attr('type', 'text');
+                $('.icon').removeClass('fa fa-eye-slash').addClass('fa fa-eye');
+            },
+                function () {
+                    //Change the attribute back to password  
+                    $('#inputPassword').attr('type', 'password');
+                    $('.icon').removeClass('fa fa-eye').addClass('fa fa-eye-slash');
+                });
+            //CheckBox Show Password  
+            $('#ShowPassword').click(function () {
+                $('#inputPassword').attr('type', $(this).is(':checked') ? 'text' : 'password');
+            });
+        });
+        $('#show_password').on('mousedown', function () {
+            $('#inputPassword').attr("type", "text");
+        });
+
+        $('#show_password').on('mouseup mouseleave', function () {
+            $('#inputPassword').attr("type", "password");
+        });
+    </script>
+}

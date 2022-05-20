@@ -26,5 +26,8 @@ namespace OnlineOrderCart.Web.Helpers
         Task<Response<AddUserViewModel>> GetCoordByEmailAsync(string email);
         Task<Response<object>> ResetPasswordAsync(UserManagerEntity model, string jwt, string token, string password);
         Task<Response<TokenResponse>> GeneratePasswordResetTokenAsync(UserManagerEntity user);
+        Task<Response<IndexKamCoordViewModel>> GetKamAdCoordinatorBySentIdAsync(long id);
+        Task<Response<IndexKamCoordViewModel>> GetKamAdCoordinatorByActiveIdAsync(long id);
+        Task<Response<object>> PutKamAdCoordByActiveIdAsync(IndexKamCoordViewModel modol);
     }
 }

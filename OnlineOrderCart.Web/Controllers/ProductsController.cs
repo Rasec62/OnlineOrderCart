@@ -14,7 +14,7 @@ using Vereyon.Web;
 
 namespace OnlineOrderCart.Web.Controllers
 {
-    [Authorize(Roles = "PowerfulUser,KamAdmin,KamAdCoordinator")]
+    [Authorize(Roles = "PowerfulUser,KAM-Administrador,Coordinador-Administrador")]
     public class ProductsController : Controller
     {
         private readonly IProductRepository _repository;
@@ -43,7 +43,7 @@ namespace OnlineOrderCart.Web.Controllers
             var data = await _repository.GetAllRecordsAsync();
             return View(data);
         }
-        [Authorize(Roles = "PowerfulUser,KamAdmin,KamAdCoordinator")]
+        [Authorize(Roles = "PowerfulUser,KAM-Administrador,Coordinador-Administrador")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null){
@@ -80,7 +80,7 @@ namespace OnlineOrderCart.Web.Controllers
             return _prod;
         }
 
-        [Authorize(Roles = "PowerfulUser,KamAdmin,KamAdCoordinator")]
+        [Authorize(Roles = "PowerfulUser,KAM-Administrador,Coordinador-Administrador")]
         public IActionResult Create()
         {
             var model = new AddProductViewModel {
@@ -140,7 +140,7 @@ namespace OnlineOrderCart.Web.Controllers
             model.ComboSimTypes = _combosHelper.GetComboSimTypes();
             return View(model);
         }
-        [Authorize(Roles = "PowerfulUser,KamAdmin,KamAdCoordinator")]
+        [Authorize(Roles = "PowerfulUser,KAM-Administrador,Coordinador-Administrador")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -182,8 +182,8 @@ namespace OnlineOrderCart.Web.Controllers
                           .FirstOrDefaultAsync();
 
                     _Prod.ProductId = model.ProductId;
-                    _Prod.Description = model.Description ?? _Prod.Description;
-                    _Prod.CodeKey = model.ShortDescription.ToUpper() ?? _Prod.ShortDescription.ToUpper();
+                    _Prod.Description = model.Description.ToUpper().Trim() ?? _Prod.Description.ToUpper().Trim();
+                    _Prod.CodeKey = model.ShortDescription.ToUpper().Trim() ?? _Prod.ShortDescription.ToUpper().Trim();
                     _Prod.ProductTypeId = model.ProductTypeId;
                     _Prod.ValueWithOutTax = model.ValueWithOutTax;
                     _Prod.TrademarkId = model.TrademarkId;
@@ -194,7 +194,7 @@ namespace OnlineOrderCart.Web.Controllers
                     _Prod.ActivationTypeId = model.ActivationTypeId;
                     _Prod.SimTypeId = model.SimTypeId;
                     _Prod.OraclepId = model.OraclepId;
-                    _Prod.ShortDescription = model.ShortDescription.ToUpper() ?? _Prod.ShortDescription.ToUpper();
+                    _Prod.ShortDescription = model.ShortDescription.ToUpper().Trim() ?? _Prod.ShortDescription.ToUpper().Trim();
                     _Prod.IsDeleted = 0;
                     _Prod.RegistrationDate = DateTime.Now.ToUniversalTime();
 

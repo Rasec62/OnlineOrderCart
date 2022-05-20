@@ -3,8 +3,10 @@
 @{
     ViewData["Title"] = "Products";
 }
-<link rel="stylesheet" href="https://cdn.datatables.net/1.10.25/css/jquery.dataTables.min.css" />
-<link rel="stylesheet" href="https://cdn.datatables.net/buttons/1.7.1/css/buttons.dataTables.min.css" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.2/css/bootstrap.css" />
+<link rel="stylesheet" href="https://cdn.datatables.net/1.11.4/css/dataTables.bootstrap4.min.css" />
+<link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.2.9/css/responsive.bootstrap4.min.css" />
+
 <br />
 <div class="row">
     <div class="col">
@@ -24,7 +26,7 @@
                 <h3 class="panel-title"> @localizer["Products"]</h3>
             </div>
             <div class="panel-body">
-                <table class="display" id="example" style="width:100%">
+                <table class="table table-striped table-bordered dt-responsive nowrap" id="example" style="width:100%">
                     <thead>
                         <tr>
                             <th>
@@ -76,11 +78,13 @@
                                 <td>
                                     @Html.DisplayFor(modelItem => item.SimTypes.Description)
                                 </td>
-                                <td>
+                                <td id="@item.ProductId">
                                     <a asp-action="Edit" asp-route-id="@item.ProductId" class="btn btn-outline-warning" style="border-radius: 60px;" onclick="showPleaseWait();"><i class="glyphicon glyphicon-pencil"></i></a>
                                     <a asp-action="Details" asp-route-id="@item.ProductId" class="btn btn-outline-info" style="border-radius: 60px;"><i class="glyphicon glyphicon glyphicon-align-justify"></i></a>
                                     @*<button data-id="@item.ProductId" class="btn btn-outline-danger deleteItem" data-toggle="modal" data-target="#deleteDialog" style="border-radius: 60px;"><i class="glyphicon glyphicon-trash"></i></button>*@
-                                    <a asp-action="Delete" class="btn btn-outline-danger" asp-route-id="@item.ProductId" style="border-radius: 60px;" id="btnDelete" onclick="return confirm('¿ Are you sure to delete this Product?');"><i class="glyphicon glyphicon-trash"></i> </a>
+                                    @*<button data-id="@item.ProductId" class="btn btn-outline-danger deleteItem" data-toggle="modal" data-target="#deleteDialog"><i class="glyphicon glyphicon-trash"></i></button>*@
+                                    <a href="#" class="btn btn-outline-danger" style="border-radius: 60px;" onclick="deleteConfirm('@item.Description','@item.ProductId')"><i class="glyphicon glyphicon-trash"></i></a>
+                                    @*<a asp-action="Delete" class="btn btn-outline-danger" asp-route-id="@item.ProductId" style="border-radius: 60px;" id="btnDelete" onclick="return confirm('¿ Are you sure to delete this Product?');"><i class="glyphicon glyphicon-trash"></i> </a>*@
                                 </td>
                             </tr>
                         }
@@ -91,43 +95,90 @@
     </div>
 </div>
 
-<partial name="_DeleteDialog" />
+<partial name="_DeleteDialogs" />
+
+
+@*hidden field for storing current employeeId*@
+<input type="hidden" id="hiddenProductId" />
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-    @*<script src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.min.js"></script>*@
 
-    <script src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.min.js"></script>
-    <script src="https://cdn.datatables.net/buttons/1.7.1/js/dataTables.buttons.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
-    <script src="https://cdn.datatables.net/buttons/1.7.1/js/buttons.html5.min.js"></script>
-    <script src="https://cdn.datatables.net/buttons/1.7.1/js/buttons.print.min.js"></script>
 
-    @*<script src="/js/deleteDialog.js"></script>*@
+        <script src="https://cdn.datatables.net/1.11.4/js/jquery.dataTables.min.js"></script>
+        <script src="https://cdn.datatables.net/1.11.4/js/dataTables.bootstrap4.min.js"></script>
+        <script src="https://cdn.datatables.net/responsive/2.2.9/js/dataTables.responsive.min.js"></script>
+        <script src="https://cdn.datatables.net/responsive/2.2.9/js/responsive.bootstrap4.min.js"></script>
+ 
+    <script src="/js/deleteDialog.js"></script>
+
     <script type="text/javascript">
         $(document).ready(function () {
             $('#example').DataTable({
-                //"scrollX": true,
-                //dom: 'Bfrtip',
-                //buttons: [
-                //    'copy', 'csv', 'excel', 'pdf'
-                //],
                 "order": [[2, "desc"]],
-                "lengthMenu": [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]]
+                "lengthMenu": [[5, 10, 15, 25, 30, 45, 50, -1], [5, 10, 15, 25, 30, 45, 50, "All"]]
             });
             // Delete item
             var item_to_delete;
 
             $('.deleteItem').click((e) => {
                 item_to_delete = e.currentTarget.dataset.id;
+                console.log(item_to_delete);
             });
 
             $("#btnYesDelete").click(function () {
+                console.log(item_to_delete);
                 window.location.href = '/Products/Delete/' + item_to_delete;
             });
             // Delete item
             //sc_deleteDialog.openModal('deleteItem', true, 'btnYesDelete', '/Products/Delete/', false);
-        });</script>
+            //sc_deleteDialog.openModal('deleteItem', true, 'btnYesDelete', '/Products/Delete/', false);
+        });
+          var ConfirmDelete = function (EmployeeId) {
+            $("#hiddenProductId").val(EmployeeId);
+            $("#myModal").modal('show');
+        }
+
+        var DeleteEmployee = function () {
+
+            var empId = $("#hiddenProductId").val();
+
+            $.ajax({
+
+                type: "GET",
+                url: "/Products/Delete",
+                data: { Id: empId },
+                success: function (result) {
+
+                    $("#myModal").modal("hide");
+                    $("#row_" + empId).remove();
+                    window.location.href = '/Products/Index/';
+                }
+            })
+
+        }
+        var deleteConfirm = function (val,val1) {
+            $('#deletedValueName').text(val);
+            $("#hiddenProductId").val(val1);
+            $('#delete-conformation').modal('show');
+        }
+        //call this function after click on confirm delete button
+        var deleteData = function () {
+            $('#divLoading').show();
+            var id = $("#hiddenProductId").val();
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("Delete", "Products")',
+                data: { id: id },
+                success: function (result) {
+                    $("#delete-conformation").modal('hide');
+                    window.location.href = '/Products/Index/';
+                },
+                error: function () {
+                    $("#delete-conformation").modal('hide');
+                    window.location.href = '/Products/Index/';
+                }
+            });
+        }
+    </script>
 }

@@ -20,7 +20,8 @@ namespace OnlineOrderCart.Web.DataBase
                             new TypeofPayments { PaymentName  = "PAGO CON LINEA DE CREDITO", CodeKey = "PLC", IsDeleted =0 , RegistrationDate = DateTime.Now.ToUniversalTime() },
                             new TypeofPayments { PaymentName  = "PAGO CON TRANSFERENCIA",  CodeKey = "PT", IsDeleted =0 , RegistrationDate = DateTime.Now.ToUniversalTime() },
                             new TypeofPayments { PaymentName  = "PAGO CON NOTAS DE CREDITO",  CodeKey = "PNC", IsDeleted =0 , RegistrationDate = DateTime.Now.ToUniversalTime()  },
-                            new TypeofPayments { PaymentName  = "PAGO CON NOTAS DE CREDITO DEL INCENTIVO",  CodeKey = "PNCI", IsDeleted =0 , RegistrationDate = DateTime.Now.ToUniversalTime()  },
+                            new TypeofPayments { PaymentName  = "PAGO MIXTO (NDC - TRANSFERENCIA)",  CodeKey = "MIX NDC TR", IsDeleted =0 , RegistrationDate = DateTime.Now.ToUniversalTime()  },
+                            new TypeofPayments { PaymentName  = "PAGO MIXTO (LDC - TRANSFERENCIA)",  CodeKey = "MIX LDC TR", IsDeleted =0 , RegistrationDate = DateTime.Now.ToUniversalTime()  },
                 };
 
                 dataContext.TypeofPayments.AddRange(_TypeofPay);
@@ -31,9 +32,9 @@ namespace OnlineOrderCart.Web.DataBase
                 var _rol = new List<Roles>
                 {
                             new Roles { RolName  = "PowerfulUser", CodeKey = "SP", IsDeleted =0 , RegistrationDate = DateTime.Now.ToUniversalTime() },
-                            new Roles { RolName  = "KamAdmin",  CodeKey = "KD", IsDeleted =0 , RegistrationDate = DateTime.Now.ToUniversalTime() },
-                            new Roles { RolName  = "KamAdCoordinator",  CodeKey = "KAC", IsDeleted =0 , RegistrationDate = DateTime.Now.ToUniversalTime()  },
-                            new Roles { RolName  = "KamCoordinator",  CodeKey = "KC", IsDeleted =0 , RegistrationDate = DateTime.Now.ToUniversalTime()  },
+                            new Roles { RolName  = "KAM-Administrador",  CodeKey = "KA", IsDeleted =0 , RegistrationDate = DateTime.Now.ToUniversalTime() },
+                            new Roles { RolName  = "Coordinador-Administrador",  CodeKey = "CA", IsDeleted =0 , RegistrationDate = DateTime.Now.ToUniversalTime()  },
+                            new Roles { RolName  = "Coordinador",  CodeKey = "C", IsDeleted =0 , RegistrationDate = DateTime.Now.ToUniversalTime()  },
                             new Roles { RolName  = "Kam",  CodeKey = "K", IsDeleted =0 , RegistrationDate = DateTime.Now.ToUniversalTime()  },
                             new Roles { RolName  = "Distributor",  CodeKey = "DD", IsDeleted =0 , RegistrationDate = DateTime.Now.ToUniversalTime()  },
 
@@ -63,7 +64,8 @@ namespace OnlineOrderCart.Web.DataBase
             if (!dataContext.ActivationsForm.Any())
             {
                 var Acti = new List<ActivationsForm> { new ActivationsForm { Description = "AVS Light", CodeKey = "AL", IsDeleted = 0, RegistrationDate = DateTime.Now.ToUniversalTime(),  },
-                new ActivationsForm { Description = "*100", CodeKey = "*1", IsDeleted = 0, RegistrationDate = DateTime.Now.ToUniversalTime(),  } };
+                new ActivationsForm { Description = "*100", CodeKey = "*1", IsDeleted = 0, RegistrationDate = DateTime.Now.ToUniversalTime(),  },
+                new ActivationsForm { Description = "WEBSERVICE (API RES)", CodeKey = "WSAPI", IsDeleted = 0, RegistrationDate = DateTime.Now.ToUniversalTime(),  }};
                 dataContext.ActivationsForm.AddRange(Acti);
                 dataContext.SaveChanges();
             }
@@ -87,19 +89,20 @@ namespace OnlineOrderCart.Web.DataBase
             if (!dataContext.ProductsType.Any())
             {
                 var pt = new List<ProductsType> { new ProductsType { Description = "SIMS", CodeKey = "sms", IsDeleted = 0, RegistrationDate = DateTime.Now.ToUniversalTime(),  },
-                new ProductsType { Description = "COMBO", CodeKey = "cb", IsDeleted = 0, RegistrationDate = DateTime.Now.ToUniversalTime(),  } };
+                new ProductsType { Description = "COMBO", CodeKey = "CB", IsDeleted = 0, RegistrationDate = DateTime.Now.ToUniversalTime(),  },
+                new ProductsType { Description = "HANDSET", CodeKey = "HST", IsDeleted = 0, RegistrationDate = DateTime.Now.ToUniversalTime(),  },};
                 dataContext.ProductsType.AddRange(pt);
                 dataContext.SaveChanges();
             }
 
             if (!dataContext.Kams.Any() && !dataContext.Users.Any())
             {
-                CheckUsersAsync(dataContext, "S911", "quetzalcoatl.ometecuhtli@yopmail.com", "quetzalcoatl", "ometecuhtli", "Master", "QOM", "PowerfulUser", "2", "911");
-                CheckUsersAsync(dataContext, "E711821", "ja512u@att.com", "Jose Antonio", "Argomaniz", "Arias", "JAAA", "KamAdmin", "2", "711821");
-                CheckUsersAsync(dataContext, "E1029580", "ja318m@att.com", "JESSICA", "AVILA", "FLORES", "JAF", "KamAdCoordinator", "1", "1029580");
+                CheckUsersAsync(dataContext, "S911",string.Empty, "quetzalcoatl.ometecuhtli@yopmail.com", "quetzalcoatl", "ometecuhtli", "Master", "QOM", "PowerfulUser", "2", "911");
+                CheckUsersAsync(dataContext, "E711821", string.Empty, "ja512u@att.com", "Jose Antonio", "Argomaniz", "Arias", "JAAA", "KAM-Administrador", "2", "711821");
+                CheckUsersAsync(dataContext, "E1029580", "E711821", "ja318m@att.com", "JESSICA", "AVILA", "FLORES", "JAF", "Coordinador-Administrador", "1", "1029580");
             }
         }
-        private static bool CheckUsersAsync(DataContext dataContext, string Username1, string userName, string FirstName, string LastName1, string LastName2
+        private static bool CheckUsersAsync(DataContext dataContext, string Username1, string Manager, string userName, string FirstName, string LastName1, string LastName2
             , string codeKey, string role, string gender, string numberEm)
         {
             // Add user
@@ -154,7 +157,7 @@ namespace OnlineOrderCart.Web.DataBase
                         dataContext.SaveChanges();
 
                         var _managerk = dataContext.Kams
-                        .Include(u => u.Users).Where(k => k.Users.UserName == Username1)
+                        .Include(u => u.Users).Where(k => k.Users.UserName == Manager)
                         .FirstOrDefault();
 
                         if (_managerk == null)

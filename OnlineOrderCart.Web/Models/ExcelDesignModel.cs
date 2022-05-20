@@ -5,7 +5,7 @@ namespace OnlineOrderCart.Web.Models
 {
     public class ExcelDesignModel
     {
-        [DisplayFormat(DataFormatString = "{0:yyyy/MM/dd HH:mm}")]
+        [DisplayFormat(DataFormatString = "{0:yyyy/MM/dd hh:mm:ss}")]
         public DateTime Fecha_de_Pedido { get; set; }
         [Display(Name = "No. de Deudor")]
         public string No_de_Deudor { get; set; }
@@ -26,5 +26,7 @@ namespace OnlineOrderCart.Web.Models
         public string METODO_DE_PAGO { get; set; } = "99";
         [Display(Name = "USO CFDI")]
         public string USO_CFDI { get; set; } = "G01";
+        [DisplayFormat(DataFormatString = "{0:yyyy/MM/dd hh:mm:ss}")]
+        public DateTime DateLocal => Fecha_de_Pedido.ToLocalTime();
     }
 }
